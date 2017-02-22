@@ -18,3 +18,4 @@
 
 1. Suivre les étapes sur [ce lien](http://openframeworks.cc/setup/qtcreator/) 
 2. Il demande d'installer msys2. Suivez [ces étapes.](http://openframeworks.cc/setup/msys2/)
+3. Ensuite, après la mises à jour des modules de msys2, il faut copier les templates de OF (scripts/qtcreator/templates) vers c:\Qt\qtcreator-3.5.1\share\qtcreator\templates
