@@ -12,7 +12,7 @@
 2. Installer le plug-in
 3. Redémarrer VS
 4. Dans Visual Studio, sélectionner Qt VS Tools > Qt Options. 
-5. Cliquer sur Add, entrer un nom au choix, Qt 5.7 par exemple et entrer le path: ...\Qt\5.7\msvc2015_64
+5. Cliquer sur Add, entrer un nom au choix (Ex: Qt 5.7) et entrer le path: ...\Qt\5.7\msvc2015_64
 
 ##Pour configurer Qt creator avec openframeworks##
 
