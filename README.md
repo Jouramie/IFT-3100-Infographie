@@ -1,29 +1,20 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+##Pour installer Qt##
 
-### What is this repository for? ###
+1. Se rendre sur [le release 5.7 de Qt](https://www.qt.io/qt5-7/)
+2. Répondre aux questions demandés.
+3. Exécuter l'installateur (Spamer le next)
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+##Pour ajouter le Add-in Qt VS tools sur Visual Studio##
 
-### How do I get set up? ###
+1. Aller dans Outils > Extensions & mises à jour > En ligne > Rechercher Qt VS Tools
+2. Installer le plug-in
+3. Redémarrer VS
+4. Dans Visual Studio, sélectionner Qt VS Tools > Qt Options. 
+5. Cliquer sur Add, entrer un nom au choix, Qt 5.7 par exemple et entrer le path: ...\Qt\5.7\msvc2015_64
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+##Pour configurer Qt creator avec openframeworks##
 
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+1. Suivre les étapes sur [ce lien](http://openframeworks.cc/setup/qtcreator/) 
+2. Il demande d'installer msys2. Suivez [ces étapes.](http://openframeworks.cc/setup/msys2/)
