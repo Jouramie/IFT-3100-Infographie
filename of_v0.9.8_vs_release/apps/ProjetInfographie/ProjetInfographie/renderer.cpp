@@ -25,7 +25,11 @@ void renderer::draw()
 	std::list<of3dPrimitive>::const_iterator iterator;
 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
 	{
-		iterator->draw();
+		ofSetLineWidth(1.0);
+		if (wireFrame)
+			iterator->drawWireframe();
+		else
+			iterator->draw();
 	}
 }
 
@@ -87,6 +91,16 @@ void renderer::createSphere(int x, int y, int z, int size, ofColor color)
 	//ball.set
 	primitives.push_back(ball);
 	draw();
+}
+
+void renderer::clearPrimitives()
+{
+	primitives.clear();
+}
+
+void renderer::changeWireFrameMode()
+{
+	wireFrame = !wireFrame;
 }
 
 renderer::~renderer()
