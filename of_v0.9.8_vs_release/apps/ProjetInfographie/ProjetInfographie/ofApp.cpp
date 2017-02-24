@@ -48,6 +48,17 @@ void ofApp::keyPressed(int key) {
 void ofApp::keyReleased(int key) {
 	if (key == ' ')
 		rend->imageExport("render", "png");
+	else if (key == 'r')
+	{
+		ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
+		rend->createCube(rand() % 492 + 10, rand() % 363 + 10, rand() % 100, 100, c);
+	}
+	else if (key == 's')
+	{
+		ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
+		rend->createSphere(rand() % 492 + 10, rand() % 363 + 10, rand() % 100, 100, c);
+	}
+
 }
 
 //--------------------------------------------------------------

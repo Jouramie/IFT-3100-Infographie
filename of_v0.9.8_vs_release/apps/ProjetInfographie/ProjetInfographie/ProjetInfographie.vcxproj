@@ -188,11 +188,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ofApp.h" />
+    <ClInclude Include="primitive.h" />
     <ClInclude Include="renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ofApp.cpp" />
+    <ClCompile Include="primitive.cpp" />
     <ClCompile Include="renderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
