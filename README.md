@@ -14,7 +14,7 @@
 
 
 ***********************
-* NE PAS INSTALLER QT *
+# NE PAS INSTALLER QT #
 ***********************
 
 ##Pour installer Qt##
