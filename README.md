@@ -1,5 +1,22 @@
 # README #
 
+##Pour configurer ofxGui##
+
+1. Allez dans Projet > Propriété > c/c++ > général > Autres répertoires Include
+2. Cliquez et modifiez les autres répertoires Include (flèche a droite)
+3. Ajoutez un répertoire en cliquant sur le petit dossier avec un soleil
+4. Explorez pour trouver les fichiers source de l'addons ofxGui. Pour se faire, retournez à la racine de OpenFrameworks puis choisissez addons > ofxGui > src
+5. Confirmez le tout et ça devrait fonctionner!
+
+
+
+
+
+
+***********************
+* NE PAS INSTALLER QT *
+***********************
+
 ##Pour installer Qt##
 
 1. Se rendre sur [le release 5.7 de Qt](https://www.qt.io/qt5-7/)
