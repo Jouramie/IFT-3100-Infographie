@@ -6,6 +6,8 @@ class renderer
 {
 public:
 
+	renderer();
+
 	ofColor background;
 
 	bool isCameraMoveLeft;
@@ -14,10 +16,6 @@ public:
 	bool isCameraMoveDown;
 	bool isCameraMoveForward;
 	bool isCameraMoveBackward;
-
-	renderer();
-
-	ofColor background;
 
 	void setup();
 	void update();

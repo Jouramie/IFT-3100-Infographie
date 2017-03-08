@@ -136,9 +136,10 @@ void ofApp::keyReleased(int key) {
 		ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
 		rend->createSphere(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
 	}
-	else if (key == 'c')
+	else if (key == 'c') {
 		rend->clearPrimitives();
-	else if (key == 'w')
+	}
+	else if (key == 'w'){
 		rend->changeWireFrameMode();
 	}
 	else if (key == OF_KEY_LEFT) 
