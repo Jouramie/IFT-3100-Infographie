@@ -199,6 +199,7 @@
     <ClInclude Include="ofApp.h" />
     <ClInclude Include="primitive.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxBaseGui.cpp" />
@@ -213,6 +214,7 @@
     <ClCompile Include="ofApp.cpp" />
     <ClCompile Include="primitive.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="scene.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ProjectExtensions>
