@@ -209,6 +209,7 @@
     <ClInclude Include="..\..\..\openFrameworks\communication\ofSerial.h" />
     <ClInclude Include="..\..\..\openFrameworks\events\ofEvents.h" />
     <ClInclude Include="..\..\..\openFrameworks\events\ofEventUtils.h" />
+    <ClInclude Include="ofxRayTriangleIntersection.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\openFrameworks\3d\of3dPrimitives.cpp" />

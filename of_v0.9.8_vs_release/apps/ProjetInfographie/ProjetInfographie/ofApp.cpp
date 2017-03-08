@@ -51,21 +51,19 @@ void ofApp::keyReleased(int key) {
 	else if (key == 'r')
 	{
 		ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
-		rend->createCube(rand() % 492 + 10, rand() % 363 + 10, rand() % 100, 100, c);
+		rend->createCube(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
 	}
 	else if (key == 's')
 	{
 		ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
-		rend->createSphere(rand() % 492 + 10, rand() % 363 + 10, rand() % 100, 100, c);
+		rend->createSphere(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
 	}
 	else if (key == 'c')
-	{
 		rend->clearPrimitives();
-	}
 	else if (key == 'w')
-	{
 		rend->changeWireFrameMode();
-	}
+	/*else if (key == 'q')
+		rend->changeRotate();*/
 
 }
 
@@ -86,7 +84,8 @@ void ofApp::mousePressed(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
-
+	//if (button == )
+	rend->selectPrimitive(x, y);
 }
 
 //--------------------------------------------------------------

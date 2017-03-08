@@ -18,11 +18,16 @@ public:
 	void createSphere(int x, int y, int z, int size, ofColor color);
 	void clearPrimitives();
 	void changeWireFrameMode();
+	void changeRotate();
+	void selectPrimitive(int x, int y);
 
 	~renderer();
 
 private:
 	std::list<of3dPrimitive> primitives;
+	of3dPrimitive* selectedPrim;
+	//ofEasyCam mainCam;
 	bool wireFrame;
+	//int rotate;
 };
 

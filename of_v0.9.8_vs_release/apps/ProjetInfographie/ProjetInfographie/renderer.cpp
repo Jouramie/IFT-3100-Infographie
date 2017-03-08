@@ -10,7 +10,9 @@ renderer::renderer()
 void renderer::setup()
 {
 	ofSetFrameRate(60);
-	
+	/*mainCam = ofEasyCam();
+	rotate = -1;
+	mainCam.begin();*/
 }
 
 void renderer::update()
@@ -31,6 +33,16 @@ void renderer::draw()
 		else
 			iterator->draw();
 	}
+	/*if (rotate > -1)
+	{
+		rotate++;
+		if (rotate > 359)
+			rotate = 0;
+		mainCam.rotate(rotate, 1, 0, 0);
+	}
+	else
+		mainCam.reset();
+	mainCam.draw();*/
 }
 
 void renderer::imageExport(const string name, const string extension) const
@@ -101,6 +113,26 @@ void renderer::clearPrimitives()
 void renderer::changeWireFrameMode()
 {
 	wireFrame = !wireFrame;
+}
+
+void renderer::selectPrimitive(int x, int y)
+{
+	ofxRayTriangleIntersection  rtIntersect;
+	vector<FaceTri>             tris;
+	vector<Ray>                 rays;
+
+	FaceTri tri;
+	tri.v0 = ofPoint(ofGetWidth() / 2, ofGetHeight() / 2 / 2, -1000);
+	tri.v1 = ofPoint(ofGetWidth() / 2 - 200, ofGetHeight() / 2 + (ofGetHeight() / 2 / 2), -1000);
+	tri.v2 = ofPoint(ofGetWidth() / 2 + 200, ofGetHeight() / 2 + (ofGetHeight() / 2 / 2), -1000);
+	tris.push_back(tri);
+
+	Ray ray;
+	ray.rayOrig.set(0, 0, 0);
+	ray.rayEnd.set(0, 0, -2000);
+	rays.push_back(ray);
+
+	std::cout << "Selected Primitive" << std::endl;
 }
 
 renderer::~renderer()
