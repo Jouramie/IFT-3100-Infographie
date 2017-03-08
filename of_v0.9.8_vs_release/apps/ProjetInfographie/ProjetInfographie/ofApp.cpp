@@ -13,6 +13,7 @@ void ofApp::setup()
 	initPosition();
 	initDimension();
 	initColors();
+	initPrimitives();
 	initGroups();
 
 	gui.setDefaultWidth(270);
@@ -21,6 +22,7 @@ void ofApp::setup()
 	is2dDisplay = false;
 	is3dDisplay = false;
 	isPropertiesDisplay = false;
+	isPrimitivesDisplay = false;
 	isListenersUnlocked = true;
 
 	btnSelect.addListener(this, &ofApp::btnSelectClicked);
@@ -28,6 +30,8 @@ void ofApp::setup()
 	btn3D.addListener(this, &ofApp::btn3DClicked);
 	btnProperty.addListener(this, &ofApp::btnPropertyClicked);
 	btnDraw.addListener(this, &ofApp::btnDrawClicked);
+	btnPrimitives.addListener(this, &ofApp::btnPrimitivesClicked);
+	btnDrawPrimitive.addListener(this, &ofApp::btnDrawPrimitiveClicked);
 	btnExit.addListener(this, &ofApp::btnExitClicked);
 
 	setupGui();
@@ -151,6 +155,7 @@ void ofApp::setupGui() {
 	gui.add(btn2D.setup("Outils de dessin 2D"));
 	gui.add(btn3D.setup("Outils de dessin 3D"));
 	gui.add(btnProperty.setup("Proprietes de l'outil de dessin"));
+	gui.add(btnPrimitives.setup("Ajout de Primitives"));
 	
 	if (is2dDisplay) {
 		display2D();
@@ -163,6 +168,12 @@ void ofApp::setupGui() {
 	if (isPropertiesDisplay) {
 		displayProperties();
 	}
+
+	if (isPrimitivesDisplay) {
+		displayPrimitives();
+		gui.add(btnDrawPrimitive.setup("Dessiner!"));
+	}
+
 	
 	gui.add(btnExit.setup("Quitter"));
 
@@ -186,6 +197,23 @@ void ofApp::displayProperties()
 
 	gui.setDefaultFillColor(defaultColor);
 	
+}
+
+void ofApp::displayPrimitives()
+{
+	ofColor defaultColor = gui.getFillColor();
+
+	gui.add(groupPrimitivePosition);
+	gui.add(groupPrimitiveSize);
+
+	gui.setDefaultFillColor(fill);
+	gui.add(groupPrimitiveFill);
+
+	gui.setDefaultFillColor(stroke);
+	gui.add(groupPrimitiveStroke);
+
+	gui.setDefaultFillColor(defaultColor);
+
 }
 
 void ofApp::display2D()
@@ -261,6 +289,35 @@ void ofApp::btn3DClicked()
 	}
 }
 
+void ofApp::btnPrimitivesClicked()
+{
+	if (isListenersUnlocked)
+	{
+		ofLog() << "<app::btnPrimitivesClicked>";
+
+		isPrimitivesDisplay = !isPrimitivesDisplay;
+		if (isPrimitivesDisplay)
+		{
+			is3dDisplay = false;
+			is2dDisplay = false;
+			isPropertiesDisplay = false;
+		}
+		is2dDisplay = false;
+
+		setupGui();
+	}
+}
+
+void ofApp::btnDrawPrimitiveClicked()
+{
+	if (isListenersUnlocked)
+	{
+		ofLog() << "<app::btnDrawPrimitiveClicked>";
+
+		rend->createCube(primPosX, primPosY, primPosZ, primSizeHeight, ofColor::fromHsb(primStrokeHue, primStrokeSaturation, primStrokeBrightess, primStrokeAlpha));
+	}
+}
+
 void ofApp::btnDrawClicked()
 {
 	if (isListenersUnlocked)
@@ -314,6 +371,29 @@ void ofApp::initGroups()
 	groupBackground.add(bgHue.set(bgHue));
 	groupBackground.add(bgSaturation.set(bgSaturation));
 	groupBackground.add(bgBrightess.set(bgBrightess));
+
+	groupPrimitiveFill.setName("Remplissage");
+	groupPrimitiveFill.add(primFillHue.set(primFillHue));
+	groupPrimitiveFill.add(primFillBrightess.set(primFillBrightess));
+	groupPrimitiveFill.add(primFillSaturation.set(primFillSaturation));
+	groupPrimitiveFill.add(primFillAlpha.set(primFillAlpha));
+
+	groupPrimitivePosition.setName("Position");
+	groupPrimitivePosition.add(primPosX.set(primPosX));
+	groupPrimitivePosition.add(primPosY.set(primPosY));
+	groupPrimitivePosition.add(primPosZ.set(primPosZ));
+
+	groupPrimitiveSize.setName("Taille");
+	groupPrimitiveSize.add(primSizeWidth.set(primSizeWidth));
+	groupPrimitiveSize.add(primSizeHeight.set(primSizeHeight));
+	groupPrimitiveSize.add(primSizeDepth.set(primSizeDepth));
+
+	groupPrimitiveStroke.setName("Trait");
+	groupPrimitiveStroke.add(primStrokeAlpha.set(primStrokeAlpha));
+	groupPrimitiveStroke.add(primStrokeBrightess.set(primStrokeBrightess));
+	groupPrimitiveStroke.add(primStrokeHue.set(primStrokeHue));
+	groupPrimitiveStroke.add(primStrokeSaturation.set(primStrokeSaturation));
+	groupPrimitiveStroke.add(primStrokeThickness.set(primStrokeThickness));
  
 }
 
@@ -366,7 +446,7 @@ void ofApp::initDimension()
 
 void ofApp::initColors()
 {
-	
+
 	fillHue.setName("Teinte");
 	fillHue.setMin(0);
 	fillHue.setMax(255);
@@ -376,7 +456,7 @@ void ofApp::initColors()
 	fillSaturation.setMin(0);
 	fillSaturation.setMax(255);
 	fillSaturation.set(100);
-	
+
 	fillBrightess.setName("Valeur");
 	fillBrightess.setMin(0);
 	fillBrightess.setMax(255);
@@ -431,4 +511,89 @@ void ofApp::setColors()
 	stroke = ofColor::fromHsb(strokeHue, strokeSaturation, strokeBrightess, strokeAlpha);
 	fill = ofColor::fromHsb(fillHue, fillSaturation, fillBrightess, fillAlpha);
 	background = ofColor::fromHsb(bgHue, bgSaturation, bgBrightess);
+}
+
+void ofApp::initPrimitives() {
+	primPosX.setName("X");
+	primPosX.setMin(MinX);
+	primPosX.setMax(MaxX);
+	primPosX.set((MinX + MaxX) / 2);
+
+	primPosY.setName("Y");
+	primPosY.setMin(MinY);
+	primPosY.setMax(MaxY);
+	primPosY.set((MinY + MaxY) / 2);
+
+	primPosZ.setName("Z");
+	primPosZ.setMin(MinZ);
+	primPosZ.setMax(MaxZ);
+	primPosZ.set((MinZ + MaxZ) / 2);
+
+
+	primSizeHeight.setName("Hauteur");
+	primSizeHeight.setMin(0);
+	primSizeHeight.setMax(MaxY);
+	primSizeHeight.set((0 + MaxY) / 2);
+
+	primSizeWidth.setName("Largeur");
+	primSizeWidth.setMin(0);
+	primSizeWidth.setMax(MaxX);
+	primSizeWidth.set((0 + MaxX) / 2);
+
+	primSizeDepth.setName("Profondeur");
+	primSizeDepth.setMin(0);
+	primSizeDepth.setMax(MaxZ);
+	primSizeDepth.set((0 + MaxZ) / 2);
+
+
+	strokeThickness.setName("Epaisseur");
+	strokeThickness.setMin(0);
+	strokeThickness.setMax(100);
+	strokeThickness.set(10);
+
+
+	primFillHue.setName("Teinte");
+	primFillHue.setMin(0);
+	primFillHue.setMax(255);
+	primFillHue.set(0);
+
+	primFillSaturation.setName("Saturation");
+	primFillSaturation.setMin(0);
+	primFillSaturation.setMax(255);
+	primFillSaturation.set(100);
+
+	primFillBrightess.setName("Valeur");
+	primFillBrightess.setMin(0);
+	primFillBrightess.setMax(255);
+	primFillBrightess.set(255);
+
+	primFillAlpha.setName("Transparence");
+	primFillAlpha.setMin(0);
+	primFillAlpha.setMax(255);
+	primFillAlpha.set(255);
+
+
+	primStrokeHue.setName("Teinte");
+	primStrokeHue.setMin(0);
+	primStrokeHue.setMax(255);
+	primStrokeHue.set(0);
+
+	primStrokeSaturation.setName("Saturation");
+	primStrokeSaturation.setMin(0);
+	primStrokeSaturation.setMax(255);
+	primStrokeSaturation.set(100);
+
+	primStrokeBrightess.setName("Valeur");
+	primStrokeBrightess.setMin(0);
+	primStrokeBrightess.setMax(255);
+	primStrokeBrightess.set(255);
+
+	primStrokeAlpha.setName("Transparence");
+	primStrokeAlpha.setMin(0);
+	primStrokeAlpha.setMax(255);
+	primStrokeAlpha.set(255);
+
+
+	primStrokeColor = ofColor::fromHsb(primStrokeHue, primStrokeSaturation, primStrokeBrightess, primStrokeAlpha);
+	primFillColor = ofColor::fromHsb(primFillHue, primFillSaturation, primFillBrightess, primFillAlpha);
 }

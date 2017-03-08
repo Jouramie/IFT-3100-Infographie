@@ -117,7 +117,7 @@ void renderer::changeWireFrameMode()
 
 void renderer::selectPrimitive(int x, int y)
 {
-	ofxRayTriangleIntersection  rtIntersect;
+	/*ofxRayTriangleIntersection  rtIntersect;
 	vector<FaceTri>             tris;
 	vector<Ray>                 rays;
 
@@ -130,7 +130,7 @@ void renderer::selectPrimitive(int x, int y)
 	Ray ray;
 	ray.rayOrig.set(0, 0, 0);
 	ray.rayEnd.set(0, 0, -2000);
-	rays.push_back(ray);
+	rays.push_back(ray);*/
 
 	std::cout << "Selected Primitive" << std::endl;
 }

@@ -41,11 +41,13 @@ private:
 	bool isListenersUnlocked;
 
 	ofxPanel gui;
+	ofxButton btnDraw;
 	ofxButton btn2D;
 	ofxButton btn3D;
 	ofxButton btnSelect;
 	ofxButton btnProperty;
-	ofxButton btnDraw;
+	ofxButton btnPrimitives;
+	ofxButton btnDrawPrimitive;
 	ofxButton btnExit;
 
 	int i = 0;
@@ -53,6 +55,7 @@ private:
 	bool isPropertiesDisplay;
 	bool is2dDisplay;
 	bool is3dDisplay;
+	bool isPrimitivesDisplay;
 	
 
 	ofParameterGroup groupPosition;
@@ -91,6 +94,35 @@ private:
 	ofParameter<float> bgSaturation;
 	ofParameter<float> bgBrightess;
 
+#pragma region "Primitives"
+
+	ofParameterGroup groupPrimitivePosition;
+	ofParameter<float> primPosX;
+	ofParameter<float> primPosY;
+	ofParameter<float> primPosZ;
+
+	ofParameterGroup groupPrimitiveSize;
+	ofParameter<float> primSizeHeight;
+	ofParameter<float> primSizeWidth;
+	ofParameter<float> primSizeDepth;
+
+	ofParameterGroup groupPrimitiveStroke;
+	ofColor primStrokeColor;
+	ofParameter<float> primStrokeThickness;
+	ofParameter<float> primStrokeHue;
+	ofParameter<float> primStrokeSaturation;
+	ofParameter<float> primStrokeBrightess;
+	ofParameter<float> primStrokeAlpha;
+
+	ofParameterGroup groupPrimitiveFill;
+	ofColor primFillColor;
+	ofParameter<float> primFillHue;
+	ofParameter<float> primFillSaturation;
+	ofParameter<float> primFillBrightess;
+	ofParameter<float> primFillAlpha;
+
+#pragma endregion
+
 	void initGroups();
 
 	void initPosition();
@@ -98,15 +130,20 @@ private:
 	void initColors();
 	void setColors();
 
+	void initPrimitives();
+
 	void setupGui();
 	void displayProperties();
 	void display2D();
 	void display3D();
+	void displayPrimitives();
 
 	void btnSelectClicked();
 	void btnPropertyClicked();
 	void btn2DClicked();
 	void btn3DClicked();
+	void btnPrimitivesClicked();
+	void btnDrawPrimitiveClicked();
 	void btnDrawClicked();
 	void btnExitClicked();
 
