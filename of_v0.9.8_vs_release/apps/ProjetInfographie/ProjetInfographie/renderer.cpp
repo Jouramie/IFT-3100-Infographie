@@ -1,7 +1,6 @@
 #include "renderer.h"
 
 
-
 renderer::renderer()
 {
 }
@@ -13,16 +12,65 @@ void renderer::setup()
 	/*mainCam = ofEasyCam();
 	rotate = -1;
 	mainCam.begin();*/
+	
+	setupCamera();
+	timeCurrent = timeLast = ofGetElapsedTimef();
+
+	isCameraMoveLeft = false;
+	isCameraMoveRight = false;
+	isCameraMoveUp = false;
+	isCameraMoveDown = false;
+	isCameraMoveForward = false;
+	isCameraMoveBackward = false;
+}
+
+void renderer::setupCamera()
+{
+	cameraSpeed = 250.0f;
+	cameraDeplacement = 0.0f;
+	cameraPosition = { 0.0f, 0.0f, -1000.0f };
+	cameraTarget = { 0.0f, 0.0f, 0.0f };
+
+	camera.setPosition(cameraPosition);
+	camera.lookAt(cameraTarget);
 }
 
 void renderer::update()
 {
+	timeCurrent = ofGetElapsedTimef();
+	timeElapsed = timeCurrent - timeLast;
+	timeLast = timeCurrent;
+
+	cameraDeplacement = cameraSpeed * timeElapsed;
+
+	if (isCameraMoveLeft)
+		camera.truck(-cameraDeplacement);
+	if (isCameraMoveRight)
+		camera.truck(cameraDeplacement);
+
+	if (isCameraMoveUp)
+		camera.boom(cameraDeplacement);
+	if (isCameraMoveDown)
+		camera.boom(-cameraDeplacement);
+
+	if (isCameraMoveForward)
+		camera.dolly(-cameraDeplacement);
+	if (isCameraMoveBackward)
+		camera.dolly(cameraDeplacement);
+
+	if (camera.getPosition() != cameraPosition) {
+		cameraPosition = camera.getPosition();
+		ofLog() << "<Camera X: " << camera.getX() << " Y:" << camera.getY() << " Z:" << camera.getZ() << ">";
+	}
 
 }
+
 
 void renderer::draw()
 {
 	ofClear(background);
+
+	camera.begin();
 
 	std::list<of3dPrimitive>::const_iterator iterator;
 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
@@ -42,7 +90,9 @@ void renderer::draw()
 	}
 	else
 		mainCam.reset();
-	mainCam.draw();*/
+	mainCam.draw();*/	
+
+	camera.end();
 }
 
 void renderer::imageExport(const string name, const string extension) const

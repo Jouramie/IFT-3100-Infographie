@@ -36,6 +36,12 @@ void ofApp::setup()
 
 	setupGui();
 
+	isKeyPressDown = false;
+	isKeyPressUp = false;
+	isKeyPressPageDown = false;
+	isKeyPressPageUp = false;
+	isKeyPressLeft = false;
+	isKeyPressRight = false;
 
 	rend = new renderer();
 	rend->setup();
@@ -49,7 +55,20 @@ void ofApp::update()
 	setColors();
 	rend->background = background;
 	rend->update();
+
+	updateKeys();
 }
+
+void ofApp::updateKeys()
+{
+	rend->isCameraMoveBackward = isKeyPressDown;
+	rend->isCameraMoveForward = isKeyPressUp;
+	rend->isCameraMoveDown = isKeyPressPageDown;
+	rend->isCameraMoveUp = isKeyPressPageUp;
+	rend->isCameraMoveLeft = isKeyPressLeft;
+	rend->isCameraMoveRight = isKeyPressRight;
+}
+
 
 //--------------------------------------------------------------
 void ofApp::draw()
@@ -71,7 +90,36 @@ ofApp::~ofApp()
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-
+	if (key == OF_KEY_LEFT)
+	{
+		isKeyPressLeft = true; 
+		ofLog() << "<app::keyPressedLeft>";
+	}
+	else if (key == OF_KEY_RIGHT)
+	{
+		isKeyPressRight = true;
+		ofLog() << "<app::keyPressedRight>";
+	}
+	else if (key == OF_KEY_UP)
+	{
+		isKeyPressUp = true;
+		ofLog() << "<app::keyPressedUp>";
+	}
+	else if (key == OF_KEY_DOWN)
+	{
+		isKeyPressDown = true;
+		ofLog() << "<app::keyPressedDown>";
+	}
+	else if (key == OF_KEY_PAGE_DOWN)
+	{
+		isKeyPressPageDown = true;
+		ofLog() << "<app::keyPressedPageDown>";
+	}
+	else if (key == OF_KEY_PAGE_UP)
+	{
+		isKeyPressPageUp = true;
+		ofLog() << "<app::keyPressedPageUp>";
+	}
 }
 
 //--------------------------------------------------------------
@@ -92,6 +140,37 @@ void ofApp::keyReleased(int key) {
 		rend->clearPrimitives();
 	else if (key == 'w')
 		rend->changeWireFrameMode();
+	}
+	else if (key == OF_KEY_LEFT) 
+	{
+		isKeyPressLeft = false;
+		ofLog() << "<app::keyReleaseLeft>";
+	}
+	else if (key == OF_KEY_RIGHT) 
+	{
+		isKeyPressRight = false;
+		ofLog() << "<app::keyReleaseRight>";
+	}
+	else if (key == OF_KEY_UP) 
+	{
+		isKeyPressUp = false;
+		ofLog() << "<app::keyReleaseUp>";
+	}
+	else if (key == OF_KEY_DOWN) 
+	{
+		isKeyPressDown = false;
+		ofLog() << "<app::keyReleaseDown>";
+	}
+	else if (key == OF_KEY_PAGE_DOWN) 
+	{
+		isKeyPressPageDown = false;
+		ofLog() << "<app::keyReleasePageDown>";
+	}
+	else if (key == OF_KEY_PAGE_UP) 
+	{
+		isKeyPressPageUp = false;
+		ofLog() << "<app::keyReleasePageUp>";
+	}	
 	/*else if (key == 'q')
 		rend->changeRotate();*/
 
@@ -140,14 +219,14 @@ void ofApp::gotMessage(ofMessage msg) {
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo) {
-
+	//TODO importer le model3d?
 }
 
 void ofApp::setupGui() {
-	
+
 	isListenersUnlocked = false;
 
-	gui.clear(); 
+	gui.clear();
 
 	gui.add(ofParameter<string>("Boite a outil"));
 	gui.add(btnDraw.setup("Dessiner!"));
@@ -180,12 +259,12 @@ void ofApp::setupGui() {
 	isListenersUnlocked = true;
 }
 
-void ofApp::displayProperties() 
+void ofApp::displayProperties()
 {
 	ofColor defaultColor = gui.getFillColor();
 
 	gui.add(groupThick);
-	
+
 	gui.setDefaultFillColor(fill);
 	gui.add(groupFill);
 
@@ -196,7 +275,7 @@ void ofApp::displayProperties()
 	gui.add(groupBackground);
 
 	gui.setDefaultFillColor(defaultColor);
-	
+
 }
 
 void ofApp::displayPrimitives()
@@ -240,7 +319,7 @@ void ofApp::display3D()
 
 void ofApp::btnSelectClicked()
 {
-	if(isListenersUnlocked)
+	if (isListenersUnlocked)
 	{
 		isPropertiesDisplay = false;
 		is2dDisplay = false;
@@ -326,11 +405,11 @@ void ofApp::btnDrawClicked()
 
 		//TODO: Faites vous du fun!
 
-		rend->createCube(posX, posY, posZ, height, stroke);
+		rend->createCube(0, 0, 0, height, stroke);
 	}
 }
 
-void ofApp::btnExitClicked() 
+void ofApp::btnExitClicked()
 {
 	if (isListenersUnlocked)
 	{
@@ -360,7 +439,7 @@ void ofApp::initGroups()
 	groupFill.add(fillSaturation.set(fillSaturation));
 	groupFill.add(fillBrightess.set(fillBrightess));
 	groupFill.add(fillAlpha.set(fillAlpha));
-		
+
 	groupStroke.add(ofParameter<string>("Couleur de bordure"));
 	groupStroke.add(strokeHue.set(strokeHue));
 	groupStroke.add(strokeSaturation.set(strokeSaturation));
@@ -415,7 +494,7 @@ void ofApp::initPosition() {
 	posZ.set((MinZ + MaxZ) / 2);
 }
 
-void ofApp::initDimension() 
+void ofApp::initDimension()
 {
 	height.setName("Hauteur");
 	height.setMin(MinY);

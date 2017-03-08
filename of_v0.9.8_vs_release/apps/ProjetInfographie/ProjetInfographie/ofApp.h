@@ -147,4 +147,13 @@ private:
 	void btnDrawClicked();
 	void btnExitClicked();
 
+	void updateKeys();
+
+	bool isKeyPressUp;
+	bool isKeyPressDown;
+	bool isKeyPressLeft;
+	bool isKeyPressRight;
+	bool isKeyPressPageUp;
+	bool isKeyPressPageDown;
+
 };

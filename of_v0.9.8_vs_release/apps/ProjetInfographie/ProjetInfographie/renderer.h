@@ -6,6 +6,15 @@ class renderer
 {
 public:
 
+	ofColor background;
+
+	bool isCameraMoveLeft;
+	bool isCameraMoveRight;
+	bool isCameraMoveUp;
+	bool isCameraMoveDown;
+	bool isCameraMoveForward;
+	bool isCameraMoveBackward;
+
 	renderer();
 
 	ofColor background;
@@ -26,10 +35,24 @@ public:
 	~renderer();
 
 private:
+	void setupCamera();
+
 	std::list<of3dPrimitive> primitives;
 	of3dPrimitive* selectedPrim;
 	//ofEasyCam mainCam;
 	bool wireFrame;
 	//int rotate;
+	
+	float cameraSpeed;
+	float cameraDeplacement;
+
+	float timeCurrent;
+	float timeElapsed;
+	float timeLast;
+
+	ofVec3f cameraPosition;
+	ofVec3f cameraTarget;
+
+	ofCamera camera;
 };
 
