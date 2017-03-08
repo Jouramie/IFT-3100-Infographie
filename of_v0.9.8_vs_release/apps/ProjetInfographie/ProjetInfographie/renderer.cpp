@@ -22,7 +22,7 @@ void renderer::update()
 
 void renderer::draw()
 {
-	ofClear(0, 0, 200);
+	ofClear(background);
 
 	std::list<of3dPrimitive>::const_iterator iterator;
 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)

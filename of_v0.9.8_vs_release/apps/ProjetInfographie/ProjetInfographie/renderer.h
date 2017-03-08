@@ -8,6 +8,8 @@ public:
 
 	renderer();
 
+	ofColor background;
+
 	void setup();
 	void update();
 	void draw();
