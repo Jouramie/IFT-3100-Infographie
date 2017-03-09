@@ -3,17 +3,9 @@
 
 using namespace std;
 
-scene::scene() : root { 0, 0 }, selectedIndex { 0 }
+scene::scene() : root { 0, 0 }
 {
 	
-}
-
-/*
-Add the primitive at the selected index
-*/
-void scene::addElement(primitive_ptr& p)
-{
-	addElement(selectedIndex, p, true);
 }
 
 void scene::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)
@@ -23,7 +15,6 @@ void scene::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)
 		throw invalid_argument("root don't have parent...");
 	}
 	root.addElement(index, p, insertFirstChild);
-	selectElement(index);
 }
 
 void scene::removeElement(size_t index) 
@@ -34,10 +25,6 @@ void scene::removeElement(size_t index)
 	root.removeElement(index);
 }
 
-void scene::selectElement(size_t index)
-{
-	selectedIndex = index;
-}
 
 ostream & operator<<(ostream & os, const scene & s)
 {
@@ -121,14 +108,16 @@ size_t scene::group::addElement(size_t index, primitive_ptr& p, bool insertFirst
 					addedSize += childrens[i]->addElement(index, p, insertFirstChild);
 				}
 				else {
-					childrens.insert(childrens.begin() + i, element_ptr{ new node{ index, height + 1, p } });
+					childrens.insert(childrens.begin() + i + 1, element_ptr{ new node{ index + childrens[i]->getSize(), height + 1, p } });
+					i++;
+					addedSize++;
 				}
 				i++;
 				break;
 			}
 			else if (childrens[i]->getIndex() < index) {
 				lbound = i + 1;
-				if (ubound = lbound) {
+				if (ubound < lbound) {
 					//Ajoute l'élément dans le groupe sous-jacent
 					addedSize += childrens[i]->addElement(index, p, insertFirstChild);
 					i++;
@@ -155,7 +144,7 @@ size_t scene::group::addElement(size_t index, primitive_ptr& p, bool insertFirst
 // return the size of the removed elements
 size_t scene::group::removeElement(size_t index)
 {
-	size_t removedSize = size;
+	size_t removedSize = 0;
 	//TODO à tester
 	
 	if (this->index == index) {
@@ -163,8 +152,8 @@ size_t scene::group::removeElement(size_t index)
 		for (auto& i : childrens) {
 			i->removeElement(i->getIndex());
 		}
+		removedSize += size;
 		childrens.clear();
-
 	}
 	else {
 		size_t ubound = childrens.size();
@@ -175,36 +164,33 @@ size_t scene::group::removeElement(size_t index)
 			i = lbound + (ubound - lbound) / 2;
 			if (childrens[i]->getIndex() == index) {
 				//Retirer l'élément i
-				removedSize = childrens[i]->removeElement(index);
+				removedSize += childrens[i]->removeElement(index);
 				childrens.erase(childrens.begin() + i);
-				i++;
 				break;
 			}
 			else if (childrens[i]->getIndex() < index) {
 				lbound = i + 1;
-				if (ubound == lbound) {
+				if (ubound < lbound) {
 					//Retirer l'élément dans le groupe sous-jacent
-					removedSize = childrens[i]->removeElement(index);
+					removedSize += childrens[i]->removeElement(index);
 					i++;
 					break;
 				}
 			}
 			else {
 				ubound = i - 1;
-				if (ubound == lbound) {
+				if (ubound < lbound) {
 					//Retirer l'élément dans le groupe sous-jacent
-					removedSize = childrens[i - 1]->removeElement(index);
+					removedSize += childrens[i - 1]->removeElement(index);
 					break;
 				}
 			}
 		}
-
-		this->size -= removedSize;
 		for (auto& it = childrens.begin() + i; it < childrens.end(); ++it) {
 			it->get()->setIndex(it->get()->getIndex() - removedSize);
 		}
 	}
-
+	size -= removedSize;
 	return removedSize;
 }
 
@@ -272,24 +258,55 @@ std::ostream & scene::element::print(std::ostream & os) const
 }
 
 
-int main() {
+/*int main() {
 
 	cout << "test" << endl << endl;
 	try {
 		scene s{};
 		cout << s << endl;
-		s.addElement(primitive_ptr{ new primitive{ } });
+
+		//TEST ADD
+
+		cout << "addElement(0, true)" << endl;
+		s.addElement(0, primitive_ptr{ new primitive{ } }, true);
 		cout << s << endl;
-		s.addElement(primitive_ptr{ new primitive{ } });
-		s.addElement(primitive_ptr{ new primitive{ } });
+		cout << "addElement(0, false)" << endl;
+		s.addElement(0, primitive_ptr{ new primitive{ } }, true);
+		cout << "addElement(1, true)" << endl;
+		s.addElement(1, primitive_ptr{ new primitive{ } }, false);
 		cout << s << endl;
+		cout << "addElement(2, true)" << endl;
 		s.addElement(2, primitive_ptr{ new primitive{} }, true);
 		cout << s << endl;
+		cout << "addElement(2, true)" << endl;
 		s.addElement(2, primitive_ptr{ new primitive{} }, true);
 		cout << s << endl;
+		cout << "addElement(4, true)" << endl;
 		s.addElement(4, primitive_ptr{ new primitive{} }, true);
 		cout << s << endl;
+		cout << "addElement(1, true)" << endl;
 		s.addElement(1, primitive_ptr{ new primitive{} }, true);
+		cout << s << endl;
+		cout << "addElement(6, false)" << endl;
+		s.addElement(6, primitive_ptr{ new primitive{} }, false);
+		cout << s << endl;
+
+		//TEST REMOVE
+
+		cout << "removeElement(1)" << endl;
+		s.removeElement(1);
+		cout << s << endl;
+		cout << "removeElement(5)" << endl;
+		s.removeElement(5);
+		cout << s << endl;
+		cout << "removeElement(4)" << endl;
+		s.removeElement(4);
+		cout << s << endl;
+		cout << "addElement(3, true)" << endl;
+		s.addElement(3, primitive_ptr{ new primitive{} }, true);
+		cout << s << endl;
+		cout << "removeElement(3)" << endl;
+		s.removeElement(3);
 		cout << s << endl;
 	}
 	catch (exception e) {
@@ -298,4 +315,4 @@ int main() {
 
 	string a;
 	cin >> a;
-}
+}*/

@@ -13,10 +13,8 @@ class scene
 public:
 	scene();
 
-	void addElement(primitive_ptr& p);
 	void addElement(size_t index, primitive_ptr& p, bool insertFirstChild);
 	void removeElement(size_t index);
-	void selectElement(size_t index);
 	
 	friend std::ostream& operator<<(std::ostream& os, const scene& s);
 
@@ -83,6 +81,5 @@ private:
 	typedef std::shared_ptr<group> group_ptr;
 
 	group root;
-	size_t selectedIndex;
 };
 
