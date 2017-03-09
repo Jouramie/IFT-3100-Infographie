@@ -1,20 +1,20 @@
 #pragma once
 
+#include "ofMain.h"
+
 class primitive
 {
 public:
 	
 	primitive();
-	int GetX();
-	int getY();
-	int getZ();
-	int getColor();
+	primitive(of3dPrimitive* primitive);
+	primitive(of3dPrimitive* primitive, ofColor fill);
+	of3dPrimitive* getPrimitive();
+	ofColor getFillColor();
 
 private:
 
-	int x;
-	int y;
-	int z;
-	int color;
+	of3dPrimitive* prim;
+	ofColor fillCol;
 
 };

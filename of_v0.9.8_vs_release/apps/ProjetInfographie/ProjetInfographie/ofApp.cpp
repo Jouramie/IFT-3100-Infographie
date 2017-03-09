@@ -128,8 +128,8 @@ void ofApp::keyReleased(int key) {
 		rend->imageExport("render", "png");
 	else if (key == 'r')
 	{
-		ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
-		rend->createCube(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
+		//ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
+		//rend->createCube(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
 	}
 	else if (key == 's')
 	{
@@ -283,14 +283,13 @@ void ofApp::displayPrimitives()
 {
 	ofColor defaultColor = gui.getFillColor();
 
+	gui.add(groupPrimitiveType);
+
 	gui.add(groupPrimitivePosition);
 	gui.add(groupPrimitiveSize);
 
 	gui.setDefaultFillColor(fill);
 	gui.add(groupPrimitiveFill);
-
-	gui.setDefaultFillColor(stroke);
-	gui.add(groupPrimitiveStroke);
 
 	gui.setDefaultFillColor(defaultColor);
 
@@ -394,7 +393,22 @@ void ofApp::btnDrawPrimitiveClicked()
 	{
 		ofLog() << "<app::btnDrawPrimitiveClicked>";
 
-		rend->createCube(primPosX, primPosY, primPosZ, primSizeHeight, ofColor::fromHsb(primStrokeHue, primStrokeSaturation, primStrokeBrightess, primStrokeAlpha));
+		ofColor fillCol = ofColor::fromHsb(primFillHue, primFillSaturation, primFillBrightess, primFillAlpha);
+
+		if (primType2D.get()) {
+
+		}
+		else {
+			if (primTypeCube.get()) {
+				rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fillCol);
+			}
+			else {
+
+			}
+		}
+
+		
+		//setupGui();
 	}
 }
 
@@ -406,7 +420,7 @@ void ofApp::btnDrawClicked()
 
 		//TODO: Faites vous du fun!
 
-		rend->createCube(0, 0, 0, height, stroke);
+		//rend->createCube(0, 0, 0, height, stroke);
 	}
 }
 
@@ -452,10 +466,17 @@ void ofApp::initGroups()
 	groupBackground.add(bgSaturation.set(bgSaturation));
 	groupBackground.add(bgBrightess.set(bgBrightess));
 
+
+	groupPrimitiveType.setName("Type");
+	groupPrimitiveType.add(primType2D);
+	groupPrimitiveType.add(primType3D);
+	groupPrimitiveType.add(primTypeSphere);
+	groupPrimitiveType.add(primTypeCube);
+
 	groupPrimitiveFill.setName("Remplissage");
 	groupPrimitiveFill.add(primFillHue.set(primFillHue));
-	groupPrimitiveFill.add(primFillBrightess.set(primFillBrightess));
 	groupPrimitiveFill.add(primFillSaturation.set(primFillSaturation));
+	groupPrimitiveFill.add(primFillBrightess.set(primFillBrightess));
 	groupPrimitiveFill.add(primFillAlpha.set(primFillAlpha));
 
 	groupPrimitivePosition.setName("Position");
@@ -467,13 +488,6 @@ void ofApp::initGroups()
 	groupPrimitiveSize.add(primSizeWidth.set(primSizeWidth));
 	groupPrimitiveSize.add(primSizeHeight.set(primSizeHeight));
 	groupPrimitiveSize.add(primSizeDepth.set(primSizeDepth));
-
-	groupPrimitiveStroke.setName("Trait");
-	groupPrimitiveStroke.add(primStrokeAlpha.set(primStrokeAlpha));
-	groupPrimitiveStroke.add(primStrokeBrightess.set(primStrokeBrightess));
-	groupPrimitiveStroke.add(primStrokeHue.set(primStrokeHue));
-	groupPrimitiveStroke.add(primStrokeSaturation.set(primStrokeSaturation));
-	groupPrimitiveStroke.add(primStrokeThickness.set(primStrokeThickness));
  
 }
 
@@ -593,7 +607,72 @@ void ofApp::setColors()
 	background = ofColor::fromHsb(bgHue, bgSaturation, bgBrightess);
 }
 
+bool ofApp::primDim2DChanged(bool& value) {
+	if (primType2D.get()) {
+		primType3D.set(false);
+		primTypeCube.setName("Carré");
+		primTypeSphere.setName("Cercle");
+	}
+	else {
+		primType3D.set(true);
+		primTypeCube.setName("Cube");
+		primTypeSphere.setName("Sphere");
+	}
+	setupGui();
+	return primType2D.get();
+}
+
+bool ofApp::primDim3DChanged(bool& value) {
+	if (primType3D.get()) {
+		primType2D.set(false);
+		primTypeCube.setName("Cube");
+		primTypeSphere.setName("Sphere");
+	}
+	else {
+		primType2D.set(true);
+		primTypeCube.setName("Carré");
+		primTypeSphere.setName("Cercle");
+	}
+	setupGui();
+	return primType3D.get();
+}
+
+bool ofApp::primTypeCubeChanged(bool& value) {
+	if (primTypeCube.get())
+		primTypeSphere.set(false);
+	else
+		primTypeSphere.set(true);
+	return primTypeCube.get();
+}
+
+bool ofApp::primTypeSphereChanged(bool& value) {
+	if (primTypeSphere.get())
+		primTypeCube.set(false);
+	else
+		primTypeCube.set(true);
+	return primTypeSphere.get();
+
+}
+
 void ofApp::initPrimitives() {
+
+	primType2D.setName("2D");
+	primType2D.set(true);
+	primType2D.addListener(this, &ofApp::primDim2DChanged);
+
+	primType3D.setName("3D");
+	primType3D.set(false);
+	primType3D.addListener(this, &ofApp::primDim3DChanged);
+
+	primTypeCube.setName("Carré");
+	primTypeCube.set(true);
+	primTypeCube.addListener(this, &ofApp::primTypeCubeChanged);
+
+	primTypeSphere.setName("Cercle");
+	primTypeSphere.set(false);
+	primTypeSphere.addListener(this, &ofApp::primTypeSphereChanged);
+
+
 	primPosX.setName("X");
 	primPosX.setMin(MinX);
 	primPosX.setMax(MaxX);
@@ -626,12 +705,6 @@ void ofApp::initPrimitives() {
 	primSizeDepth.set((0 + MaxZ) / 2);
 
 
-	strokeThickness.setName("Epaisseur");
-	strokeThickness.setMin(0);
-	strokeThickness.setMax(100);
-	strokeThickness.set(10);
-
-
 	primFillHue.setName("Teinte");
 	primFillHue.setMin(0);
 	primFillHue.setMax(255);
@@ -653,27 +726,5 @@ void ofApp::initPrimitives() {
 	primFillAlpha.set(255);
 
 
-	primStrokeHue.setName("Teinte");
-	primStrokeHue.setMin(0);
-	primStrokeHue.setMax(255);
-	primStrokeHue.set(0);
-
-	primStrokeSaturation.setName("Saturation");
-	primStrokeSaturation.setMin(0);
-	primStrokeSaturation.setMax(255);
-	primStrokeSaturation.set(100);
-
-	primStrokeBrightess.setName("Valeur");
-	primStrokeBrightess.setMin(0);
-	primStrokeBrightess.setMax(255);
-	primStrokeBrightess.set(255);
-
-	primStrokeAlpha.setName("Transparence");
-	primStrokeAlpha.setMin(0);
-	primStrokeAlpha.setMax(255);
-	primStrokeAlpha.set(255);
-
-
-	primStrokeColor = ofColor::fromHsb(primStrokeHue, primStrokeSaturation, primStrokeBrightess, primStrokeAlpha);
 	primFillColor = ofColor::fromHsb(primFillHue, primFillSaturation, primFillBrightess, primFillAlpha);
 }

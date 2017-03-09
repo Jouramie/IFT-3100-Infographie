@@ -96,6 +96,12 @@ private:
 
 #pragma region "Primitives"
 
+	ofParameterGroup groupPrimitiveType;
+	ofParameter<bool> primType2D;
+	ofParameter<bool> primType3D;
+	ofParameter<bool> primTypeSphere;
+	ofParameter<bool> primTypeCube;
+
 	ofParameterGroup groupPrimitivePosition;
 	ofParameter<float> primPosX;
 	ofParameter<float> primPosY;
@@ -105,14 +111,6 @@ private:
 	ofParameter<float> primSizeHeight;
 	ofParameter<float> primSizeWidth;
 	ofParameter<float> primSizeDepth;
-
-	ofParameterGroup groupPrimitiveStroke;
-	ofColor primStrokeColor;
-	ofParameter<float> primStrokeThickness;
-	ofParameter<float> primStrokeHue;
-	ofParameter<float> primStrokeSaturation;
-	ofParameter<float> primStrokeBrightess;
-	ofParameter<float> primStrokeAlpha;
 
 	ofParameterGroup groupPrimitiveFill;
 	ofColor primFillColor;
@@ -146,6 +144,11 @@ private:
 	void btnDrawPrimitiveClicked();
 	void btnDrawClicked();
 	void btnExitClicked();
+
+	bool primDim2DChanged(bool& value);
+	bool primDim3DChanged(bool& value);
+	bool primTypeCubeChanged(bool& value);
+	bool primTypeSphereChanged(bool& value);
 
 	void updateKeys();
 

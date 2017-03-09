@@ -1,5 +1,6 @@
 #pragma once
 #include "ofMain.h"
+#include "primitive.h"
 
 
 class renderer
@@ -21,13 +22,12 @@ public:
 	void update();
 	void draw();
 	void imageExport(const string name, const string extension) const;
-	void createCube(int x, int y, int z, int size);
-	void createCube(int x, int y, int z, int size, ofColor color);
+	void createCube(int x, int y, int z, int w, int h, int d);
+	void createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol);
 	void createSphere(int x, int y, int z, int size);
 	void createSphere(int x, int y, int z, int size, ofColor color);
 	void clearPrimitives();
 	void changeWireFrameMode();
-	void changeRotate();
 	void selectPrimitive(int x, int y);
 
 	~renderer();
@@ -35,8 +35,8 @@ public:
 private:
 	void setupCamera();
 
-	std::list<of3dPrimitive> primitives;
-	of3dPrimitive* selectedPrim;
+	std::list<primitive> primitives;
+
 	//ofEasyCam mainCam;
 	bool wireFrame;
 	//int rotate;

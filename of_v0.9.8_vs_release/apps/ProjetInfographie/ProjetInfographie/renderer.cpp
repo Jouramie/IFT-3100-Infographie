@@ -72,25 +72,17 @@ void renderer::draw()
 
 	camera.begin();
 
-	std::list<of3dPrimitive>::const_iterator iterator;
+	std::list<primitive>::iterator iterator;
 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
 	{
 		ofSetLineWidth(1.0);
-		if (wireFrame)
-			iterator->drawWireframe();
-		else
-			iterator->draw();
-	}
-	/*if (rotate > -1)
-	{
-		rotate++;
-		if (rotate > 359)
-			rotate = 0;
-		mainCam.rotate(rotate, 1, 0, 0);
-	}
-	else
-		mainCam.reset();
-	mainCam.draw();*/	
+		if (wireFrame) {
+			iterator->getPrimitive()->drawWireframe();
+		}
+		else {
+			iterator->getPrimitive()->draw();
+		}
+	}	
 
 	camera.end();
 }
@@ -114,25 +106,27 @@ void renderer::imageExport(const string name, const string extension) const
 	ofLog() << "<export image: " << fileName << ">";
 }
 
-void renderer::createCube(int x, int y, int z, int size)
+void renderer::createCube(int x, int y, int z, int w, int h, int d)
 {
 	ofColor c = ofColor(255, 255, 255);
-	createCube(x, y, z, size, c);
+	createCube(x, y, z, w, h, d, c);
 }
 
-void renderer::createCube(int x, int y, int z, int size, ofColor color)
+void renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol)
 {
-	ofBoxPrimitive box = ofBoxPrimitive();
-	box.set(size);
-	box.setPosition(x, y, z);
-	box.rotate(rand() % 360, 1.0, 0.0, 0.0);
-	box.rotate(rand() % 360, 0, 1.0, 0.0);
-	box.rotate(rand() % 360, 0, 0.0, 1.0);
+	ofBoxPrimitive* box = new ofBoxPrimitive();
+	box->set(w, h, d);
+
+	box->setPosition(x, y, z);
+	box->rotate(rand() % 360, 1.0, 0.0, 0.0);
+	box->rotate(rand() % 360, 0, 1.0, 0.0);
+	box->rotate(rand() % 360, 0, 0.0, 1.0);
 	for (int i = 0; i < 6; i++)
 	{
-		box.setSideColor(i, color);
+		box->setSideColor(i, fillCol);
 	}
-	primitives.push_back(box);
+	primitive prim = primitive(box, fillCol);
+	primitives.push_back(prim);
 	draw();
 }
 
@@ -144,14 +138,17 @@ void renderer::createSphere(int x, int y, int z, int size)
 
 void renderer::createSphere(int x, int y, int z, int size, ofColor color)
 {
-	ofSpherePrimitive ball = ofSpherePrimitive();
-	ball.setRadius(size);
-	ball.setPosition(x, y, z);
-	ball.rotate(rand() % 360, 1.0, 0.0, 0.0);
-	ball.rotate(rand() % 360, 0, 1.0, 0.0);
-	ball.rotate(rand() % 360, 0, 0.0, 1.0);
+	ofSpherePrimitive* ball = new ofSpherePrimitive();
+	ball->setRadius(size);
+	ball->setPosition(x, y, z);
+	ball->rotate(rand() % 360, 1.0, 0.0, 0.0);
+	ball->rotate(rand() % 360, 0, 1.0, 0.0);
+	ball->rotate(rand() % 360, 0, 0.0, 1.0);
 	//ball.set
-	primitives.push_back(ball);
+
+	primitive prim = primitive(ball, color);
+
+	primitives.push_back(prim);
 	draw();
 }
 
