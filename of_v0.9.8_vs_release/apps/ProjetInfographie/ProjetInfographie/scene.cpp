@@ -2,158 +2,176 @@
 
 using namespace std;
 
-Scene::Scene() : root(0)
+scene::scene() : root { 0 }, selectedIndex { 0 }
 {
 	
 }
 
-void Scene::addElement(std::shared_ptr<primitive>& e)
+/*
+Add the primitive at the selected index
+*/
+void scene::addElement(primitive_ptr& p)
 {
-
+	addElement(selectedIndex, p, true);
 }
 
-void Scene::addElement(int index, std::shared_ptr<primitive>& e)
+void scene::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)
 {
-	root.addElement(index, e);
+	if (index == 0 && !insertFirstChild)
+	{
+		throw invalid_argument("root don't have parent...");
+	}
+	root.addElement(index, p, insertFirstChild);
 }
 
-void Scene::selectElement(int index)
+void scene::removeElement(size_t index) 
 {
-
+	if (index == 0) {
+		throw invalid_argument("can't remove root...");
+	}
+	root.removeElement(index);
 }
 
-void Scene::rebuildIndex(int from)
+void scene::selectElement(size_t index)
 {
+	selectedIndex = index;
 }
-
 
 /************************************************************************/
 /*							SceneGroup		                            */
 /************************************************************************/
 
 
-Scene::SceneGroup::SceneGroup(int index) : SceneElement(index, 0) {}
+scene::group::group(size_t index) : element(index, 0) {}
 
-void Scene::SceneGroup::setVisible(bool visible)
-{
-	SceneElement::setVisible(visible);
-	for (auto i : childrens) {
-		i->setVisible(visible);
-	}
-}
-
-void Scene::SceneGroup::setLocked(bool locked)
-{
-	SceneElement::setLocked(locked);
-	for (auto i : childrens) {
-		i->setLocked(locked);
-	}
-}
-
-void Scene::SceneGroup::setIndex(int index)
+void scene::group::setIndex(size_t index)
 {
 	if (index >= 0) {
-		for (auto i : childrens) {
+		for (auto& i : childrens) {
 			i->setIndex(i->getIndex() + (index - this->index));
 		}
-		SceneElement::setIndex(index);
+		element::setIndex(index);
 	}
 	else {
 		throw invalid_argument("index need to be greater than 0");
 	}
 }
 
-//Ajouter l'élément directement après l'élément à l'index en paramètre
-void Scene::SceneGroup::addElement(int index, std::shared_ptr<primitive>& e)
+/*
+Ajouter l'élément directement après l'élément à l'index en paramètre
+*/
+void scene::group::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)
 {
-	SceneElement::addElement(index, e);
+	element::addElement(index, p, insertFirstChild);
+
+	//TODO à tester
 
 	if (this->index == index) {
-		addElement(e);
+		if (insertFirstChild)
+		{
+			//Inserer comme premier element
+			childrens.insert(childrens.begin(), element_ptr{ new node{ index + 1, p } });
+			for (auto& it = childrens.begin() + 1; it < childrens.end(); ++it) {
+				it->get()->setIndex(it->get()->getIndex() + 1);
+			}
+		}
+		else {
+			throw invalid_argument("element must to be add in the parent");
+		}
 	}
 	else {
-		//TODO à tester
-		int ubound = childrens.size();
-		int lbound = 0;
-		int i;
+		size_t ubound = childrens.size();
+		size_t lbound = 0;
+		size_t i;
 
 		while (lbound <= ubound) {
 			i = lbound + (ubound - lbound) / 2;
 			if (childrens[i]->getIndex() == index) {
-				lbound = ubound;
-				//Inserer l'élément après i
-				size++;
+				if (insertFirstChild) {
+					childrens[i]->addElement(index, p, insertFirstChild);
+				}
+				else {
+					childrens.insert(childrens.begin() + i, element_ptr{ new node{ index, p } });
+				}
+				i++;
+				break;
 			}
 			else if (childrens[i]->getIndex() < index) {
 				lbound = i + 1;
 				if (ubound == lbound) {
-					//Ajoute l'élément dans le groupe soujacent
-					childrens[i]->addElement(index, e);
-					size++;
+					//Ajoute l'élément dans le groupe sous-jacent
+					childrens[i]->addElement(index, p, insertFirstChild);
+					i++;
 				}
 			}
 			else {
 				ubound = i - 1;
 				if (ubound == lbound) {
-					//Ajoute l'élément dans le groupe soujacent
-					childrens[i - 1]->addElement(index, e);
-					size++;
+					//Ajoute l'élément dans le groupe sous-jacent
+					childrens[i - 1]->addElement(index, p, insertFirstChild);
 				}
 			}
+		}
+		size++;
+		for (auto& it = childrens.begin() + i; it < childrens.end(); ++it) {
+			it->get()->setIndex(it->get()->getIndex() + 1);
 		}
 	}
 }
 
-//Retire l'élément à l'index en paramètre
-void Scene::SceneGroup::removeElement(int index)
+// return the size of the removed elements
+size_t scene::group::removeElement(size_t index)
 {
-	SceneElement::removeElement(index);
+	size_t removedSize = element::removeElement(index);;
 
+	//TODO à tester
+	
 	if (this->index == index) {
-		removeElement();
+		//Retirer tous les enfants
+		for (auto& i : childrens) {
+			i->removeElement(i->getIndex());
+		}
+		childrens.clear();
+
 	}
 	else {
-		//TODO à tester
-		int ubound = childrens.size();
-		int lbound = 0;
-		int i;
+		size_t ubound = childrens.size();
+		size_t lbound = 0;
+		size_t i;
 
 		while (lbound <= ubound) {
 			i = lbound + (ubound - lbound) / 2;
 			if (childrens[i]->getIndex() == index) {
-				lbound = ubound;
 				//Retirer l'élément i
+				removedSize = childrens[i]->removeElement(index);
+				childrens.erase(childrens.begin() + i);
+				i++;
+				break;
 			}
 			else if (childrens[i]->getIndex() < index) {
 				lbound = i + 1;
 				if (ubound == lbound) {
-					//Retier l'élément dans le groupe soujacent
-					int size = childrens[i]->getSize();
-					childrens[i]->removeElement(index);
-					this->size -= size;
+					//Retirer l'élément dans le groupe sous-jacent
+					removedSize = childrens[i]->removeElement(index);
+					i++;
 				}
 			}
 			else {
 				ubound = i - 1;
 				if (ubound == lbound) {
-					//Retirer l'élément dans le groupe soujacent
-					int size = childrens[i - 1]->getSize();
-					childrens[i - 1]->removeElement(index);
-					this->size -= size;
+					//Retirer l'élément dans le groupe sous-jacent
+					removedSize = childrens[i - 1]->removeElement(index);
 				}
 			}
 		}
+
+		this->size -= removedSize;
+		for (auto& it = childrens.begin() + i; it < childrens.end(); ++it) {
+			it->get()->setIndex(it->get()->getIndex() - removedSize);
+		}
 	}
-}
 
-void Scene::SceneGroup::addElement(std::shared_ptr<primitive>& e)
-{
-
-}
-
-void Scene::SceneGroup::removeElement()
-{
-
+	return removedSize;
 }
 
 
@@ -161,36 +179,31 @@ void Scene::SceneGroup::removeElement()
 /*							SceneNode		                            */
 /************************************************************************/
 
-Scene::SceneNode::SceneNode(int index, shared_ptr<primitive>& content) : SceneElement(index, 1), content{ content } { }
+scene::node::node(size_t index, primitive_ptr& p) : element(index, 1), content{ p } { }
 
-void Scene::SceneNode::addElement(int index, std::shared_ptr<primitive>& e)
+// insertFirstChild est ignoré
+void scene::node::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)
 {
-	SceneElement::addElement(index, e);
-	if (index != this->index && index != 0) {
-		throw invalid_argument("index need to be equals to the index of the node, or 0");
+	element::addElement(index, p, insertFirstChild);
+	if (index != this->index) {
+		throw invalid_argument("index need to be equals to the index of the node");
 	}
-	else {
-		this->content = e;
-	}
+	this->content = p;	
 }
 
-void Scene::SceneNode::removeElement(int index)
+
+// return the size of the removed elements
+size_t scene::node::removeElement(size_t index)
 {
-	SceneElement::removeElement(index);
-	if (index != this->index && index != 0) {
-		throw invalid_argument("index need to be equals to the index of the node, or 0");
+	size_t removedSize = element::removeElement(index);
+	if (index != this->index) {
+		throw invalid_argument("index need to be equals to the index of the node");
 	}
 	else {
 		this->content = NULL;
 	}
-}
 
-void Scene::SceneNode::addElement(std::shared_ptr<primitive>& e)
-{
-}
-
-void Scene::SceneNode::removeElement()
-{
+	return removedSize;
 }
 
 
@@ -198,21 +211,21 @@ void Scene::SceneNode::removeElement()
 /*							SceneElement	                            */
 /************************************************************************/
 
-Scene::SceneElement::SceneElement(int index) : SceneElement{ index, 0 } {}
+scene::element::element(size_t index) : element{ index, 0 } {}
 
-Scene::SceneElement::SceneElement(int index, int size) : visible{ true }, locked{ false }, size{ size } {}
+scene::element::element(size_t index, size_t size) : index{ index }, size{ size } {}
 
-int Scene::SceneElement::getSize()
+size_t scene::element::getSize()
 {
 	return size;
 }
 
-int Scene::SceneElement::getIndex()
+size_t scene::element::getIndex()
 {
 	return index;
 }
 
-void Scene::SceneElement::setIndex(int index)
+void scene::element::setIndex(size_t index)
 {
 	if (index < 0) {
 		throw invalid_argument("index need to be greater than 0");
@@ -221,36 +234,20 @@ void Scene::SceneElement::setIndex(int index)
 	}
 }
 
-void Scene::SceneElement::setVisible(bool visible)
-{
-	this->visible = visible;
-}
-
-bool Scene::SceneElement::isVisible()
-{
-	return visible;
-}
-
-void Scene::SceneElement::setLocked(bool locked)
-{
-	this->locked = locked;
-}
-
-bool Scene::SceneElement::isLocked()
-{
-	return locked;
-}
-
-void Scene::SceneElement::addElement(int index, std::shared_ptr<primitive>& e)
+void scene::element::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)
 {
 	if (index < 0) {
 		throw invalid_argument("index need to be greater than 0");
 	}
 }
 
-void Scene::SceneElement::removeElement(int index)
+
+// return the size of the removed elements
+size_t scene::element::removeElement(size_t index)
 {
 	if (index < 0) {
 		throw invalid_argument("index need to be greater than 0");
 	}
+
+	return size;
 }

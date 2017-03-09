@@ -5,76 +5,63 @@
 #include "primitive.h"
 
 
-class Scene
+typedef std::shared_ptr<primitive> primitive_ptr;
+
+class scene
 {
 public:
-	Scene();
+	scene();
+
+	void addElement(primitive_ptr& p);
+	void addElement(size_t index, primitive_ptr& p, bool insertFirstChild);
+	void removeElement(size_t index);
+	void selectElement(size_t index);
+	
+	//TODO operator<<
+
 private:
-	class SceneElement {
+
+	class element {
 	public:
-		int getSize();
-		int getIndex();
-		void setIndex(int index);
+		size_t getSize();
+		size_t getIndex();
+		void setIndex(size_t index);
 
-		void setVisible(bool visible);
-		bool isVisible();
-		void setLocked(bool locked);
-		bool isLocked();
-
-		virtual void addElement(std::shared_ptr<primitive>& e) { };
-		virtual void addElement(int index, std::shared_ptr<primitive>& e);
-		virtual void removeElement() { };
-		virtual void removeElement(int index);
+		virtual void addElement(size_t index, primitive_ptr& p, bool insertFirstChild);
+		virtual size_t removeElement(size_t index);
 	protected:
-		int size;
-		int index;
+		size_t index;
+		size_t size;
 
-		bool visible;
-		bool locked;
+		element(size_t index);
+		element(size_t index, size_t size);
+	};
+	
+	typedef std::shared_ptr<element> element_ptr;
 
-		SceneElement(int index);
-		SceneElement(int index, int size);
+	class node : public element {
+	public:
+		node(size_t index, primitive_ptr& p);
+
+		void addElement(size_t index, primitive_ptr& p, bool insertFirstChild);
+		size_t removeElement(size_t index);
+	protected:
+		primitive_ptr content;
 	};
 
-	class SceneNode : SceneElement {
+	class group : public element {
 	public:
-		SceneNode(int index, std::shared_ptr<primitive>& content);
+		group(size_t index);
 
-		void addElement(int index, std::shared_ptr<primitive>& e);
-		void removeElement(int index);
+		void setIndex(size_t index);
+
+		void addElement(size_t index, primitive_ptr& p, bool insertFirstChild);
+		size_t removeElement(size_t index);
 	protected:
-		std::shared_ptr<primitive> content;
-	private:
-		void addElement(std::shared_ptr<primitive>& e);
-		void removeElement();
+		std::vector<element_ptr> childrens;
 	};
 
-	class SceneGroup : SceneElement {
-	public:
-		SceneGroup(int index);
-
-		void setVisible(bool visible);
-		void setLocked(bool locked);
-		void setIndex(int index);
-
-		void addElement(int index, std::shared_ptr<primitive>& e);
-		void removeElement(int index);
-	protected:
-		std::vector<std::shared_ptr<SceneElement>> childrens;
-	private:
-		void addElement(std::shared_ptr<primitive>& e);
-		void removeElement();
-	};
-
-	SceneGroup root;
-	int currentPosition;
-	std::shared_ptr<SceneElement> selectedElement;
-
-	void addElement(std::shared_ptr<primitive>& e);
-	void addElement(int index, std::shared_ptr<primitive>& e);
-
-	void selectElement(int index);
-
-	void rebuildIndex(int from);
+	group root;
+	size_t selectedIndex;
 };
 
