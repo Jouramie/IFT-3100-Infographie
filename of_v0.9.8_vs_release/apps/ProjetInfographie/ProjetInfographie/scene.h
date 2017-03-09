@@ -21,8 +21,10 @@ private:
 		void setLocked(bool locked);
 		bool isLocked();
 
-		virtual void addElement(int index, std::shared_ptr<primitive>& e) {};
-		virtual void removeElement(int index) {};
+		virtual void addElement(std::shared_ptr<primitive>& e) { };
+		virtual void addElement(int index, std::shared_ptr<primitive>& e);
+		virtual void removeElement() { };
+		virtual void removeElement(int index);
 	protected:
 		int size;
 		int index;
@@ -32,8 +34,6 @@ private:
 
 		SceneElement(int index);
 		SceneElement(int index, int size);
-
-		virtual std::shared_ptr<SceneElement>& getElement(int index) {};
 	};
 
 	class SceneNode : SceneElement {
@@ -41,10 +41,12 @@ private:
 		SceneNode(int index, std::shared_ptr<primitive>& content);
 
 		void addElement(int index, std::shared_ptr<primitive>& e);
+		void removeElement(int index);
 	protected:
 		std::shared_ptr<primitive> content;
-
-		std::shared_ptr<SceneElement>& getElement(int index);
+	private:
+		void addElement(std::shared_ptr<primitive>& e);
+		void removeElement();
 	};
 
 	class SceneGroup : SceneElement {
@@ -56,10 +58,12 @@ private:
 		void setIndex(int index);
 
 		void addElement(int index, std::shared_ptr<primitive>& e);
+		void removeElement(int index);
 	protected:
 		std::vector<std::shared_ptr<SceneElement>> childrens;
-
-		std::shared_ptr<SceneElement>& getElement(int index);
+	private:
+		void addElement(std::shared_ptr<primitive>& e);
+		void removeElement();
 	};
 
 	SceneGroup root;
