@@ -82,7 +82,14 @@ void renderer::draw()
 		else {
 			iterator->getPrimitive()->draw();
 		}
-	}	
+	}
+	std::list<primitive2d>::iterator iterator2;
+	for (iterator2 = primitives2d.begin(); iterator2 != primitives2d.end(); ++iterator2)
+	{
+		ofSetLineWidth(1.0);
+		iterator2->getPrimitive2d()->draw();
+
+	}
 
 	camera.end();
 }
@@ -104,6 +111,48 @@ void renderer::imageExport(const string name, const string extension) const
 	imageTemp.save(fileName);
 
 	ofLog() << "<export image: " << fileName << ">";
+}
+
+/**
+* Render a square with given width, height and border width.
+*/
+void renderer::createSquare(float x, float y, float w, float h) {
+	ofColor c = ofColor(255, 255, 255);
+	createSquare(x,y,w,h,c);
+}
+
+/**
+* Render a square with given width, height, border width and color.
+*/
+void renderer::createSquare(float x, float y, float w, float h, ofColor fillColor) {
+	ofPath* rect = new ofPath();
+	rect->rectangle(ofRectangle(x, y, w, h));
+	rect->setColor(fillColor);
+	primitive2d prim = primitive2d(rect, fillColor);
+	primitives2d.push_back(prim);
+	draw();
+	
+}
+
+/**
+* Render a circle/ellipse with given radius.
+*/
+void renderer::createCircle(float x, float y, float r1, float r2) {
+	ofColor c = ofColor(255, 255, 255);
+	createCircle(x, y, r1, r2, c);
+}
+
+/**
+* Render a circle/ellipse with given radius and color.
+*/
+void renderer::createCircle(float x, float y, float r1, float r2, ofColor fillColor) {
+	ofPath* circle = new ofPath();
+	circle->ellipse(x, y, r1, r2);
+	circle->setColor(fillColor);
+	primitive2d prim = primitive2d(circle, fillColor);
+	primitives2d.push_back(prim);
+	draw();
+
 }
 
 void renderer::createCube(int x, int y, int z, int w, int h, int d)

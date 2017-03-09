@@ -1,6 +1,7 @@
 #pragma once
 #include "ofMain.h"
 #include "primitive.h"
+#include "primitive2d.h"
 
 
 class renderer
@@ -22,6 +23,10 @@ public:
 	void update();
 	void draw();
 	void imageExport(const string name, const string extension) const;
+	void createSquare(float x, float y, float width, float height);
+	void createSquare(float x, float y, float width, float height, ofColor fillColor);
+	void createCircle(float x, float y, float r1, float r2);
+	void createCircle(float x, float y, float r1, float r2, ofColor fillColor);
 	void createCube(int x, int y, int z, int w, int h, int d);
 	void createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol);
 	void createSphere(int x, int y, int z, int size);
@@ -36,6 +41,7 @@ private:
 	void setupCamera();
 
 	std::list<primitive> primitives;
+	std::list<primitive2d> primitives2d;
 
 	//ofEasyCam mainCam;
 	bool wireFrame;
