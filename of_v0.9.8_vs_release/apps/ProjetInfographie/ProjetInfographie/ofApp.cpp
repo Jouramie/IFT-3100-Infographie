@@ -321,15 +321,15 @@ void ofApp::btnDrawPrimitiveClicked()
 
 		if (primType2D.get()) {
 			if (primTypeCube.get()){
-				rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fillCol);
+				rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
 			}
 			else {
 				if (primTypeSphere.get()) {
-					rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fillCol);
+					rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
 				}
 				else {
-					rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight, fillCol);
-					rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth)/2, primPosY + primSizeHeight, fillCol);
+					rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
+					rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth)/2, primPosY + primSizeHeight, fill);
 				}
 				
 			}
@@ -339,7 +339,7 @@ void ofApp::btnDrawPrimitiveClicked()
 				rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
 			}
 			else {
-				rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fillCol);
+				rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
 			}
 		}
 
