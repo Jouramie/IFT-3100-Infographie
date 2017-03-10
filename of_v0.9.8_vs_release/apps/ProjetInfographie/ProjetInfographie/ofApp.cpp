@@ -1,4 +1,5 @@
 #include "ofApp.h"
+#include "camera.h"
 
 ofApp::ofApp()
 {
@@ -8,31 +9,22 @@ ofApp::ofApp()
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-	ofSetWindowTitle("Visualiseur interactif de scènes 3D");
+	ofSetWindowTitle("Visualiseur interactif de scï¿½nes 3D");
 
-	initPosition();
-	initDimension();
 	initColors();
 	initPrimitives();
 	initGroups();
 
+	setupCameraMenu();
+
 	gui.setDefaultWidth(270);
 	gui.setup();
 
-	is2dDisplay = false;
-	is3dDisplay = false;
-	isPropertiesDisplay = false;
-	isPrimitivesDisplay = false;
 	isListenersUnlocked = true;
 
 	gui.registerMouseEvents();
 
 	btnSelect.addListener(this, &ofApp::btnSelectClicked);
-	btn2D.addListener(this, &ofApp::btn2DClicked);
-	btn3D.addListener(this, &ofApp::btn3DClicked);
-	btnProperty.addListener(this, &ofApp::btnPropertyClicked);
-	btnDraw.addListener(this, &ofApp::btnDrawClicked);
-	btnPrimitives.addListener(this, &ofApp::btnPrimitivesClicked);
 	btnDrawPrimitive.addListener(this, &ofApp::btnDrawPrimitiveClicked);
 	btnExit.addListener(this, &ofApp::btnExitClicked);
 
@@ -77,6 +69,8 @@ void ofApp::draw()
 {
 	rend->draw();
 	gui.draw();
+	cameraMenu.draw();
+
 }
 
 void ofApp::exit()
@@ -94,7 +88,7 @@ ofApp::~ofApp()
 void ofApp::keyPressed(int key) {
 	if (key == OF_KEY_LEFT)
 	{
-		isKeyPressLeft = true; 
+		isKeyPressLeft = true;
 		ofLog() << "<app::keyPressedLeft>";
 	}
 	else if (key == OF_KEY_RIGHT)
@@ -141,39 +135,39 @@ void ofApp::keyReleased(int key) {
 	else if (key == 'c') {
 		rend->clearPrimitives();
 	}
-	else if (key == 'w'){
+	else if (key == 'w') {
 		rend->changeWireFrameMode();
 	}
-	else if (key == OF_KEY_LEFT) 
+	else if (key == OF_KEY_LEFT)
 	{
 		isKeyPressLeft = false;
 		ofLog() << "<app::keyReleaseLeft>";
 	}
-	else if (key == OF_KEY_RIGHT) 
+	else if (key == OF_KEY_RIGHT)
 	{
 		isKeyPressRight = false;
 		ofLog() << "<app::keyReleaseRight>";
 	}
-	else if (key == OF_KEY_UP) 
+	else if (key == OF_KEY_UP)
 	{
 		isKeyPressUp = false;
 		ofLog() << "<app::keyReleaseUp>";
 	}
-	else if (key == OF_KEY_DOWN) 
+	else if (key == OF_KEY_DOWN)
 	{
 		isKeyPressDown = false;
 		ofLog() << "<app::keyReleaseDown>";
 	}
-	else if (key == OF_KEY_PAGE_DOWN) 
+	else if (key == OF_KEY_PAGE_DOWN)
 	{
 		isKeyPressPageDown = false;
 		ofLog() << "<app::keyReleasePageDown>";
 	}
-	else if (key == OF_KEY_PAGE_UP) 
+	else if (key == OF_KEY_PAGE_UP)
 	{
 		isKeyPressPageUp = false;
 		ofLog() << "<app::keyReleasePageUp>";
-	}	
+	}
 	/*else if (key == 'q')
 		rend->changeRotate();*/
 
@@ -253,161 +247,67 @@ void ofApp::setupGui() {
 	isListenersUnlocked = false;
 
 	gui.clear();
-
-	gui.add(ofParameter<string>("Boite a outil"));
-	gui.add(btnDraw.setup("Dessiner!"));
-	gui.add(btnSelect.setup("Outils de selection"));
-	gui.add(btn2D.setup("Outils de dessin 2D"));
-	gui.add(btn3D.setup("Outils de dessin 3D"));
-	gui.add(btnProperty.setup("Proprietes de l'outil de dessin"));
-	gui.add(btnPrimitives.setup("Ajout de Primitives"));
 	
-	if (is2dDisplay) {
-		display2D();
+	gui.add(groupPrimitiveType);
+
+	if (primType2D)
+	{
+		gui.add(groupPrimitivePosition2D);
+
+		if (primTypeCube) {
+			gui.add(groupPrimitiveSizeCube2D);
+		}
+		else {
+			gui.add(groupPrimitiveSizeSphere);
+		}
+	}
+	else
+	{
+		gui.add(groupPrimitivePosition3D);
+
+		if (primTypeCube) {
+			gui.add(groupPrimitiveSizeCube3D);
+		}
+		else {
+			gui.add(groupPrimitiveSizeSphere);
+		}
 	}
 
-	if (is3dDisplay) {
-		display3D();
-	}
 
-	if (isPropertiesDisplay) {
-		displayProperties();
-	}
-
-	if (isPrimitivesDisplay) {
-		displayPrimitives();
-		gui.add(btnDrawPrimitive.setup("Dessiner!"));
-	}
-
-	
-	gui.add(btnExit.setup("Quitter"));
-
-	isListenersUnlocked = true;
-}
-
-void ofApp::displayProperties()
-{
 	ofColor defaultColor = gui.getFillColor();
 
-	gui.add(groupThick);
+	if (primType2D)
+	{
+		gui.add(groupThick);
+	}
 
 	gui.setDefaultFillColor(fill);
 	gui.add(groupFill);
 
-	gui.setDefaultFillColor(stroke);
-	gui.add(groupStroke);
+	if (primType2D)
+	{
+		gui.setDefaultFillColor(stroke);
+		gui.add(groupStroke);
+	}
+
+	gui.add(btnDrawPrimitive.setup("Dessiner!"));
 
 	gui.setDefaultFillColor(background);
 	gui.add(groupBackground);
 
 	gui.setDefaultFillColor(defaultColor);
 
-}
+	gui.add(btnSelect.setup("Outils de selection"));
 
-void ofApp::displayPrimitives()
-{
-	ofColor defaultColor = gui.getFillColor();
+	gui.add(btnExit.setup("Quitter"));
 
-	gui.add(groupPrimitiveType);
-
-	gui.add(groupPrimitivePosition);
-	gui.add(groupPrimitiveSize);
-
-	gui.setDefaultFillColor(fill);
-	gui.add(groupPrimitiveFill);
-
-	gui.setDefaultFillColor(defaultColor);
-
-}
-
-void ofApp::display2D()
-{
-	float centreX = (MaxX + MinX) / 2;
-	float centreY = (MaxY + MinY) / 2;
-
-	gui.add(ofParameter<string>("--------------------------------"));
-	gui.add(ofParameter<string>("Position"));
-	gui.add(posX.set(posX));
-	gui.add(posY.set(posY));
-	//groupPrimitivePosition.remove(primPosZ);
-	gui.add(ofParameter<string>("--------------------------------"));
-	gui.add(ofParameter<string>("Dimension"));
-	gui.add(width.set(width));
-	gui.add(height.set(height));
-}
-
-void ofApp::display3D()
-{
-	gui.add(groupPosition);
-
-	gui.add(groupDimension);
+	isListenersUnlocked = true;
 }
 
 void ofApp::btnSelectClicked()
 {
 	if (isListenersUnlocked)
 	{
-		isPropertiesDisplay = false;
-		is2dDisplay = false;
-		is3dDisplay = false;
-
-		setupGui();
-	}
-}
-
-void ofApp::btnPropertyClicked()
-{
-	if (isListenersUnlocked)
-	{
-		ofLog() << "<app::btnPropertyClicked>";
-
-		isPropertiesDisplay = !isPropertiesDisplay;
-		setupGui();
-	}
-}
-
-void ofApp::btn2DClicked()
-{
-	if (isListenersUnlocked)
-	{
-		ofLog() << "<app::btn2DClicked>";
-
-		is2dDisplay = !is2dDisplay;
-
-		is3dDisplay = false;
-
-		setupGui();
-	}
-}
-
-void ofApp::btn3DClicked()
-{
-	if (isListenersUnlocked)
-	{
-		ofLog() << "<app::btn3DClicked>";
-
-		is3dDisplay = !is3dDisplay;
-
-		is2dDisplay = false;
-
-		setupGui();
-	}
-}
-
-void ofApp::btnPrimitivesClicked()
-{
-	if (isListenersUnlocked)
-	{
-		ofLog() << "<app::btnPrimitivesClicked>";
-
-		isPrimitivesDisplay = !isPrimitivesDisplay;
-		if (isPrimitivesDisplay)
-		{
-			is3dDisplay = false;
-			is2dDisplay = false;
-			isPropertiesDisplay = false;
-		}
-		is2dDisplay = false;
 
 		setupGui();
 	}
@@ -418,8 +318,6 @@ void ofApp::btnDrawPrimitiveClicked()
 	if (isListenersUnlocked)
 	{
 		ofLog() << "<app::btnDrawPrimitiveClicked>";
-
-		ofColor fillCol = ofColor::fromHsb(primFillHue, primFillSaturation, primFillBrightess, primFillAlpha);
 
 		if (primType2D.get()) {
 			if (primTypeCube.get()){
@@ -438,27 +336,13 @@ void ofApp::btnDrawPrimitiveClicked()
 		}
 		else {
 			if (primTypeCube.get()) {
-				rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fillCol);
+				rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
 			}
 			else {
 				rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fillCol);
 			}
 		}
 
-		
-		//setupGui();
-	}
-}
-
-void ofApp::btnDrawClicked()
-{
-	if (isListenersUnlocked)
-	{
-		ofLog() << "<app::btnDrawClicked>";
-
-		//TODO: Faites vous du fun!
-
-		//rend->createCube(0, 0, 0, height, stroke);
 	}
 }
 
@@ -474,115 +358,69 @@ void ofApp::btnExitClicked()
 void ofApp::initGroups()
 {
 
-	groupPosition.add(ofParameter<string>("Position"));
-	groupPosition.add(posX.set(posX));
-	groupPosition.add(posY.set(posY));
-	groupPosition.add(posZ.set(posZ));
-
-	groupDimension.add(ofParameter<string>("Dimension"));
-	groupDimension.add(width.set(width));
-	groupDimension.add(height.set(height));
-	groupDimension.add(depth.set(depth));
-
-	groupThick.add(ofParameter<string>("Epaisseur des traits"));
-	groupThick.add(strokeThickness.set(strokeThickness));
-
-	groupFill.add(ofParameter<string>("Couleur de remplissage"));
-	groupFill.add(fillHue.set(fillHue));
-	groupFill.add(fillSaturation.set(fillSaturation));
-	groupFill.add(fillBrightess.set(fillBrightess));
-	groupFill.add(fillAlpha.set(fillAlpha));
-
-	groupStroke.add(ofParameter<string>("Couleur de bordure"));
-	groupStroke.add(strokeHue.set(strokeHue));
-	groupStroke.add(strokeSaturation.set(strokeSaturation));
-	groupStroke.add(strokeBrightess.set(strokeBrightess));
-	groupStroke.add(strokeAlpha.set(strokeAlpha));
-
-	groupBackground.add(ofParameter<string>("Couleur de fond"));
-	groupBackground.add(bgHue.set(bgHue));
-	groupBackground.add(bgSaturation.set(bgSaturation));
-	groupBackground.add(bgBrightess.set(bgBrightess));
-
-
 	groupPrimitiveType.setName("Type");
 	groupPrimitiveType.add(primType2D);
 	groupPrimitiveType.add(primType3D);
 	groupPrimitiveType.add(primTypeSphere);
 	groupPrimitiveType.add(primTypeCube);
 
-	groupPrimitiveFill.setName("Remplissage");
-	groupPrimitiveFill.add(primFillHue.set(primFillHue));
-	groupPrimitiveFill.add(primFillSaturation.set(primFillSaturation));
-	groupPrimitiveFill.add(primFillBrightess.set(primFillBrightess));
-	groupPrimitiveFill.add(primFillAlpha.set(primFillAlpha));
+	groupPrimitivePosition2D.setName("Position");
+	groupPrimitivePosition2D.add(primPosX.set(primPosX));
+	groupPrimitivePosition2D.add(primPosY.set(primPosY));
 
-	groupPrimitivePosition.setName("Position");
-	groupPrimitivePosition.add(primPosX.set(primPosX));
-	groupPrimitivePosition.add(primPosY.set(primPosY));
-	groupPrimitivePosition.add(primPosZ.set(primPosZ));
+	groupPrimitivePosition3D.setName("Position");
+	groupPrimitivePosition3D.add(primPosX.set(primPosX));
+	groupPrimitivePosition3D.add(primPosY.set(primPosY));
+	groupPrimitivePosition3D.add(primPosZ.set(primPosZ));
 
-	groupPrimitiveSize.setName("Taille");
-	groupPrimitiveSize.add(primSizeWidth.set(primSizeWidth));
-	groupPrimitiveSize.add(primSizeHeight.set(primSizeHeight));
-	groupPrimitiveSize.add(primSizeDepth.set(primSizeDepth));
- 
-}
+	groupPrimitiveSizeCube2D.setName("Taille");
+	groupPrimitiveSizeCube2D.add(primSizeWidth.set(primSizeWidth));
+	groupPrimitiveSizeCube2D.add(primSizeHeight.set(primSizeHeight));
 
-void ofApp::initPosition() {
+	groupPrimitiveSizeCube3D.setName("Taille");
+	groupPrimitiveSizeCube3D.add(primSizeWidth.set(primSizeWidth));
+	groupPrimitiveSizeCube3D.add(primSizeHeight.set(primSizeHeight));
+	groupPrimitiveSizeCube3D.add(primSizeDepth.set(primSizeDepth));
 
-	posX.setName("X");
-	posX.setMin(MinX);
-	posX.setMax(MaxX);
-	posX.set((MinX + MaxX) / 2);
+	groupPrimitiveSizeSphere.setName("Taille");
+	groupPrimitiveSizeSphere.add(primSizeRadius);
+	
+	groupThick.setName("Epaisseur des traits");
+	groupThick.add(strokeThickness.set(strokeThickness));
 
-	posY.setName("Y");
-	posY.setMin(MinY);
-	posY.setMax(MaxY);
-	posY.set((MinY + MaxY) / 2);
+	groupFill.setName("Couleur de remplissage");
+	groupFill.add(fillHue.set(fillHue));
+	groupFill.add(fillSaturation.set(fillSaturation));
+	groupFill.add(fillBrightess.set(fillBrightess));
+	groupFill.add(fillAlpha.set(fillAlpha));
 
-	posZ.setName("Z");
-	posZ.setMin(MinZ);
-	posZ.setMax(MaxZ);
-	posZ.set((MinZ + MaxZ) / 2);
-}
+	groupStroke.setName("Couleur de bordure");
+	groupStroke.add(strokeHue.set(strokeHue));
+	groupStroke.add(strokeSaturation.set(strokeSaturation));
+	groupStroke.add(strokeBrightess.set(strokeBrightess));
+	groupStroke.add(strokeAlpha.set(strokeAlpha));
 
-void ofApp::initDimension()
-{
-	height.setName("Hauteur");
-	height.setMin(MinY);
-	height.setMax(MaxY);
-	height.set((MinY + MaxY) / 2);
-
-	width.setName("Largeur");
-	width.setMin(MinX);
-	width.setMax(MaxX);
-	width.set((MinX + MaxX) / 2);
-
-	depth.setName("Profondeur");
-	depth.setMin(MinZ);
-	depth.setMax(MaxZ);
-	depth.set((MinZ + MaxZ) / 2);
-
-	radius.setName("Rayon");
-	radius.setMin(MinY);
-	radius.setMax(MaxY);
-	radius.set((MinY + MaxY) / 2);
+	groupBackground.setName("Couleur de fond");
+	groupBackground.add(bgHue.set(bgHue));
+	groupBackground.add(bgSaturation.set(bgSaturation));
+	groupBackground.add(bgBrightess.set(bgBrightess));
 
 
-	strokeThickness.setName("Epaisseur");
-	strokeThickness.setMin(0);
-	strokeThickness.setMax(100);
-	strokeThickness.set(10);
+
 }
 
 void ofApp::initColors()
 {
+	strokeThickness.setName("Epaisseur");
+	strokeThickness.setMin(0);
+	strokeThickness.setMax(100);
+	strokeThickness.set(10);
 
 	fillHue.setName("Teinte");
 	fillHue.setMin(0);
 	fillHue.setMax(255);
 	fillHue.set(0);
+	//fillHue.addListener(this, &ofApp::colorParameterChanged);
 
 	fillSaturation.setName("Saturation");
 	fillSaturation.setMin(0);
@@ -636,6 +474,7 @@ void ofApp::initColors()
 	bgBrightess.setMax(255);
 	bgBrightess.set(170);
 
+	setColors();
 }
 
 void ofApp::setColors()
@@ -645,10 +484,15 @@ void ofApp::setColors()
 	background = ofColor::fromHsb(bgHue, bgSaturation, bgBrightess);
 }
 
+float ofApp::colorParameterChanged(float& value) {
+	setupGui();
+	return 1;
+}
+
 void ofApp::primDim2DChanged(bool& value) {
 	if (primType2D.get()) {
 		primType3D.set(false);
-		primTypeCube.setName("Carré");
+		primTypeCube.setName("Carre");
 		primTypeSphere.setName("Cercle");
 	}
 	else {
@@ -667,7 +511,7 @@ void ofApp::primDim3DChanged(bool& value) {
 	}
 	else {
 		primType2D.set(true);
-		primTypeCube.setName("Carré");
+		primTypeCube.setName("Carre");
 		primTypeSphere.setName("Cercle");
 	}
 	setupGui();
@@ -699,7 +543,7 @@ void ofApp::initPrimitives() {
 	primType3D.set(false);
 	primType3D.addListener(this, &ofApp::primDim3DChanged);
 
-	primTypeCube.setName("Carré");
+	primTypeCube.setName("Carrï¿½");
 	primTypeCube.set(true);
 	primTypeCube.addListener(this, &ofApp::primTypeCubeChanged);
 
@@ -739,27 +583,23 @@ void ofApp::initPrimitives() {
 	primSizeDepth.setMax(MaxZ);
 	primSizeDepth.set((0 + MaxZ) / 2);
 
-
-	primFillHue.setName("Teinte");
-	primFillHue.setMin(0);
-	primFillHue.setMax(255);
-	primFillHue.set(0);
-
-	primFillSaturation.setName("Saturation");
-	primFillSaturation.setMin(0);
-	primFillSaturation.setMax(255);
-	primFillSaturation.set(100);
-
-	primFillBrightess.setName("Valeur");
-	primFillBrightess.setMin(0);
-	primFillBrightess.setMax(255);
-	primFillBrightess.set(255);
-
-	primFillAlpha.setName("Transparence");
-	primFillAlpha.setMin(0);
-	primFillAlpha.setMax(255);
-	primFillAlpha.set(255);
+	primSizeRadius.setName("Rayon");
+	primSizeRadius.setMin(0);
+	primSizeRadius.setMax((MaxX + MaxY + MaxZ) / 3);
+	primSizeRadius.set((0 + (MaxX + MaxY + MaxZ) / 3) / 2);
 
 
-	primFillColor = ofColor::fromHsb(primFillHue, primFillSaturation, primFillBrightess, primFillAlpha);
+}
+
+void ofApp::setupCameraMenu() {
+
+	cam = new camera();
+
+	cameraMenu.setDefaultWidth(270);
+
+	cameraMenu.setup();
+	cameraMenu.add(cam->getParameterGroup());
+
+	cameraMenu.setPosition(ofGetWindowWidth() - 280, 10);
+
 }

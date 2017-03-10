@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "renderer.h"
+#include "camera.h"
 #include "ofxRay.h"
 
 class ofApp : public ofBaseApp {
@@ -40,40 +41,18 @@ public:
 
 
 private:
+	
+	camera *cam;
 
 	bool isListenersUnlocked;
 
 	ofxPanel gui;
-	ofxButton btnDraw;
-	ofxButton btn2D;
-	ofxButton btn3D;
+	ofxPanel cameraMenu;
 	ofxButton btnSelect;
-	ofxButton btnProperty;
-	ofxButton btnPrimitives;
 	ofxButton btnDrawPrimitive;
 	ofxButton btnExit;
 
-	int i = 0;
-
-	bool isPropertiesDisplay;
-	bool is2dDisplay;
-	bool is3dDisplay;
-	bool isPrimitivesDisplay;
-	
-
-	ofParameterGroup groupPosition;
-	ofParameter<float> posX;
-	ofParameter<float> posY;
-	ofParameter<float> posZ;
-
-	ofParameterGroup groupDimension;
-	ofParameter<float> height;
-	ofParameter<float> width;
-	ofParameter<float> depth;
-	ofParameter<float> radius;
-
-
-
+	ofParameterGroup groupProperty;
 	ofParameterGroup groupThick;
 	ofParameter<float> strokeThickness;
 
@@ -105,22 +84,19 @@ private:
 	ofParameter<bool> primTypeSphere;
 	ofParameter<bool> primTypeCube;
 
-	ofParameterGroup groupPrimitivePosition;
+	ofParameterGroup groupPrimitivePosition3D;
+	ofParameterGroup groupPrimitivePosition2D;
 	ofParameter<float> primPosX;
 	ofParameter<float> primPosY;
 	ofParameter<float> primPosZ;
 
-	ofParameterGroup groupPrimitiveSize;
+	ofParameterGroup groupPrimitiveSizeCube2D;
+	ofParameterGroup groupPrimitiveSizeCube3D;
+	ofParameterGroup groupPrimitiveSizeSphere;
 	ofParameter<float> primSizeHeight;
 	ofParameter<float> primSizeWidth;
 	ofParameter<float> primSizeDepth;
-
-	ofParameterGroup groupPrimitiveFill;
-	ofColor primFillColor;
-	ofParameter<float> primFillHue;
-	ofParameter<float> primFillSaturation;
-	ofParameter<float> primFillBrightess;
-	ofParameter<float> primFillAlpha;
+	ofParameter<float> primSizeRadius;
 
 #pragma endregion
 
@@ -131,19 +107,14 @@ private:
 	void initColors();
 	void setColors();
 
+	float colorParameterChanged(float & value);
+	
 	void initPrimitives();
 
-	void setupGui();
-	void displayProperties();
-	void display2D();
-	void display3D();
-	void displayPrimitives();
+	void setupGui(); 
+	void setupCameraMenu();
 
 	void btnSelectClicked();
-	void btnPropertyClicked();
-	void btn2DClicked();
-	void btn3DClicked();
-	void btnPrimitivesClicked();
 	void btnDrawPrimitiveClicked();
 	void btnDrawClicked();
 	void btnExitClicked();

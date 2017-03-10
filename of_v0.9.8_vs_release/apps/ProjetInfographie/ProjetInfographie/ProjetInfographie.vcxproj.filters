@@ -75,6 +75,9 @@
     <ClInclude Include="primitive2d.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -135,6 +138,9 @@
       <Filter>addons\ofxRay</Filter>
     </ClCompile>
     <ClCompile Include="primitive2d.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
