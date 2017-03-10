@@ -15,8 +15,9 @@ public:
 
 	scene();
 
-	void addElement(size_t index, primitive_ptr& p, bool insertFirstChild);
+	void addElement(size_t index, const primitive& p, bool insertFirstChild);
 	void removeElement(size_t index);
+	void clearElements(); //Remplacer le root
 	
 	scene_iterator begin();
 	scene_iterator end();
@@ -35,12 +36,13 @@ private:
 		virtual void setHeight(size_t height) { this->height = height; };
 		virtual std::string getType() const = 0;
 
-		virtual size_t addElement(size_t index, primitive_ptr& p, bool insertFirstChild) = 0;
+		virtual size_t addElement(size_t index, primitive_ptr p, bool insertFirstChild) = 0;
 		virtual size_t removeElement(size_t index) = 0;
 		virtual element* getElement(size_t index) = 0;
 
 		friend std::ostream& operator<<(std::ostream& os, const element& e) { return e.print(os); };
 
+	protected:
 		size_t index;
 		size_t size;
 		size_t height;
@@ -54,17 +56,17 @@ private:
 
 	class node : public element {
 	public:
-		node(size_t index, size_t height, primitive_ptr& p);
+		node(size_t index, size_t height, primitive_ptr p);
 
 		std::string getType() const override;
 
-		size_t addElement(size_t index, primitive_ptr& p, bool insertFirstChild) override;
+		size_t addElement(size_t index, primitive_ptr p, bool insertFirstChild) override;
 		size_t removeElement(size_t index) override;
 		element* getElement(size_t index) override;
 		
-
-		std::string contentType;
 		primitive_ptr content;
+	protected:
+		std::string contentType;
 	};
 
 	typedef std::shared_ptr<node> node_ptr;
@@ -77,11 +79,12 @@ private:
 		void setHeight(size_t height) override;
 		std::string getType() const override;
 
-		size_t addElement(size_t index, primitive_ptr& p, bool insertFirstChild) override;
+		size_t addElement(size_t index, primitive_ptr p, bool insertFirstChild) override;
 		size_t removeElement(size_t index) override;
 		element* getElement(size_t index) override;
 
 		std::vector<element_ptr> childrens;
+	protected:
 		std::ostream& print(std::ostream& os) const override;
 	};
 
@@ -104,3 +107,5 @@ public:
 		size_t rootIndex;
 	};
 };
+
+void test();

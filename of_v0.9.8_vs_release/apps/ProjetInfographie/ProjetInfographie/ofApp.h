@@ -4,6 +4,7 @@
 #include "ofxGui.h"
 #include "renderer.h"
 #include "ofxRay.h"
+#include "scene.h"
 
 class ofApp : public ofBaseApp {
 
@@ -13,6 +14,7 @@ public:
 	const float MinX = 0, MinY = 0, MinZ = -1000;
 
 	renderer * rend;
+	scene * scn;
 
 	ofApp();
 

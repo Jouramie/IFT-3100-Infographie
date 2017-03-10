@@ -76,6 +76,12 @@ void renderer::draw()
 
 	ofSetLineWidth(1.0);
 
+	scene::scene_iterator iter_begin = scn->begin();
+	scene::scene_iterator iter_end = scn->end();
+	for (iter_begin; iter_begin != iter_end; ++iter_begin)
+	{
+		(*iter_begin).draw(wireFrame);
+	}
 	std::list<primitive>::iterator iterator;
 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
 	{
@@ -124,15 +130,17 @@ void renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fill
 	box->set(w, h, d);
 
 	box->setPosition(x, y, z);
-	//box->rotate(rand() % 360, 1.0, 0.0, 0.0);
-	//box->rotate(rand() % 360, 0, 1.0, 0.0);
-	//box->rotate(rand() % 360, 0, 0.0, 1.0);
+	box->rotate(rand() % 360, 1.0, 0.0, 0.0);
+	box->rotate(rand() % 360, 0, 1.0, 0.0);
+	box->rotate(rand() % 360, 0, 0.0, 1.0);
 	for (int i = 0; i < 6; i++)
 	{
 		box->setSideColor(i, fillCol);
 	}
-	primitive prim = primitive(box, fillCol);
-	primitives.push_back(prim);
+ 	primitive prim = primitive(box, fillCol);
+ 	primitives.push_back(prim);
+ 	scn->addElement(0, primitive{ box, fillCol }, true);
+ 	cout << *scn;
 	draw();
 }
 
@@ -151,15 +159,18 @@ void renderer::createSphere(int x, int y, int z, int size, ofColor color)
 	ball->rotate(rand() % 360, 0, 1.0, 0.0);
 	ball->rotate(rand() % 360, 0, 0.0, 1.0);
 	//ball.set
-	primitive prim = primitive(ball, color);
 
-	primitives.push_back(prim);
+ 	primitive prim = primitive(ball, color);
+ 	primitives.push_back(prim);
+	scn->addElement(0, primitive{ ball, color }, true);
+	cout << *scn;
 	draw();
 }
 
 void renderer::clearPrimitives()
 {
 	primitives.clear();
+	scn->clearElements();
 }
 
 void renderer::changeWireFrameMode()

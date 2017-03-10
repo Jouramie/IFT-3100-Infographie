@@ -3,6 +3,7 @@
 #include "ofxRay.h"
 #include "primitive.h"
 #include <limits>
+#include "scene.h"
 
 
 class renderer
@@ -32,6 +33,8 @@ public:
 	void changeWireFrameMode();
 	void selectPrimitive(int x, int y, bool shiftHeld);
 
+	void setScene(scene * scn) { this->scn = scn; }
+
 	~renderer();
 
 private:
@@ -53,6 +56,7 @@ private:
 	ofVec3f cameraPosition;
 	ofVec3f cameraTarget;
 
+	scene * scn;
 	ofCamera camera;
 
 	std::list<ofRay> rays;
