@@ -329,6 +329,7 @@ void ofApp::display2D()
 	gui.add(ofParameter<string>("Position"));
 	gui.add(posX.set(posX));
 	gui.add(posY.set(posY));
+	//groupPrimitivePosition.remove(primPosZ);
 	gui.add(ofParameter<string>("--------------------------------"));
 	gui.add(ofParameter<string>("Dimension"));
 	gui.add(width.set(width));
@@ -421,7 +422,19 @@ void ofApp::btnDrawPrimitiveClicked()
 		ofColor fillCol = ofColor::fromHsb(primFillHue, primFillSaturation, primFillBrightess, primFillAlpha);
 
 		if (primType2D.get()) {
-
+			if (primTypeCube.get()){
+				rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fillCol);
+			}
+			else {
+				if (primTypeSphere.get()) {
+					rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fillCol);
+				}
+				else {
+					rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight, fillCol);
+					rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth)/2, primPosY + primSizeHeight, fillCol);
+				}
+				
+			}
 		}
 		else {
 			if (primTypeCube.get()) {
