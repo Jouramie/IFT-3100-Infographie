@@ -51,6 +51,9 @@
     <ClInclude Include="ofxCheckBox.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -90,6 +93,9 @@
       <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="ofxCheckBox.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
