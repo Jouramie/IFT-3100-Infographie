@@ -135,8 +135,8 @@ void ofApp::keyReleased(int key) {
 	}
 	else if (key == 's')
 	{
-		ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
-		rend->createSphere(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
+		/*ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
+		rend->createSphere(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);*/
 	}
 	else if (key == 'c') {
 		rend->clearPrimitives();
@@ -428,7 +428,7 @@ void ofApp::btnDrawPrimitiveClicked()
 				rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fillCol);
 			}
 			else {
-				rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, fillCol);
+				rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fillCol);
 			}
 		}
 

@@ -26,8 +26,8 @@ public:
 	void imageExport(const string name, const string extension) const;
 	void createCube(int x, int y, int z, int w, int h, int d);
 	void createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol);
-	void createSphere(int x, int y, int z, int size);
-	void createSphere(int x, int y, int z, int size, ofColor color);
+	void createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
+	void createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
 	void clearPrimitives();
 	void changeWireFrameMode();
 	void selectPrimitive(int x, int y, bool shiftHeld);

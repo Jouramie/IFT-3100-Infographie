@@ -11,6 +11,7 @@ public:
 	primitive();
 	primitive(of3dPrimitive* primitive);
 	primitive(of3dPrimitive* primitive, ofColor fill);
+	primitive(of3dPrimitive* primitive, ofColor fill, ofVec3f scal);
 	of3dPrimitive* getPrimitive();
 	ofColor getFillColor();
 	void draw(bool wireframe = false);
@@ -27,5 +28,6 @@ private:
 	of3dPrimitive* prim;
 	ofColor fillCol;
 	bool selected;
+	ofVec3f scale;
 
 };

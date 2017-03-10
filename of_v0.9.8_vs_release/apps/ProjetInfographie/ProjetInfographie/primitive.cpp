@@ -4,18 +4,28 @@ primitive::primitive()
 {
 	prim = 0;
 	fillCol = ofColor(255, 255, 255);
+	scale = ofVec3f(1, 1, 1);
 }
 
 primitive::primitive(of3dPrimitive* primitive)
 {
 	prim = primitive;
 	fillCol = ofColor(255, 255, 255);
+	scale = ofVec3f(1, 1, 1);
 }
 
 primitive::primitive(of3dPrimitive* primitive, ofColor fill)
 {
 	prim = primitive;
 	fillCol = fill;
+	scale = ofVec3f(1, 1, 1);
+}
+
+primitive::primitive(of3dPrimitive* primitive, ofColor fill, ofVec3f scal)
+{
+	prim = primitive;
+	fillCol = fill;
+	scale = scal;
 }
 
 of3dPrimitive* primitive::getPrimitive() {
@@ -39,14 +49,16 @@ ofColor primitive::getFillColor() {
 }
 
 void primitive::draw(bool wireframe) {
-	//ofDisableAlphaBlending();
-	//ofTexture texture = ofTexture();
-	//texture.allocate(5, 5, GL_TEXTURE_INTERNAL_FORMAT);
-	//texture.bind();
+
+	ofSetColor(fillCol);
+	ofScale(scale.x, scale.y, scale.z);
+
 	if (wireframe || selected)
 		prim->drawWireframe();
 	else
 		prim->draw();
+
+	ofScale(1 / scale.x, 1 / scale.y, 1 / scale.z);
 }
 
 bool primitive::calcTriangleIntersection(ofRay ray, float *result) const {

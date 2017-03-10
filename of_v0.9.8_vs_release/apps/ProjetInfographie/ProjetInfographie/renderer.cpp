@@ -121,37 +121,52 @@ void renderer::createCube(int x, int y, int z, int w, int h, int d)
 void renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol)
 {
 	ofBoxPrimitive* box = new ofBoxPrimitive();
-	box->set(w, h, d);
+
+	float smallest = min(w, min(h, d));
+
+	box->setWidth(smallest);
+	box->setHeight(smallest);
+	box->setDepth(smallest);
+
+	float newX = (float)w / smallest;
+	float newY = (float)h / smallest;
+	float newZ = (float)d / smallest;
+
+	ofVec3f scaleVec = ofVec3f(newX, newY, newZ);
 
 	box->setPosition(x, y, z);
-	//box->rotate(rand() % 360, 1.0, 0.0, 0.0);
-	//box->rotate(rand() % 360, 0, 1.0, 0.0);
-	//box->rotate(rand() % 360, 0, 0.0, 1.0);
+
 	for (int i = 0; i < 6; i++)
 	{
 		box->setSideColor(i, fillCol);
 	}
-	primitive prim = primitive(box, fillCol);
+	primitive prim = primitive(box, fillCol, scaleVec);
 	primitives.push_back(prim);
 	draw();
 }
 
-void renderer::createSphere(int x, int y, int z, int size)
+void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
 {
 	ofColor c = ofColor(255, 255, 255);
-	createSphere(x, y, z, size, c);
+	createSphere(x, y, z, sizeX, sizeY, sizeZ, c);
 }
 
-void renderer::createSphere(int x, int y, int z, int size, ofColor color)
+void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
 {
 	ofSpherePrimitive* ball = new ofSpherePrimitive();
-	ball->setRadius(size);
 	ball->setPosition(x, y, z);
-	ball->rotate(rand() % 360, 1.0, 0.0, 0.0);
-	ball->rotate(rand() % 360, 0, 1.0, 0.0);
-	ball->rotate(rand() % 360, 0, 0.0, 1.0);
-	//ball.set
-	primitive prim = primitive(ball, color);
+
+	float smallest = min(sizeX, min(sizeY, sizeZ));
+
+	ball->setRadius(smallest);
+
+	float newX = (float)sizeX / smallest;
+	float newY = (float)sizeY / smallest;
+	float newZ = (float)sizeZ / smallest;
+
+	ofVec3f scaleVec = ofVec3f(newX, newY, newZ);
+
+	primitive prim = primitive(ball, color, scaleVec);
 
 	primitives.push_back(prim);
 	draw();
