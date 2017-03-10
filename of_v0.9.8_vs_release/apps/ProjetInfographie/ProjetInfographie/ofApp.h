@@ -9,8 +9,8 @@ class ofApp : public ofBaseApp {
 
 public:
 
-	const float MaxX = 2000, MaxY = 1000, MaxZ = 1000;
-	const float MinX = 0, MinY = 0, MinZ = -1000;
+	const float MaxX = 1000, MaxY = 1000, MaxZ = 1000;
+	const float MinX = -1000, MinY = -1000, MinZ = -1000;
 
 	renderer * rend;
 
