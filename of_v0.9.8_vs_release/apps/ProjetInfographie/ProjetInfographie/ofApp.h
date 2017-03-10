@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "renderer.h"
+#include "ofxRay.h"
 
 class ofApp : public ofBaseApp {
 
@@ -26,6 +27,7 @@ public:
 	void keyPressed(int key);
 	void keyReleased(int key);
 	void mouseMoved(int x, int y);
+	void mouseMovedGui(int x, int y);
 	void mouseDragged(int x, int y, int button);
 	void mousePressed(int x, int y, int button);
 	void mouseReleased(int x, int y, int button);
@@ -34,6 +36,7 @@ public:
 	void windowResized(int w, int h);
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
+	bool cursorIsInControl(int x, int y);
 
 
 private:
@@ -96,6 +99,12 @@ private:
 
 #pragma region "Primitives"
 
+	ofParameterGroup groupPrimitiveType;
+	ofParameter<bool> primType2D;
+	ofParameter<bool> primType3D;
+	ofParameter<bool> primTypeSphere;
+	ofParameter<bool> primTypeCube;
+
 	ofParameterGroup groupPrimitivePosition;
 	ofParameter<float> primPosX;
 	ofParameter<float> primPosY;
@@ -105,14 +114,6 @@ private:
 	ofParameter<float> primSizeHeight;
 	ofParameter<float> primSizeWidth;
 	ofParameter<float> primSizeDepth;
-
-	ofParameterGroup groupPrimitiveStroke;
-	ofColor primStrokeColor;
-	ofParameter<float> primStrokeThickness;
-	ofParameter<float> primStrokeHue;
-	ofParameter<float> primStrokeSaturation;
-	ofParameter<float> primStrokeBrightess;
-	ofParameter<float> primStrokeAlpha;
 
 	ofParameterGroup groupPrimitiveFill;
 	ofColor primFillColor;
@@ -146,6 +147,11 @@ private:
 	void btnDrawPrimitiveClicked();
 	void btnDrawClicked();
 	void btnExitClicked();
+
+	void primDim2DChanged(bool& value);
+	void primDim3DChanged(bool& value);
+	void primTypeCubeChanged(bool& value);
+	void primTypeSphereChanged(bool& value);
 
 	void updateKeys();
 

@@ -72,25 +72,23 @@ void renderer::draw()
 
 	camera.begin();
 
-	std::list<of3dPrimitive>::const_iterator iterator;
+	ofEnableDepthTest();
+
+	ofSetLineWidth(1.0);
+
+	std::list<primitive>::iterator iterator;
 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
 	{
-		ofSetLineWidth(1.0);
-		if (wireFrame)
-			iterator->drawWireframe();
-		else
-			iterator->draw();
+		iterator->draw(wireFrame);
 	}
-	/*if (rotate > -1)
+
+	std::list<ofRay>::iterator iterator2;
+	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
 	{
-		rotate++;
-		if (rotate > 359)
-			rotate = 0;
-		mainCam.rotate(rotate, 1, 0, 0);
+		iterator2->draw();
 	}
-	else
-		mainCam.reset();
-	mainCam.draw();*/	
+
+	ofDisableDepthTest();
 
 	camera.end();
 }
@@ -114,25 +112,27 @@ void renderer::imageExport(const string name, const string extension) const
 	ofLog() << "<export image: " << fileName << ">";
 }
 
-void renderer::createCube(int x, int y, int z, int size)
+void renderer::createCube(int x, int y, int z, int w, int h, int d)
 {
 	ofColor c = ofColor(255, 255, 255);
-	createCube(x, y, z, size, c);
+	createCube(x, y, z, w, h, d, c);
 }
 
-void renderer::createCube(int x, int y, int z, int size, ofColor color)
+void renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol)
 {
-	ofBoxPrimitive box = ofBoxPrimitive();
-	box.set(size);
-	box.setPosition(x, y, z);
-	box.rotate(rand() % 360, 1.0, 0.0, 0.0);
-	box.rotate(rand() % 360, 0, 1.0, 0.0);
-	box.rotate(rand() % 360, 0, 0.0, 1.0);
+	ofBoxPrimitive* box = new ofBoxPrimitive();
+	box->set(w, h, d);
+
+	box->setPosition(x, y, z);
+	//box->rotate(rand() % 360, 1.0, 0.0, 0.0);
+	//box->rotate(rand() % 360, 0, 1.0, 0.0);
+	//box->rotate(rand() % 360, 0, 0.0, 1.0);
 	for (int i = 0; i < 6; i++)
 	{
-		box.setSideColor(i, color);
+		box->setSideColor(i, fillCol);
 	}
-	primitives.push_back(box);
+	primitive prim = primitive(box, fillCol);
+	primitives.push_back(prim);
 	draw();
 }
 
@@ -144,14 +144,16 @@ void renderer::createSphere(int x, int y, int z, int size)
 
 void renderer::createSphere(int x, int y, int z, int size, ofColor color)
 {
-	ofSpherePrimitive ball = ofSpherePrimitive();
-	ball.setRadius(size);
-	ball.setPosition(x, y, z);
-	ball.rotate(rand() % 360, 1.0, 0.0, 0.0);
-	ball.rotate(rand() % 360, 0, 1.0, 0.0);
-	ball.rotate(rand() % 360, 0, 0.0, 1.0);
+	ofSpherePrimitive* ball = new ofSpherePrimitive();
+	ball->setRadius(size);
+	ball->setPosition(x, y, z);
+	ball->rotate(rand() % 360, 1.0, 0.0, 0.0);
+	ball->rotate(rand() % 360, 0, 1.0, 0.0);
+	ball->rotate(rand() % 360, 0, 0.0, 1.0);
 	//ball.set
-	primitives.push_back(ball);
+	primitive prim = primitive(ball, color);
+
+	primitives.push_back(prim);
 	draw();
 }
 
@@ -165,24 +167,49 @@ void renderer::changeWireFrameMode()
 	wireFrame = !wireFrame;
 }
 
-void renderer::selectPrimitive(int x, int y)
+void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 {
-	/*ofxRayTriangleIntersection  rtIntersect;
-	vector<FaceTri>             tris;
-	vector<Ray>                 rays;
+	ofVec3f screenToWorld = camera.screenToWorld(ofVec3f(x, y, 0.0));
 
-	FaceTri tri;
-	tri.v0 = ofPoint(ofGetWidth() / 2, ofGetHeight() / 2 / 2, -1000);
-	tri.v1 = ofPoint(ofGetWidth() / 2 - 200, ofGetHeight() / 2 + (ofGetHeight() / 2 / 2), -1000);
-	tri.v2 = ofPoint(ofGetWidth() / 2 + 200, ofGetHeight() / 2 + (ofGetHeight() / 2 / 2), -1000);
-	tris.push_back(tri);
+	std::list<primitive>::iterator iterator;
 
-	Ray ray;
-	ray.rayOrig.set(0, 0, 0);
-	ray.rayEnd.set(0, 0, -2000);
-	rays.push_back(ray);*/
+	primitive* intersectPrim = nullptr;
+	int distanceClosest = std::numeric_limits<int>::max();
 
-	std::cout << "Selected Primitive" << std::endl;
+	ofVec3f vectNow = (screenToWorld - camera.getPosition());
+	vectNow.scale(25);
+
+	ofRay ray(camera.getPosition(), vectNow, true);
+	// Pour dessiner le rayon (à des fins de débogage)
+	// rays.push_back(ray);
+
+	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
+	{
+		if (!shiftHeld)
+		{
+			iterator->setSelected(false);
+		}
+
+		float* distance = new float(0);
+
+		bool found = iterator->checkIntersectionPlaneAndLine(ray, distance);
+		if (found)// && *distance >= 0 && *distance < distanceClosest)
+		{
+			intersectPrim = &(*iterator);
+			//distanceClosest = *distance;
+		}
+	}
+
+	if (distanceClosest < (std::numeric_limits<int>::max() - 1))
+	{
+		intersectPrim->setSelected(!intersectPrim->getSelected());
+		std::cout << "Selected Primitive" << std::endl;
+	}
+	else
+	{
+		std::cout << "Selected Nothing" << std::endl;
+	}
+	draw();
 }
 
 renderer::~renderer()

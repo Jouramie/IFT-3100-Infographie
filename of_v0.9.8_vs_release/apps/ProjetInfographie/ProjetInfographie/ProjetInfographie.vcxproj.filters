@@ -7,6 +7,9 @@
     <Filter Include="addons">
       <UniqueIdentifier>{4269117e-9466-4256-bc10-0c5b2d989666}</UniqueIdentifier>
     </Filter>
+    <Filter Include="addons\ofxRay">
+      <UniqueIdentifier>{17463092-f447-4dca-8326-1d7f4d25075a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
@@ -51,6 +54,27 @@
     <ClInclude Include="scene.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="ofxCheckBox.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay\Base.h">
+      <Filter>addons\ofxRay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay\Camera.h">
+      <Filter>addons\ofxRay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay\Plane.h">
+      <Filter>addons\ofxRay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay\Projector.h">
+      <Filter>addons\ofxRay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay\Ray.h">
+      <Filter>addons\ofxRay</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -91,6 +115,27 @@
     </ClCompile>
     <ClCompile Include="scene.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="ofxCheckBox.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Base.cpp">
+      <Filter>addons\ofxRay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Camera.cpp">
+      <Filter>addons\ofxRay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Plane.cpp">
+      <Filter>addons\ofxRay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Plane_fitToPoints.cpp">
+      <Filter>addons\ofxRay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Projector.cpp">
+      <Filter>addons\ofxRay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Ray.cpp">
+      <Filter>addons\ofxRay</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

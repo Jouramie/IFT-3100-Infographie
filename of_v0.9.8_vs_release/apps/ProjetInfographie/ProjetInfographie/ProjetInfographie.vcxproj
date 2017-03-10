@@ -115,7 +115,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\..\addons\ofxGui\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\addons\ofxRay\src;..\..\..\addons\ofxGui\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -196,7 +196,14 @@
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxSlider.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxSliderGroup.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxToggle.h" />
+    <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay.h" />
+    <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay\Base.h" />
+    <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay\Camera.h" />
+    <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay\Plane.h" />
+    <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay\Projector.h" />
+    <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay\Ray.h" />
     <ClInclude Include="ofApp.h" />
+    <ClInclude Include="ofxCheckBox.h" />
     <ClInclude Include="primitive.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="scene.h" />
@@ -210,8 +217,15 @@
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxSlider.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxSliderGroup.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxToggle.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Base.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Camera.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Plane.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Plane_fitToPoints.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Projector.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Ray.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ofApp.cpp" />
+    <ClCompile Include="ofxCheckBox.cpp" />
     <ClCompile Include="primitive.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="scene.cpp" />
