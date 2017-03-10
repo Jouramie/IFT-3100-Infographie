@@ -25,6 +25,8 @@ void ofApp::setup()
 	isPrimitivesDisplay = false;
 	isListenersUnlocked = true;
 
+	gui.registerMouseEvents();
+
 	btnSelect.addListener(this, &ofApp::btnSelectClicked);
 	btn2D.addListener(this, &ofApp::btn2DClicked);
 	btn3D.addListener(this, &ofApp::btn3DClicked);
@@ -179,7 +181,30 @@ void ofApp::keyReleased(int key) {
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y) {
+	HCURSOR curs;
+	if (cursorIsInControl(x, y))
+	{
+		curs = LoadCursor(NULL, IDC_HAND);
+	}
+	else
+	{
+		curs = LoadCursor(NULL, IDC_ARROW);
+	}
+	SetCursor(curs);
+}
 
+bool ofApp::cursorIsInControl(int x, int y) {
+	vector<string> names = gui.getControlNames();
+	for each (string name in names)
+	{
+		ofxBaseGui* control = gui.getControl(name);
+		ofPoint pos = control->getPosition();
+		float h = control->getHeight();
+		float w = control->getWidth();
+		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+			return true;
+	}
+	return false;
 }
 
 //--------------------------------------------------------------

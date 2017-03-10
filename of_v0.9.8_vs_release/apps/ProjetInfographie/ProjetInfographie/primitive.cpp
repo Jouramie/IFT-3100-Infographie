@@ -176,3 +176,68 @@ bool primitive::inside(ofVec3f p, float xmin, float xmax, float ymin, float ymax
 	return false;
 
 }
+
+#define SMALL_NUM   0.00000001 // anything that avoids division overflow
+// dot product (3D) which allows vector operations in arguments
+#define dot(u,v)   ((u).x * (v).x + (u).y * (v).y + (u).z * (v).z)
+
+bool primitive::checkIntersectionTriangleRay(ofRay ray, ofPoint* inter)
+{
+	ofMesh mesh = prim->getMesh();
+	std::vector<ofMeshFace> indices = mesh.getUniqueFaces();
+
+	for (std::vector<ofMeshFace>::iterator i = indices.begin(); i != indices.end(); ++i)
+	{
+		ofMeshFace triangle = *i;
+
+		ofVec3f   u, v, n;              // Vecs du triangle
+		ofVec3f   dir, w0, w;           // Vecs du ofRay
+		float     r, a, b;              // params to calc ray-plane intersect
+
+										// get triangle edge vectors and plane normal
+		u = triangle.getVertex(1) - triangle.getVertex(0);
+		v = triangle.getVertex(2) - triangle.getVertex(0);
+		n = u * v;              // cross product
+		if (!(n == ofVec3f(0, 0, 0)))           // if triangle is not degenerate
+		{
+
+			dir = ray.getEnd() - ray.getStart();              // ray direction vector
+			w0 = ray.getStart() - triangle.getVertex(0);
+			a = -dot(n, w0);
+			b = dot(n, dir);
+			if (!(fabs(b) < SMALL_NUM))
+			{     // if ray is not parallel to triangle
+
+				// get intersect point of ray with triangle plane
+				r = a / b;
+				if (!(r < 0.0))                    // ray goes toward the triangle
+				{
+					// for a segment, also test if (r > 1.0) => no intersect
+
+					*inter = ray.getStart() + r * dir;            // intersect point of ray and plane
+
+													// is I inside T?
+					float    uu, uv, vv, wu, wv, D;
+					uu = dot(u, u);
+					uv = dot(u, v);
+					vv = dot(v, v);
+					w = *inter - triangle.getVertex(0);
+					wu = dot(w, u);
+					wv = dot(w, v);
+					D = uv * uv - uu * vv;
+
+					// get and test parametric coords
+					float s, t;
+					s = (uv * wv - vv * wu) / D;
+					if (!(s < 0.0 || s > 1.0))         // I is inside T
+					{
+						t = (uv * wu - uu * wv) / D;
+						if (!(t < 0.0 || (s + t) > 1.0))  // I is inside T
+							return true;                       // I is in T
+					}
+				}
+			}
+		}
+	}
+	return false;
+}

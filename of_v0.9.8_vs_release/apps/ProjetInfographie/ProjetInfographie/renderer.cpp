@@ -173,14 +173,15 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 
 	std::list<primitive>::iterator iterator;
 
-	primitive* intersectPrim = 0;
+	primitive* intersectPrim = nullptr;
 	int distanceClosest = std::numeric_limits<int>::max();
 
 	ofVec3f vectNow = (screenToWorld - camera.getPosition());
-	ofVec3f vecLong = vectNow.scale(25);
+	vectNow.scale(25);
 
 	ofRay ray(camera.getPosition(), vectNow, true);
-	rays.push_back(ray);
+	// Pour dessiner le rayon (à des fins de débogage)
+	// rays.push_back(ray);
 
 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
 	{
@@ -192,10 +193,10 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 		float* distance = new float(0);
 
 		bool found = iterator->checkIntersectionPlaneAndLine(ray, distance);
-		if (found && *distance >= 0 && *distance < distanceClosest)
+		if (found)// && *distance >= 0 && *distance < distanceClosest)
 		{
 			intersectPrim = &(*iterator);
-			distanceClosest = *distance;
+			//distanceClosest = *distance;
 		}
 	}
 

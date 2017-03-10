@@ -198,7 +198,39 @@ void ofxGuiGroup::clear(){
 	sizeChangedCB();
 }
 
+bool ofxGuiGroup::cursorIsInControl(int x, int y) {
+	vector<string> names = getControlNames();
+	for each (string name in names)
+	{
+		ofxBaseGui* control = getControl(name);
+		ofPoint pos = control->getPosition();
+		float h = control->getHeight();
+		float w = control->getWidth();
+		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+			return true;
+	}
+
+	ofPoint pos = getPosition();
+	float h = getHeight();
+	float w = getWidth();
+	if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+		return true;
+
+	return false;
+}
+
 bool ofxGuiGroup::mouseMoved(ofMouseEventArgs & args){
+	HCURSOR curs;
+	if (cursorIsInControl(args.x, args.y))
+	{
+		curs = LoadCursor(NULL, IDC_HAND);
+	}
+	else
+	{
+		curs = LoadCursor(NULL, IDC_ARROW);
+	}
+	SetCursor(curs);
+
 	ofMouseEventArgs a = args;
 	for(std::size_t i = 0; i < collection.size(); i++){
 		if(collection[i]->mouseMoved(a)){
