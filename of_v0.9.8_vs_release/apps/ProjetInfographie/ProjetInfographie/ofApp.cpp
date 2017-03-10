@@ -401,7 +401,14 @@ void ofApp::btnDrawPrimitiveClicked()
 				rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fillCol);
 			}
 			else {
-				rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fillCol);
+				if (primTypeSphere.get()) {
+					rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fillCol);
+				}
+				else {
+					rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight, fillCol);
+					rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth)/2, primPosY + primSizeHeight, fillCol);
+				}
+				
 			}
 		}
 		else {

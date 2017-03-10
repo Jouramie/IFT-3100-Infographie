@@ -112,7 +112,7 @@ void renderer::imageExport(const string name, const string extension) const
 
 	ofLog() << "<export image: " << fileName << ">";
 }
-
+//-------------------------------- 2D Primitives----------------
 /**
 * Render a square with given width, height and border width.
 */
@@ -155,6 +155,68 @@ void renderer::createCircle(float x, float y, float r1, float r2, ofColor fillCo
 
 }
 
+/**
+* Render a line with given x, y and deltas.
+*/
+void renderer::createLine(float x, float y, float xDelta, float yDelta) {
+	ofColor c = ofColor(255, 255, 255);
+	createLine(x, y, xDelta, yDelta, c);
+}
+
+/**
+* Render a line with given color, x, y and deltas.
+*/
+void renderer::createLine(float x, float y, float xDelta, float yDelta, ofColor fillColor) {
+	ofPath* line = new ofPath();
+	line->moveTo(x, y, 0);
+	line->lineTo(x +  xDelta, y + yDelta);
+	line->setColor(fillColor);
+	primitive2d prim = primitive2d(line, fillColor);
+	primitives2d.push_back(prim);
+	draw();
+}
+
+/**
+* Render a triangle with given points.
+*/
+void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
+	ofColor c = ofColor(255, 255, 255);
+	createTriangle(x1, y1, x2, y2, x3, y3, c);
+}
+
+/**
+* Render a triangle with given points and color.
+*/
+void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, float y3, ofColor fillColor) {
+	ofPath* triangle = new ofPath();
+	triangle->triangle(x1, y1, x2, y2, x3, y3);
+	triangle->setColor(fillColor);
+	primitive2d prim = primitive2d(triangle, fillColor);
+	primitives2d.push_back(prim);
+	draw();
+}
+
+/**
+* Render a line with given x,y and deltas.
+*/
+void renderer::createPoint(float x, float y, float radius) {
+	ofColor c = ofColor(255, 255, 255);
+	createPoint(x, y, radius, c);
+}
+
+/**
+* Render a line with given x,y and deltas.
+*/
+void renderer::createPoint(float x, float y, float radius, ofColor fillColor) {
+	ofPath* point = new ofPath();
+	point->circle(x, y, radius);
+	point->setColor(fillColor);
+	primitive2d prim = primitive2d(point, fillColor);
+	primitives2d.push_back(prim);
+	draw();
+
+}
+//-------------3D primitives-----------------------
 void renderer::createCube(int x, int y, int z, int w, int h, int d)
 {
 	ofColor c = ofColor(255, 255, 255);
