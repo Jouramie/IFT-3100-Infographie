@@ -195,7 +195,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
 	//if (button == )
-	rend->selectPrimitive(x, y);
+	rend->selectPrimitive(x, y, GetKeyState(VK_SHIFT));
 }
 
 //--------------------------------------------------------------
@@ -403,7 +403,7 @@ void ofApp::btnDrawPrimitiveClicked()
 				rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fillCol);
 			}
 			else {
-
+				rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, fillCol);
 			}
 		}
 
@@ -429,7 +429,7 @@ void ofApp::btnExitClicked()
 	if (isListenersUnlocked)
 	{
 		ofLog() << "<app::btnExitClicked>";
-		exit();		//TODO: Trouver une autre solution
+		ofExit();		//TODO: Trouver une autre solution
 	}
 }
 
@@ -607,7 +607,7 @@ void ofApp::setColors()
 	background = ofColor::fromHsb(bgHue, bgSaturation, bgBrightess);
 }
 
-bool ofApp::primDim2DChanged(bool& value) {
+void ofApp::primDim2DChanged(bool& value) {
 	if (primType2D.get()) {
 		primType3D.set(false);
 		primTypeCube.setName("Carré");
@@ -619,10 +619,9 @@ bool ofApp::primDim2DChanged(bool& value) {
 		primTypeSphere.setName("Sphere");
 	}
 	setupGui();
-	return primType2D.get();
 }
 
-bool ofApp::primDim3DChanged(bool& value) {
+void ofApp::primDim3DChanged(bool& value) {
 	if (primType3D.get()) {
 		primType2D.set(false);
 		primTypeCube.setName("Cube");
@@ -634,24 +633,22 @@ bool ofApp::primDim3DChanged(bool& value) {
 		primTypeSphere.setName("Cercle");
 	}
 	setupGui();
-	return primType3D.get();
 }
 
-bool ofApp::primTypeCubeChanged(bool& value) {
+void ofApp::primTypeCubeChanged(bool& value) {
 	if (primTypeCube.get())
 		primTypeSphere.set(false);
 	else
 		primTypeSphere.set(true);
-	return primTypeCube.get();
+	setupGui();
 }
 
-bool ofApp::primTypeSphereChanged(bool& value) {
+void ofApp::primTypeSphereChanged(bool& value) {
 	if (primTypeSphere.get())
 		primTypeCube.set(false);
 	else
 		primTypeCube.set(true);
-	return primTypeSphere.get();
-
+	setupGui();
 }
 
 void ofApp::initPrimitives() {

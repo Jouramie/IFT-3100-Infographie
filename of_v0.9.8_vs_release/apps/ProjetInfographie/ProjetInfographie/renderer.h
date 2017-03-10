@@ -1,6 +1,8 @@
 #pragma once
 #include "ofMain.h"
+#include "ofxRay.h"
 #include "primitive.h"
+#include <limits>
 
 
 class renderer
@@ -28,7 +30,7 @@ public:
 	void createSphere(int x, int y, int z, int size, ofColor color);
 	void clearPrimitives();
 	void changeWireFrameMode();
-	void selectPrimitive(int x, int y);
+	void selectPrimitive(int x, int y, bool shiftHeld);
 
 	~renderer();
 
@@ -52,5 +54,7 @@ private:
 	ofVec3f cameraTarget;
 
 	ofCamera camera;
+
+	std::list<ofRay> rays;
 };
 

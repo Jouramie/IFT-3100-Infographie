@@ -7,3 +7,7 @@
 1. Ajoutez un répertoire en cliquant sur le petit dossier avec un soleil
 1. Explorez pour trouver les fichiers source de l'addons ofxGui. Pour se faire, retournez à la racine de OpenFrameworks puis choisissez addons > ofxGui > src
 1. Confirmez le tout et ça devrait fonctionner!
+
+## Pour configurer ofxRay ##
+
+Faire la même chose que ci-dessus mais avec ofxRay

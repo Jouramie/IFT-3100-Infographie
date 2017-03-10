@@ -72,17 +72,23 @@ void renderer::draw()
 
 	camera.begin();
 
+	ofEnableDepthTest();
+
+	ofSetLineWidth(1.0);
+
 	std::list<primitive>::iterator iterator;
 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
 	{
-		ofSetLineWidth(1.0);
-		if (wireFrame) {
-			iterator->getPrimitive()->drawWireframe();
-		}
-		else {
-			iterator->getPrimitive()->draw();
-		}
-	}	
+		iterator->draw(wireFrame);
+	}
+
+	std::list<ofRay>::iterator iterator2;
+	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
+	{
+		iterator2->draw();
+	}
+
+	ofDisableDepthTest();
 
 	camera.end();
 }
@@ -118,9 +124,9 @@ void renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fill
 	box->set(w, h, d);
 
 	box->setPosition(x, y, z);
-	box->rotate(rand() % 360, 1.0, 0.0, 0.0);
-	box->rotate(rand() % 360, 0, 1.0, 0.0);
-	box->rotate(rand() % 360, 0, 0.0, 1.0);
+	//box->rotate(rand() % 360, 1.0, 0.0, 0.0);
+	//box->rotate(rand() % 360, 0, 1.0, 0.0);
+	//box->rotate(rand() % 360, 0, 0.0, 1.0);
 	for (int i = 0; i < 6; i++)
 	{
 		box->setSideColor(i, fillCol);
@@ -145,7 +151,6 @@ void renderer::createSphere(int x, int y, int z, int size, ofColor color)
 	ball->rotate(rand() % 360, 0, 1.0, 0.0);
 	ball->rotate(rand() % 360, 0, 0.0, 1.0);
 	//ball.set
-
 	primitive prim = primitive(ball, color);
 
 	primitives.push_back(prim);
@@ -162,24 +167,48 @@ void renderer::changeWireFrameMode()
 	wireFrame = !wireFrame;
 }
 
-void renderer::selectPrimitive(int x, int y)
+void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 {
-	/*ofxRayTriangleIntersection  rtIntersect;
-	vector<FaceTri>             tris;
-	vector<Ray>                 rays;
+	ofVec3f screenToWorld = camera.screenToWorld(ofVec3f(x, y, 0.0));
 
-	FaceTri tri;
-	tri.v0 = ofPoint(ofGetWidth() / 2, ofGetHeight() / 2 / 2, -1000);
-	tri.v1 = ofPoint(ofGetWidth() / 2 - 200, ofGetHeight() / 2 + (ofGetHeight() / 2 / 2), -1000);
-	tri.v2 = ofPoint(ofGetWidth() / 2 + 200, ofGetHeight() / 2 + (ofGetHeight() / 2 / 2), -1000);
-	tris.push_back(tri);
+	std::list<primitive>::iterator iterator;
 
-	Ray ray;
-	ray.rayOrig.set(0, 0, 0);
-	ray.rayEnd.set(0, 0, -2000);
-	rays.push_back(ray);*/
+	primitive* intersectPrim = 0;
+	int distanceClosest = std::numeric_limits<int>::max();
 
-	std::cout << "Selected Primitive" << std::endl;
+	ofVec3f vectNow = (screenToWorld - camera.getPosition());
+	ofVec3f vecLong = vectNow.scale(25);
+
+	ofRay ray(camera.getPosition(), vectNow, true);
+	rays.push_back(ray);
+
+	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
+	{
+		if (!shiftHeld)
+		{
+			iterator->setSelected(false);
+		}
+
+		float* distance = new float(0);
+
+		bool found = iterator->checkIntersectionPlaneAndLine(ray, distance);
+		if (found && *distance >= 0 && *distance < distanceClosest)
+		{
+			intersectPrim = &(*iterator);
+			distanceClosest = *distance;
+		}
+	}
+
+	if (distanceClosest < (std::numeric_limits<int>::max() - 1))
+	{
+		intersectPrim->setSelected(!intersectPrim->getSelected());
+		std::cout << "Selected Primitive" << std::endl;
+	}
+	else
+	{
+		std::cout << "Selected Nothing" << std::endl;
+	}
+	draw();
 }
 
 renderer::~renderer()

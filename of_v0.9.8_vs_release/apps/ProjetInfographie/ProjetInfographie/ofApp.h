@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "renderer.h"
+#include "ofxRay.h"
 
 class ofApp : public ofBaseApp {
 
@@ -145,10 +146,10 @@ private:
 	void btnDrawClicked();
 	void btnExitClicked();
 
-	bool primDim2DChanged(bool& value);
-	bool primDim3DChanged(bool& value);
-	bool primTypeCubeChanged(bool& value);
-	bool primTypeSphereChanged(bool& value);
+	void primDim2DChanged(bool& value);
+	void primDim3DChanged(bool& value);
+	void primTypeCubeChanged(bool& value);
+	void primTypeSphereChanged(bool& value);
 
 	void updateKeys();
 
