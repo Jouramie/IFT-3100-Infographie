@@ -205,6 +205,7 @@
     <ClInclude Include="ofApp.h" />
     <ClInclude Include="ofxCheckBox.h" />
     <ClInclude Include="primitive.h" />
+    <ClInclude Include="primitive2d.h" />
     <ClInclude Include="renderer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +227,7 @@
     <ClCompile Include="ofApp.cpp" />
     <ClCompile Include="ofxCheckBox.cpp" />
     <ClCompile Include="primitive.cpp" />
+    <ClCompile Include="primitive2d.cpp" />
     <ClCompile Include="renderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

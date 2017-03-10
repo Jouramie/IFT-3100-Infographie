@@ -72,6 +72,9 @@
     <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay\Ray.h">
       <Filter>addons\ofxRay</Filter>
     </ClInclude>
+    <ClInclude Include="primitive2d.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -130,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Ray.cpp">
       <Filter>addons\ofxRay</Filter>
+    </ClCompile>
+    <ClCompile Include="primitive2d.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

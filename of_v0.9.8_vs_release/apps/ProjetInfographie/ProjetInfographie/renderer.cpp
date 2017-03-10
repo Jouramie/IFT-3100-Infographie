@@ -291,6 +291,7 @@ void renderer::clearPrimitives()
 void renderer::changeWireFrameMode()
 {
 	wireFrame = !wireFrame;
+	draw();
 }
 
 void renderer::selectPrimitive(int x, int y, bool shiftHeld)
