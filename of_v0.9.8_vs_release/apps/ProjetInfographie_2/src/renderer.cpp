@@ -92,13 +92,6 @@ void renderer::draw()
 		iterator2->draw();
 	}
 
-	std::list<primitive2d>::iterator iterator3;
-	for (iterator3 = primitives2d.begin(); iterator3 != primitives2d.end(); ++iterator3)
-	{
-		ofSetLineWidth(1.0);
-		iterator3->getPrimitive2d()->draw();
-
-	}
 	ofDisableDepthTest();
 
 	camera.end();
@@ -138,10 +131,7 @@ void renderer::createSquare(float x, float y, float w, float h, ofColor fillColo
 	ofPath* rect = new ofPath();
 	rect->rectangle(ofRectangle(x, y, w, h));
 	rect->setColor(fillColor);
-	primitive2d prim = primitive2d(rect, fillColor);
-	primitives2d.push_back(prim);
-	draw();
-	
+	scn->addElement(primitive2d{ rect, fillColor });
 }
 
 /**
@@ -159,10 +149,7 @@ void renderer::createCircle(float x, float y, float r1, float r2, ofColor fillCo
 	ofPath* circle = new ofPath();
 	circle->ellipse(x, y, r1, r2);
 	circle->setColor(fillColor);
-	primitive2d prim = primitive2d(circle, fillColor);
-	primitives2d.push_back(prim);
-	draw();
-
+	scn->addElement(primitive2d{ circle, fillColor });
 }
 
 /**
@@ -180,10 +167,8 @@ void renderer::createLine(float x, float y, float xDelta, float yDelta, ofColor 
 	ofPath* line = new ofPath();
 	line->moveTo(x, y, 0);
 	line->lineTo(x +  xDelta, y + yDelta);
-	line->setColor(fillColor);
-	primitive2d prim = primitive2d(line, fillColor);
-	primitives2d.push_back(prim);
-	draw();
+	line->setColor(fillColor);	
+	scn->addElement(primitive2d{ line, fillColor });
 }
 
 /**
@@ -201,9 +186,7 @@ void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, 
 	ofPath* triangle = new ofPath();
 	triangle->triangle(x1, y1, x2, y2, x3, y3);
 	triangle->setColor(fillColor);
-	primitive2d prim = primitive2d(triangle, fillColor);
-	primitives2d.push_back(prim);
-	draw();
+	scn->addElement(primitive2d{ triangle, fillColor });
 }
 
 /**
@@ -221,10 +204,7 @@ void renderer::createPoint(float x, float y, float radius, ofColor fillColor) {
 	ofPath* point = new ofPath();
 	point->circle(x, y, radius);
 	point->setColor(fillColor);
-	primitive2d prim = primitive2d(point, fillColor);
-	primitives2d.push_back(prim);
-	draw();
-
+	scn->addElement(primitive2d{ point, fillColor });
 }
 //-------------3D primitives-----------------------
 void renderer::createCube(int x, int y, int z, int w, int h, int d)
@@ -255,11 +235,8 @@ void renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fill
 	{
 		box->setSideColor(i, fillCol);
 	}
-//  	primitive prim = primitive(box, fillCol, scaleVec);
-//  	primitives.push_back(prim);
- 	scn->addElement(0, primitive{ box, fillCol, scaleVec }, true);
+ 	scn->addElement(primitive3d{ box, fillCol, scaleVec });
  	cout << *scn;
-	draw();
 }
 
 void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
@@ -284,24 +261,28 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 
 	ofVec3f scaleVec = ofVec3f(newX, newY, newZ);
 
-
-//  	primitive prim = primitive(ball, color, scaleVec);
-//  	primitives.push_back(prim);
-	scn->addElement(0, primitive{ ball, color, scaleVec }, true);
+	scn->addElement(primitive3d{ ball, color, scaleVec });
 	cout << *scn;
-	draw();
 }
 
 void renderer::clearPrimitives()
 {
-/*	primitives.clear();*/
 	scn->clearElements();
 }
 
 void renderer::changeWireFrameMode()
 {
 	wireFrame = !wireFrame;
-	draw();
+}
+
+void renderer::changeCameraMode()
+{
+	if (camera.getOrtho()) {
+		camera.disableOrtho();
+	}
+	else {
+		camera.enableOrtho();
+	}
 }
 
 void renderer::selectPrimitive(int x, int y, bool shiftHeld)
@@ -318,7 +299,6 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 	// Pour dessiner le rayon (à des fins de débogage)
 	// rays.push_back(ray);
 
-/*	for (auto& iterator = primitives.begin(); iterator != primitives.end(); ++iterator)*/
 	for (primitive& p : *scn)
 	{
 		if (!shiftHeld)
@@ -345,7 +325,6 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 	{
 		std::cout << "Selected Nothing" << std::endl;
 	}
-	draw();
 }
 
 renderer::~renderer()

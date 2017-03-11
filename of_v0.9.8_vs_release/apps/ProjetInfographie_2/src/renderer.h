@@ -1,7 +1,7 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxRay.h"
-#include "primitive.h"
+#include "primitive3d.h"
 #include <limits>
 #include "scene.h"
 #include "primitive2d.h"
@@ -44,6 +44,7 @@ public:
 	void createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
 	void clearPrimitives();
 	void changeWireFrameMode();
+	void changeCameraMode();
 	void selectPrimitive(int x, int y, bool shiftHeld);
 
 	void setScene(scene * scn) { this->scn = scn; }
@@ -52,8 +53,6 @@ public:
 
 private:
 	void setupCamera();
-
-    std::list<primitive2d> primitives2d;
 
 	//ofEasyCam mainCam;
 	bool wireFrame;

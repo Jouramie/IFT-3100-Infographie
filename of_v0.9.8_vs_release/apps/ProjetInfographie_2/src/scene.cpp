@@ -1,17 +1,39 @@
 #include "scene.h"
 #include <string>
+#include "primitive2d.h"
+#include "primitive3d.h"
 
 using namespace std;
 
 scene::scene() : root{ new group{ 0, 0} } {}
 
-void scene::addElement(size_t index, const primitive& p, bool insertFirstChild)
+void scene::addElement(size_t index, const primitive2d& p, bool insertFirstChild)
 {
 	if (index == 0 && !insertFirstChild)
 	{
 		throw invalid_argument("root don't have parent...");
 	}
-	root->addElement(index, primitive_ptr{ new primitive{ p } }, insertFirstChild);
+	primitive2d* prim = new primitive2d{ p };
+
+	addElement(index, primitive_ptr{ prim }, insertFirstChild);
+}
+
+void scene::addElement(size_t index, const primitive3d& p, bool insertFirstChild)
+{
+	if (index == 0 && !insertFirstChild)
+	{
+		throw invalid_argument("root don't have parent...");
+	}
+	addElement(index, primitive_ptr{ new primitive3d{ p } }, insertFirstChild);
+}
+
+void scene::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)
+{
+	if (index == 0 && !insertFirstChild)
+	{
+		throw invalid_argument("root don't have parent...");
+	}
+	root->addElement(index, p, insertFirstChild);
 }
 
 void scene::removeElement(size_t index) 
@@ -358,27 +380,27 @@ void test_scene() {
 		//TEST ADD
 
 		cout << "addElement(0, true)" << endl;
-		s.addElement(0, primitive{ }, true);
+		s.addElement(0, primitive2d{ }, true);
 		cout << s << endl;
 		cout << "addElement(0, false)" << endl;
-		s.addElement(0, primitive{ }, true);
+		s.addElement(0, primitive2d{ }, true);
 		cout << "addElement(1, true)" << endl;
-		s.addElement(1, primitive{ }, false);
+		s.addElement(1, primitive2d{ }, false);
 		cout << s << endl;
 		cout << "addElement(2, true)" << endl;
-		s.addElement(2, primitive{ }, true);
+		s.addElement(2, primitive2d{ }, true);
 		cout << s << endl;
 		cout << "addElement(2, true)" << endl;
-		s.addElement(2, primitive{ }, true);
+		s.addElement(2, primitive2d{ }, true);
 		cout << s << endl;
 		cout << "addElement(4, true)" << endl;
-		s.addElement(4, primitive{ }, true);
+		s.addElement(4, primitive2d{ }, true);
 		cout << s << endl;
 		cout << "addElement(1, true)" << endl;
-		s.addElement(1, primitive{ }, true);
+		s.addElement(1, primitive2d{ }, true);
 		cout << s << endl;
 		cout << "addElement(6, false)" << endl;
-		s.addElement(6, primitive{ }, false);
+		s.addElement(6, primitive2d{ }, false);
 		cout << s << endl;
 
 		//TEST REMOVE
@@ -393,7 +415,7 @@ void test_scene() {
 		s.removeElement(4);
 		cout << s << endl;
 		cout << "addElement(3, true)" << endl;
-		s.addElement(3, primitive{ }, true);
+		s.addElement(3, primitive2d{ }, true);
 		cout << s << endl;
 		cout << "removeElement(3)" << endl;
 		s.removeElement(3);

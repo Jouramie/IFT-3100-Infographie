@@ -4,6 +4,8 @@
 #include <memory> //shared_ptr
 #include <iostream>
 #include "primitive.h"
+#include "primitive2d.h"
+#include "primitive3d.h"
 
 
 typedef std::shared_ptr<primitive> primitive_ptr;
@@ -15,7 +17,12 @@ public:
 
 	scene();
 
-	void addElement(size_t index, const primitive& p, bool insertFirstChild);
+	//temporaire
+	void addElement(const primitive2d& p) {	addElement(0, p, true); }
+	void addElement(const primitive3d& p) { addElement(0, p, true); }
+
+	void addElement(size_t index, const primitive2d& p, bool insertFirstChild);
+	void addElement(size_t index, const primitive3d& p, bool insertFirstChild);
 	void removeElement(size_t index);
 	void clearElements();
 
@@ -25,6 +32,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, const scene& s);
 
 private:
+	void addElement(size_t index, primitive_ptr& p, bool insertFirstChild);
 
 	class element {
 	public:

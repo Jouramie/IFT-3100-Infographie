@@ -52,10 +52,10 @@ void ofApp::update()
 
 void ofApp::updateKeys()
 {
-	rend->isCameraMoveBackward = isKeyPressDown;
-	rend->isCameraMoveForward = isKeyPressUp;
-	rend->isCameraMoveDown = isKeyPressPageDown;
-	rend->isCameraMoveUp = isKeyPressPageUp;
+	rend->isCameraMoveDown = isKeyPressDown;
+	rend->isCameraMoveUp = isKeyPressUp;
+	rend->isCameraMoveBackward = isKeyPressPageDown;
+	rend->isCameraMoveForward = isKeyPressPageUp;
 	rend->isCameraMoveLeft = isKeyPressLeft;
 	rend->isCameraMoveRight = isKeyPressRight;
 }
@@ -125,10 +125,16 @@ void ofApp::keyReleased(int key) {
 		rend->createSphere(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);*/
 	}
 	else if (key == 'c') {
+		ofLog() << "<app::primitiveCleared>";
 		rend->clearPrimitives();
 	}
 	else if (key == 'w') {
+		ofLog() << "<app::wireFrameModeChanged>";
 		rend->changeWireFrameMode();
+	}
+	else if (key == 'v') {
+		ofLog() << "<app::cameraModeChanged>";
+		rend->changeCameraMode();
 	}
 	else if (key == OF_KEY_LEFT)
 	{
@@ -530,27 +536,27 @@ void ofApp::btnDrawPrimitiveClicked()
 
 		if (primType2D.get()) {
 			if (primTypeCube.get()) {
-				//rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
+				rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
 			}
 			else if (primTypeSphere.get()) {
-				//rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
+				rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
 			}
 			else if (primTypeTriangle.get()) {
-				//rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight, fill);
+				rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight, fill);
 			}
 			else if (primTypeLine.get()) {
-				//rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight, stroke);
+				rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight, stroke);
 			}
 			else if (primTypePoint.get()) {
-				//rend->createPoint(primPosX, primPosY, stroke);
+				rend->createPoint(primPosX, primPosY, strokeThickness, stroke);
 			}
 		}
 		else {
 			if (primTypeCube.get()) {
-				//rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
+				rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
 			}
 			else {
-				//rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
+				rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
 			}
 		}
 	}
@@ -562,7 +568,7 @@ void ofApp::btnExitClicked()
 	if (isListenersUnlocked)
 	{
 		ofLog() << "<app::btnExitClicked>";
-		std::exit(0);		//TODO: Trouver une autre solution
+		std::exit(0);
 	}
 }
 
