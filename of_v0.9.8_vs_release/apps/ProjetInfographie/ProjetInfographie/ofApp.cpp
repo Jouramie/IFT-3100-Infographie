@@ -4,6 +4,7 @@
 ofApp::ofApp()
 {
 	rend = nullptr;
+	scn = nullptr;
 }
 
 //--------------------------------------------------------------
@@ -38,6 +39,8 @@ void ofApp::setup()
 	isKeyPressRight = false;
 
 	rend = new renderer();
+	scn = new scene();
+	rend->setScene(scn);
 	rend->setup();
 
 	ofLog() << "<app::setup>";
