@@ -44,6 +44,12 @@ ccamera::ccamera()
 	backClippingPlan.setMax(MaxZ);
 	backClippingPlan.set(MaxZ / 2);
 
+	projectionOrthogonal.setName("Projection orthogonal");
+	projectionOrthogonal.set(false);
+
+	cameraInteractive.setName("Camera interactive");
+	cameraInteractive.set(false);
+
 	parameterGroup.setName("Parametre de la camera");
 	parameterGroup.add(posX);
 	parameterGroup.add(posY);
@@ -53,6 +59,8 @@ ccamera::ccamera()
 	parameterGroup.add(aspectRatio);
 	parameterGroup.add(frontClippingPlan);
 	parameterGroup.add(backClippingPlan);
+	parameterGroup.add(projectionOrthogonal);
+	parameterGroup.add(cameraInteractive);
 
 }
 

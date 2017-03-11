@@ -48,6 +48,8 @@ private:
 
 	ofxPanel gui;
 	ofxPanel cameraMenu;
+	ofxPanel transformationMenu;
+	ofxPanel filterMenu;
 	ofxButton btnSelect;
 	ofxButton btnDrawPrimitive;
 	ofxButton btnExit;
@@ -109,6 +111,28 @@ private:
 	ofParameter<bool> metalTexture;
 	ofParameter<bool> waterTexture;
 
+	ofParameterGroup groupTranslate2D;
+	ofParameterGroup groupTranslate3D;
+	ofParameter<float> translateX;
+	ofParameter<float> translateY;
+	ofParameter<float> translateZ;
+
+	ofParameterGroup groupRotate2D;
+	ofParameterGroup groupRotate3D;
+	ofParameter<float> rotateX;
+	ofParameter<float> rotateY;
+	ofParameter<float> rotateZ;
+
+	ofParameterGroup groupProportion2D;
+	ofParameterGroup groupProportion3D;
+	ofParameter<float> proportionX;
+	ofParameter<float> proportionY;
+	ofParameter<float> proportionZ;
+
+	ofParameterGroup groupFilter;
+	ofParameter<bool> blur;
+	ofParameter<bool> invert;
+	ofParameter<bool> dilate;
 
 
 	void initGroups();
@@ -116,9 +140,13 @@ private:
 	void initOfParameters();
 
 	void setColors();
+
+	void setRendererParameter();
 		
 	void setupGui(); 
 	void setupCameraMenu();
+	void setupTransformationMenu();
+	void setupFilterMenu();
 
 	void btnSelectClicked();
 	void btnDrawPrimitiveClicked();
@@ -137,6 +165,10 @@ private:
 	void noTextureChanged(bool & value);
 	void metalTextureChanged(bool & value);
 	void waterTextureChanged(bool & value);
+
+	void blurChanged(bool & value);
+	void invertChanged(bool & value);
+	void dilateChanged(bool & value);
 
 	void updateKeys();
 
