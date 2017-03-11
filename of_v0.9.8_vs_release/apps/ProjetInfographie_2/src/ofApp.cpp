@@ -921,23 +921,23 @@ void ofApp::waterTextureChanged(bool& value) {
 
 void ofApp::blurChanged(bool& value) {
 	if (blur)
-		;//rend->addBlur();
+		rend->addBlur();
 	else
-		;//rend->removeBlur();
+		rend->removeBlur();
 }
 
 void ofApp::invertChanged(bool& value) {
 	if (invert)
-		;//rend->addInvert();
+		rend->addInvert();
 	else
-		;//rend->removeInvert();
+		rend->removeInvert();
 }
 
 void ofApp::dilateChanged(bool& value) {
 	if (dilate)
-		;//rend->addDilate();
+		rend->addDilate();
 	else
-		;//rend->removeDilate();
+		rend->removeDilate();
 }
 
 void ofApp::setupCameraMenu() {

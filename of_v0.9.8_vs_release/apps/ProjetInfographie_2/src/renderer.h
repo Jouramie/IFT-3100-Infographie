@@ -30,7 +30,10 @@ public:
 	void update();
 	void draw();
 	void imageExport(const string name, const string extension) const;
-	void chekFilters();
+	void checkFilters();
+	void sceneTranslate(float x, float y);
+	void sceneRotate(float angle, float centerX, float centerY);
+	void sceneScale(float scaleX, float scaleY);
 	//2D primitives
 	void createSquare(float x, float y, float width, float height);
 	void createSquare(float x, float y, float width, float height, ofColor fillColor, ofColor strokeColor);
@@ -68,6 +71,7 @@ private:
 
 	//ofEasyCam mainCam;
 	bool wireFrame;
+	bool isFiltered;
 	bool blur;
 	bool invert;
 	bool dilate;
