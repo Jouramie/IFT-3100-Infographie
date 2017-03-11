@@ -16,9 +16,9 @@ void ofApp::setup()
 	initButtonListener();
 	initGroups();
 
-	setupCameraMenu();
-
-	gui.setDefaultWidth(270);
+	setupCameraMenu(); 
+	setupTransformationMenu();
+	setupFilterMenu();
 	gui.setup();
 
 	gui.registerMouseEvents();
@@ -44,7 +44,8 @@ void ofApp::setup()
 void ofApp::update()
 {
 	setColors();
-	rend->background = background;
+	setRendererParameter();
+
 	rend->update();
 
 	updateKeys();
@@ -67,6 +68,8 @@ void ofApp::draw()
 	rend->draw();
 	gui.draw();
 	cameraMenu.draw();
+	transformationMenu.draw();
+	filterMenu.draw();
 
 }
 
@@ -242,6 +245,8 @@ void ofApp::dragEvent(ofDragInfo dragInfo) {
 
 void ofApp::setupGui() {
 
+	gui.setDefaultWidth(270);
+
 	isListenersUnlocked = false;
 
 	gui.clear();
@@ -356,10 +361,42 @@ void ofApp::initGroups()
 	groupBackground.add(bgBrightess.set(bgBrightess));
 
 	groupTexture.setName("Texture");
+	groupTexture.add(wireFrame);
 	groupTexture.add(noTexture);
 	groupTexture.add(metalTexture);
 	groupTexture.add(waterTexture);
 
+	groupTranslate2D.setName("Translation");
+	groupTranslate2D.add(translateX);
+	groupTranslate2D.add(translateY);
+
+	groupTranslate3D.setName("Translation");
+	groupTranslate3D.add(translateX);
+	groupTranslate3D.add(translateY);
+	groupTranslate3D.add(translateZ);
+
+	groupRotate2D.setName("Rotation");
+	groupRotate2D.add(rotateX);
+	groupRotate2D.add(rotateY);
+
+	groupRotate3D.setName("Rotation");
+	groupRotate3D.add(rotateX);
+	groupRotate3D.add(rotateY);
+	groupRotate3D.add(rotateZ);
+
+	groupProportion2D.setName("Proportion");
+	groupProportion2D.add(proportionX);
+	groupProportion2D.add(proportionY);
+
+	groupProportion3D.setName("Proportion");
+	groupProportion3D.add(proportionX);
+	groupProportion3D.add(proportionY);
+	groupProportion3D.add(proportionZ);
+
+	groupFilter.setName("Traitement d'image");
+	groupFilter.add(blur);
+	groupFilter.add(invert);
+	groupFilter.add(dilate);
 }
 
 void ofApp::initButtonListener() {
@@ -499,6 +536,10 @@ void ofApp::initOfParameters() {
 
 	setColors();
 
+	wireFrame.setName("Forme 3D en file de fer");
+	wireFrame.set(true);
+	wireFrame.addListener(this, &ofApp::wireFrameChanged);
+
 	noTexture.setName("Aucune");
 	noTexture.set(true);
 	noTexture.addListener(this, &ofApp::noTextureChanged);
@@ -510,6 +551,65 @@ void ofApp::initOfParameters() {
 	waterTexture.setName("Aquatique");
 	waterTexture.set(false);
 	waterTexture.addListener(this, &ofApp::waterTextureChanged);
+
+
+	translateX.setName("X");
+	translateX.setMin(MinX);
+	translateX.setMax(MaxX);
+	translateX.set((MinX + MaxX) / 2);
+
+	translateY.setName("Y");
+	translateY.setMin(MinY);
+	translateY.setMax(MaxY);
+	translateY.set((MinY + MaxY) / 2);
+
+	translateZ.setName("Z");
+	translateZ.setMin(MinZ);
+	translateZ.setMax(MaxZ);
+	translateZ.set((MinZ + MaxZ) / 2);
+
+	rotateX.setName("X");
+	rotateX.setMin(0);
+	rotateX.setMax(360);
+	rotateX.set(0);
+
+	rotateY.setName("Y");
+	rotateY.setMin(0);
+	rotateY.setMax(360);
+	rotateY.set(0);
+
+	rotateZ.setName("Z");
+	rotateZ.setMin(0);
+	rotateZ.setMax(360);
+	rotateZ.set(0);
+
+	proportionX.setName("X");
+	proportionX.setMin(MinX);
+	proportionX.setMax(MaxX);
+	proportionX.set((MinX + MaxX) / 2);
+
+	proportionY.setName("Y");
+	proportionY.setMin(MinY);
+	proportionY.setMax(MaxY);
+	proportionY.set((MinY + MaxY) / 2);
+
+	proportionZ.setName("Z");
+	proportionZ.setMin(MinZ);
+	proportionZ.setMax(MaxZ);
+	proportionZ.set((MinZ + MaxZ) / 2);
+
+
+	blur.setName("Brouiller");
+	blur.set(false);
+	blur.addListener(this, &ofApp::blurChanged);
+
+	invert.setName("Inverser");
+	invert.set(false);
+	invert.addListener(this, &ofApp::invertChanged);
+
+	dilate.setName("Dilater");
+	dilate.set(false);
+	dilate.addListener(this, &ofApp::dilateChanged);
 }
 
 void ofApp::setColors()
@@ -517,6 +617,15 @@ void ofApp::setColors()
 	stroke = ofColor::fromHsb(strokeHue, strokeSaturation, strokeBrightess, strokeAlpha);
 	fill = ofColor::fromHsb(fillHue, fillSaturation, fillBrightess, fillAlpha);
 	background = ofColor::fromHsb(bgHue, bgSaturation, bgBrightess);
+}
+
+void ofApp::setRendererParameter() {
+	
+	rend->stroke = stroke;
+	rend->fill = fill;
+	rend->background = background;
+
+	rend->strokeThickness = strokeThickness;
 }
 
 void ofApp::btnSelectClicked()
@@ -737,6 +846,12 @@ void ofApp::primTypePointChanged(bool& value) {
 	primTypePoint.enableEvents();
 }
 
+void ofApp::wireFrameChanged(bool& value) {
+
+	ofLog() << "<app::wireFrameModeChanged>";
+	rend->changeWireFrameMode();
+}
+
 void ofApp::noTextureChanged(bool& value) {
 
 	ofLog() << "<app::noTextureChanged>";
@@ -804,6 +919,27 @@ void ofApp::waterTextureChanged(bool& value) {
 	waterTexture.enableEvents();
 }
 
+void ofApp::blurChanged(bool& value) {
+	if (blur)
+		;//rend->addBlur();
+	else
+		;//rend->removeBlur();
+}
+
+void ofApp::invertChanged(bool& value) {
+	if (invert)
+		;//rend->addInvert();
+	else
+		;//rend->removeInvert();
+}
+
+void ofApp::dilateChanged(bool& value) {
+	if (dilate)
+		;//rend->addDilate();
+	else
+		;//rend->removeDilate();
+}
+
 void ofApp::setupCameraMenu() {
 
 	cam = new ccamera();
@@ -814,5 +950,29 @@ void ofApp::setupCameraMenu() {
 	cameraMenu.add(cam->getParameterGroup());
 
 	cameraMenu.setPosition(ofGetWindowWidth() - 280, 10);
+
+}
+
+void ofApp::setupTransformationMenu() {
+	
+	transformationMenu.setDefaultWidth(270);
+
+	transformationMenu.setup("Menu de Transformation");
+	transformationMenu.add(groupTranslate3D);
+	transformationMenu.add(groupRotate3D);
+	transformationMenu.add(groupProportion3D);
+
+	transformationMenu.setPosition(ofGetWindowWidth() - 280, 260);
+
+}
+
+void ofApp::setupFilterMenu() {
+
+	filterMenu.setDefaultWidth(270);
+
+	filterMenu.setup();
+	filterMenu.add(groupFilter);
+
+	filterMenu.setPosition(ofGetWindowWidth() - 280, 540);
 
 }
