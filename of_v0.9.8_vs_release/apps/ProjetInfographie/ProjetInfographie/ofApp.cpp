@@ -4,6 +4,7 @@
 ofApp::ofApp()
 {
 	rend = nullptr;
+	scn = nullptr;
 }
 
 //--------------------------------------------------------------
@@ -32,6 +33,8 @@ void ofApp::setup()
 	isKeyPressRight = false;
 
 	rend = new renderer();
+	scn = new scene();
+	rend->setScene(scn);
 	rend->setup();
 
 	ofLog() << "<app::setup>";
@@ -118,8 +121,8 @@ void ofApp::keyReleased(int key) {
 	}
 	else if (key == 's')
 	{
-		ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
-		rend->createSphere(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
+		/*ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
+		rend->createSphere(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);*/
 	}
 	else if (key == 'c') {
 		rend->clearPrimitives();
@@ -164,7 +167,30 @@ void ofApp::keyReleased(int key) {
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y) {
+	HCURSOR curs;
+	if (cursorIsInControl(x, y))
+	{
+		curs = LoadCursor(NULL, IDC_HAND);
+	}
+	else
+	{
+		curs = LoadCursor(NULL, IDC_ARROW);
+	}
+	SetCursor(curs);
+}
 
+bool ofApp::cursorIsInControl(int x, int y) {
+	vector<string> names = gui.getControlNames();
+	for each (string name in names)
+	{
+		ofxBaseGui* control = gui.getControl(name);
+		ofPoint pos = control->getPosition();
+		float h = control->getHeight();
+		float w = control->getWidth();
+		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+			return true;
+	}
+	return false;
 }
 
 //--------------------------------------------------------------
@@ -180,7 +206,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
 	//if (button == )
-	rend->selectPrimitive(x, y);
+	rend->selectPrimitive(x, y, GetKeyState(VK_SHIFT));
 }
 
 //--------------------------------------------------------------

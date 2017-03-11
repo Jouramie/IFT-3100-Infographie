@@ -4,15 +4,18 @@
 #include "ofxGui.h"
 #include "renderer.h"
 #include "camera.h"
+#include "ofxRay.h"
+#include "scene.h"
 
 class ofApp : public ofBaseApp {
 
 public:
 
-	const float MaxX = 2000, MaxY = 1000, MaxZ = 1000;
-	const float MinX = 0, MinY = 0, MinZ = -1000;
+	const float MaxX = 1000, MaxY = 1000, MaxZ = 1000;
+	const float MinX = -1000, MinY = -1000, MinZ = -1000;
 
 	renderer * rend;
+	scene * scn;
 
 	ofApp();
 
@@ -25,6 +28,7 @@ public:
 	void keyPressed(int key);
 	void keyReleased(int key);
 	void mouseMoved(int x, int y);
+	void mouseMovedGui(int x, int y);
 	void mouseDragged(int x, int y, int button);
 	void mousePressed(int x, int y, int button);
 	void mouseReleased(int x, int y, int button);
@@ -33,6 +37,7 @@ public:
 	void windowResized(int w, int h);
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
+	bool cursorIsInControl(int x, int y);
 
 
 private:
