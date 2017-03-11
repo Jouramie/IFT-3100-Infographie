@@ -6,17 +6,42 @@ class ccamera
 {
 public:
 
-	const float MaxX = 2000, MaxY = 1000, MaxZ = 1000;
-	const float MinX = 0, MinY = 0, MinZ = -1000;
+	const float MaxX = 2000, MaxY = 2000, MaxZ = 1000;
+	const float MinX = -2000, MinY = -2000, MinZ = -1000;
 
+	ccamera() : ccamera{ nullptr } {}
+	ccamera(ofCamera* cam) : cam{ cam } { }
 
-	ccamera();
-	~ccamera();
+	ofParameterGroup getParameterGroup() { return parameterGroup; }
+	void setSpeed(float speed) { this->speed = speed; }
+	float getSpeed() const { return speed; }
+	void setCamera(ofCamera* cam) { this->cam = cam; }
 
-	ofParameterGroup getParameterGroup();
+	void setup() { setupCamera(); setupParameters(); }
+	void update(float dt);
+
+	void begin() { cam->begin(); }
+	void end() { cam->end(); }
+	
+	bool isCameraMoveLeft = false;
+	bool isCameraMoveRight = false;
+	bool isCameraMoveUp = false;
+	bool isCameraMoveDown = false;
+	bool isCameraMoveForward = false;
+	bool isCameraMoveBackward = false;
+
+	void changeMode();
+
+	const ofCamera& operator*() const { return *cam; }
 
 private:
 
+	ofCamera* cam;
+
+	float speed;
+
+	void setupCamera();
+	void setupParameters();
 
 	ofParameterGroup parameterGroup;
 	ofParameter<float> posX;

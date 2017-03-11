@@ -14,9 +14,6 @@ public:
 	const float MaxX = 1000, MaxY = 1000, MaxZ = 1000;
 	const float MinX = -1000, MinY = -1000, MinZ = -1000;
 
-	renderer * rend;
-	scene * scn;
-
 	ofApp();
 
 	void setup();
@@ -42,6 +39,8 @@ public:
 
 private:
 	
+	renderer * rend;
+	scene * scn;
 	ccamera *cam;
 
 	bool isListenersUnlocked;

@@ -1,9 +1,14 @@
 #include "ccamera.h"
 
-
-ccamera::ccamera()
+void ccamera::setupCamera()
 {
+	speed = 250.0f;
 
+	cam->setPosition( { 0.0f, 0.0f, -1000.0f } );
+	cam->lookAt( { 0.0f, 0.0f, 0.0f } );
+}
+
+void ccamera::setupParameters() {
 	posX.setName("Position en X");
 	posX.setMin(MinX);
 	posX.setMax(MaxX);
@@ -37,7 +42,7 @@ ccamera::ccamera()
 	frontClippingPlan.setName("Plan de clipping avant");
 	frontClippingPlan.setMin(0);
 	frontClippingPlan.setMax(MaxZ);
-	frontClippingPlan.set(MaxZ / 2); 
+	frontClippingPlan.set(MaxZ / 2);
 
 	backClippingPlan.setName("Plan de cliping arriere");
 	backClippingPlan.setMin(0);
@@ -61,16 +66,34 @@ ccamera::ccamera()
 	parameterGroup.add(backClippingPlan);
 	parameterGroup.add(projectionOrthogonal);
 	parameterGroup.add(cameraInteractive);
-
 }
 
-
-ccamera::~ccamera()
+void ccamera::update(float dt)
 {
+	float dist = speed * dt;
+
+	if (isCameraMoveLeft)
+		cam->truck(-dist);
+	if (isCameraMoveRight)
+		cam->truck(dist);
+
+	if (isCameraMoveUp)
+		cam->boom(dist);
+	if (isCameraMoveDown)
+		cam->boom(-dist);
+
+	if (isCameraMoveForward)
+		cam->dolly(-dist);
+	if (isCameraMoveBackward)
+		cam->dolly(dist);
 }
 
-
-ofParameterGroup ccamera::getParameterGroup()
+void ccamera::changeMode()
 {
-	return parameterGroup;
+	if (cam->getOrtho()) {
+		cam->disableOrtho();
+	}
+	else {
+		cam->enableOrtho();
+	}
 }
