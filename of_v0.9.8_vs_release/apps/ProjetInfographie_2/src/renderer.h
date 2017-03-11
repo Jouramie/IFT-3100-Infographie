@@ -95,6 +95,7 @@ private:
 	ofCamera camera;
 
 	std::list<ofRay> rays;
+	std::list<extModel> externalModels;
 
 	ofxCvColorImage filter;
 	ofImage sceneImg;
