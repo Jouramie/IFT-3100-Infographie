@@ -75,13 +75,13 @@ void ccamera::update(float dt)
 	float dy = 0;
 	float dz = 0;
 
-	dx = cam->getX() - posX.get();
+	dx = -cam->getX() - posX.get();
 	if (isCameraMoveLeft)
 		dx += dist;
 	if (isCameraMoveRight)
 		dx -= dist;
-	cam->truck(dx);
-	posX.set(cam->getX());
+	cam->truck(-dx);
+	posX.set(-cam->getX());
 
 	dy = cam->getY() - posY.get();
 	if (isCameraMoveUp)
@@ -93,13 +93,11 @@ void ccamera::update(float dt)
 
 	dz = cam->getZ() - posZ.get();
 	if (isCameraMoveForward)
-		dz += dist;
-	if (isCameraMoveBackward)
 		dz -= dist;
+	if (isCameraMoveBackward)
+		dz += dist;
 	cam->dolly(dz);
 	posZ.set(cam->getZ());
-
-
 }
 
 void ccamera::changeMode()
