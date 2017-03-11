@@ -111,6 +111,10 @@ void ofApp::keyPressed(int key) {
 		isKeyPressPageUp = true;
 		ofLog() << "<app::keyPressedPageUp>";
 	}
+	else if (key == 'm')
+	{
+		rend->importModel("..\\..\\Models\\Mouse\\Formats\\Mouse.fbx");
+	}
 }
 
 //--------------------------------------------------------------

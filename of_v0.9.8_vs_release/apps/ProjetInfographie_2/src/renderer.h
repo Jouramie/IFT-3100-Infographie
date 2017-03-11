@@ -6,6 +6,7 @@
 #include <limits>
 #include "scene.h"
 #include "primitive2d.h"
+#include "extModel.h"
 
 
 class renderer
@@ -50,6 +51,9 @@ public:
 	void createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol);
 	void createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
 	void createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
+
+	void importModel(string path);
+
 	void clearPrimitives();
 	void changeWireFrameMode();
 	void changeCameraMode();
