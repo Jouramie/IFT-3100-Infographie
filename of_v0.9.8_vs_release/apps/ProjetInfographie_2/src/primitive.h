@@ -14,7 +14,7 @@ public:
 	void setSelected(bool selected) { this->selected = selected; }
 	void changeSelected() {	selected = !selected; }
 
-	virtual bool checkIntersectionPlaneAndLine(ofRay ray, float *result) { return false; };
+	virtual bool checkIntersectionPlaneAndLine(ofRay ray, float *result) const { return false; };
 protected:
 	bool selected;
 };

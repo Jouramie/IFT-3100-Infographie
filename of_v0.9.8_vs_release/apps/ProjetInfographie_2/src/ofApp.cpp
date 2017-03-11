@@ -111,25 +111,19 @@ void ofApp::keyPressed(int key) {
 		isKeyPressPageUp = true;
 		ofLog() << "<app::keyPressedPageUp>";
 	}
-	else if (key == 'm')
-	{
-		rend->importModel("..\\..\\Models\\Mouse\\Formats\\Mouse.fbx");
-	}
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
 	if (key == ' ')
 		rend->imageExport("render", "png");
-	else if (key == 'r')
+	else if (key == 'm')
 	{
-		//ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
-		//rend->createCube(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
+		rend->importModel("..\\..\\Models\\IronMan\\Iron_Man.obj");
 	}
-	else if (key == 's')
+	else if (key == 'n')
 	{
-		/*ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
-		rend->createSphere(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);*/
+		rend->importModel("..\\..\\Models\\IronMan\\Iron_Man.obj");
 	}
 	else if (key == 'c') {
 		ofLog() << "<app::primitiveCleared>";

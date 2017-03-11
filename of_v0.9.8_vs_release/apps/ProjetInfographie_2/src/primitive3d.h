@@ -16,7 +16,7 @@ public:
 	bool calcTriangleIntersection(ofRay ray, float *result) const;
 
 	bool inside(ofVec3f p, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) const;
-	bool checkIntersectionPlaneAndLine(ofRay ray, float *result) const;
+	bool checkIntersectionPlaneAndLine(ofRay ray, float *result) const override;
 	bool checkIntersectionTriangleRay(ofRay ray, ofPoint* inter);
 
 private:
