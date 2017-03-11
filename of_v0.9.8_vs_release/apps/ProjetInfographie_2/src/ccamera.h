@@ -6,8 +6,8 @@ class ccamera
 {
 public:
 
-	const float MaxX = 2000, MaxY = 2000, MaxZ = 1000;
-	const float MinX = -2000, MinY = -2000, MinZ = -1000;
+	const float MaxX = 2000.0f, MaxY = 2000.0f, MaxZ = 2000.0f;
+	const float MinX = -2000.0f, MinY = -2000.0f, MinZ = -2000.0f;
 
 	ccamera() : ccamera{ nullptr } {}
 	ccamera(ofCamera* cam) : cam{ cam } { }

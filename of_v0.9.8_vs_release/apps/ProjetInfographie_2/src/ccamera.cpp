@@ -4,7 +4,7 @@ void ccamera::setupCamera()
 {
 	speed = 250.0f;
 
-	cam->setPosition( { 0.0f, 0.0f, -1000.0f } );
+	cam->setPosition( { (MinX + MaxX) / 2, (MinY + MaxY) / 2, MinZ } );
 	cam->lookAt( { 0.0f, 0.0f, 0.0f } );
 }
 
@@ -22,7 +22,7 @@ void ccamera::setupParameters() {
 	posZ.setName("Position en Z");
 	posZ.setMin(MinZ);
 	posZ.setMax(MaxZ);
-	posZ.set((MinZ + MaxZ) / 2);
+	posZ.set(MinZ);
 
 	fovH.setName("Champs de vision horizontal");
 	fovH.setMin(0);
@@ -71,21 +71,35 @@ void ccamera::setupParameters() {
 void ccamera::update(float dt)
 {
 	float dist = speed * dt;
+	float dx = 0;
+	float dy = 0;
+	float dz = 0;
 
+	dx = cam->getX() - posX.get();
 	if (isCameraMoveLeft)
-		cam->truck(-dist);
+		dx += dist;
 	if (isCameraMoveRight)
-		cam->truck(dist);
+		dx -= dist;
+	cam->truck(dx);
+	posX.set(cam->getX());
 
+	dy = cam->getY() - posY.get();
 	if (isCameraMoveUp)
-		cam->boom(dist);
+		dy -= dist;
 	if (isCameraMoveDown)
-		cam->boom(-dist);
+		dy += dist;
+	cam->boom(-dy);
+	posY.set(cam->getY());
 
+	dz = cam->getZ() - posZ.get();
 	if (isCameraMoveForward)
-		cam->dolly(-dist);
+		dz += dist;
 	if (isCameraMoveBackward)
-		cam->dolly(dist);
+		dz -= dist;
+	cam->dolly(dz);
+	posZ.set(cam->getZ());
+
+
 }
 
 void ccamera::changeMode()
