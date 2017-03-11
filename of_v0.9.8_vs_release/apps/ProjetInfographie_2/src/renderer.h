@@ -1,7 +1,7 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxRay.h"
-#include "primitive.h"
+#include "primitive3d.h"
 #include <limits>
 #include "scene.h"
 #include "primitive2d.h"
@@ -52,8 +52,6 @@ public:
 
 private:
 	void setupCamera();
-
-    std::list<primitive2d> primitives2d;
 
 	//ofEasyCam mainCam;
 	bool wireFrame;

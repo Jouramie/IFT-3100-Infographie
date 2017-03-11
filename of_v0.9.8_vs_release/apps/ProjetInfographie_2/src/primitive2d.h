@@ -1,9 +1,9 @@
 #pragma once
 
 #include "ofMain.h"
+#include "primitive.h"
 
-class primitive2d
-{
+class primitive2d : public primitive {
 public:
 
 	primitive2d();
@@ -11,6 +11,8 @@ public:
 	primitive2d(ofPath* primitive, ofColor fill);
 	ofPath* getPrimitive2d();
 	ofColor getFillColor();
+
+	void draw(bool wireframe) override;
 
 private:
 
