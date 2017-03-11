@@ -23,8 +23,6 @@ public:
 	void update();
 	void draw();
 
-	void exit();
-
 	~ofApp();
 
 	void keyPressed(int key);
@@ -54,6 +52,9 @@ private:
 	ofxButton btnDrawPrimitive;
 	ofxButton btnExit;
 
+	ofxButton btnExport;
+	ofxButton btnImport;
+
 	ofParameterGroup groupProperty;
 	ofParameterGroup groupThick;
 	ofParameter<float> strokeThickness;
@@ -80,11 +81,15 @@ private:
 
 #pragma region "Primitives"
 
-	ofParameterGroup groupPrimitiveType;
+	ofParameterGroup groupPrimitiveType2D;
+	ofParameterGroup groupPrimitiveType3D;
 	ofParameter<bool> primType2D;
 	ofParameter<bool> primType3D;
 	ofParameter<bool> primTypeSphere;
 	ofParameter<bool> primTypeCube;
+	ofParameter<bool> primTypeTriangle;
+	ofParameter<bool> primTypeLine;
+	ofParameter<bool> primTypePoint;
 
 	ofParameterGroup groupPrimitivePosition3D;
 	ofParameterGroup groupPrimitivePosition2D;
@@ -92,39 +97,46 @@ private:
 	ofParameter<float> primPosY;
 	ofParameter<float> primPosZ;
 
-	ofParameterGroup groupPrimitiveSizeCube2D;
-	ofParameterGroup groupPrimitiveSizeCube3D;
-	ofParameterGroup groupPrimitiveSizeSphere;
+	ofParameterGroup groupPrimitiveSize2D;
+	ofParameterGroup groupPrimitiveSize3D;
 	ofParameter<float> primSizeHeight;
 	ofParameter<float> primSizeWidth;
 	ofParameter<float> primSizeDepth;
-	ofParameter<float> primSizeRadius;
 
 #pragma endregion
+	ofParameterGroup groupTexture;
+	ofParameter<bool> noTexture;
+	ofParameter<bool> metalTexture;
+	ofParameter<bool> waterTexture;
+
+
 
 	void initGroups();
+	void initButtonListener();
+	void initOfParameters();
 
-	void initPosition();
-	void initDimension();
-	void initColors();
 	void setColors();
-
-	float colorParameterChanged(float & value);
-	
-	void initPrimitives();
-
+		
 	void setupGui(); 
 	void setupCameraMenu();
 
 	void btnSelectClicked();
 	void btnDrawPrimitiveClicked();
-	void btnDrawClicked();
 	void btnExitClicked();
-
+	void btnExportClicked();
+	void btnImportClicked();
+	
 	void primDim2DChanged(bool& value);
 	void primDim3DChanged(bool& value);
 	void primTypeCubeChanged(bool& value);
 	void primTypeSphereChanged(bool& value);
+	void primTypeTriangleChanged(bool & value);
+	void primTypeLineChanged(bool & value);
+	void primTypePointChanged(bool & value);
+
+	void noTextureChanged(bool & value);
+	void metalTextureChanged(bool & value);
+	void waterTextureChanged(bool & value);
 
 	void updateKeys();
 
