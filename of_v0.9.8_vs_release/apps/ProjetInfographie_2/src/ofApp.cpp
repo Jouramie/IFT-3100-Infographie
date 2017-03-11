@@ -530,27 +530,27 @@ void ofApp::btnDrawPrimitiveClicked()
 
 		if (primType2D.get()) {
 			if (primTypeCube.get()) {
-				//rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
+				rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
 			}
 			else if (primTypeSphere.get()) {
-				//rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
+				rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
 			}
 			else if (primTypeTriangle.get()) {
-				//rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight, fill);
+				rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight, fill);
 			}
 			else if (primTypeLine.get()) {
-				//rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight, stroke);
+				rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight, stroke);
 			}
 			else if (primTypePoint.get()) {
-				//rend->createPoint(primPosX, primPosY, stroke);
+				rend->createPoint(primPosX, primPosY, strokeThickness, stroke);
 			}
 		}
 		else {
 			if (primTypeCube.get()) {
-				//rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
+				rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
 			}
 			else {
-				//rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
+				rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
 			}
 		}
 	}
@@ -562,7 +562,7 @@ void ofApp::btnExitClicked()
 	if (isListenersUnlocked)
 	{
 		ofLog() << "<app::btnExitClicked>";
-		std::exit(0);		//TODO: Trouver une autre solution
+		std::exit(0);
 	}
 }
 
