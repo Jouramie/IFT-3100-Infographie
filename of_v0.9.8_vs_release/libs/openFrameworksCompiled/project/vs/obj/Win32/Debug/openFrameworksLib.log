@@ -65,4 +65,4 @@
   ofVideoPlayer.cpp
   ofArduino.cpp
   ofSerial.cpp
-  openFrameworksLib.vcxproj -> D:\Documents\Université\U-2017-5-Hiv\Infographie\Repo\of_v0.9.8_vs_release\libs\openFrameworksCompiled\project\vs\..\..\lib\vs\Win32\openFrameworksLib_debug.lib
+  openframeworksLib.vcxproj -> C:\Université\Session 2\Infographie\TP\infographie-h2017\of_v0.9.8_vs_release\libs\openFrameworksCompiled\project\vs\..\..\lib\vs\Win32\openframeworksLib_debug.lib

@@ -91,10 +91,17 @@ void renderer::draw()
 	std::list<primitive2d>::iterator iterator3;
 	for (iterator3 = primitives2d.begin(); iterator3 != primitives2d.end(); ++iterator3)
 	{
-		ofSetLineWidth(1.0);
 		iterator3->getPrimitive2d()->draw();
 
 	}
+
+	std::list<extModel>::iterator iterator4;
+	for (iterator4 = externalModels.begin(); iterator4 != externalModels.end(); ++iterator4)
+	{
+		iterator4->draw();
+	}
+
+
 	ofDisableDepthTest();
 
 	camera.end();
@@ -283,9 +290,19 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 	draw();
 }
 
+void renderer::importModel(string path) {
+	ofxAssimpModelLoader* model = new ofxAssimpModelLoader();
+	model->loadModel(path, false);
+	extModel mod = extModel(model);
+	externalModels.push_back(mod);
+	draw();
+}
+
 void renderer::clearPrimitives()
 {
 	primitives.clear();
+	primitives2d.clear();
+	externalModels.clear();
 }
 
 void renderer::changeWireFrameMode()
