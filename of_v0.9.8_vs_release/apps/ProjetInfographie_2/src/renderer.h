@@ -52,7 +52,7 @@ public:
 	void createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
 	void createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
 
-	void importModel(string path);
+	bool importModel(string path);
 
 	void clearPrimitives();
 	void changeWireFrameMode();

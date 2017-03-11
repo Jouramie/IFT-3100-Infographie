@@ -1,5 +1,7 @@
 #include "ofApp.h"
 #include "ccamera.h"
+#include <windows.h>      // For common windows data types and function headers
+#include <shobjidl.h>     // for IFileDialogEvents and IFileDialogControlEvents
 
 ofApp::ofApp()
 {
@@ -684,10 +686,6 @@ void ofApp::btnExportClicked()
 	rend->imageExport("render", "png");
 }
 
-void ofApp::btnImportClicked()
-{
-}
-
 void ofApp::primDim2DChanged(bool& value) {
 	if (primType2D.get()) {
 		primType3D.set(false);
@@ -973,4 +971,64 @@ void ofApp::setupFilterMenu() {
 
 	filterMenu.setPosition(ofGetWindowWidth() - 280, 540);
 
+}
+
+void ofApp::btnImportClicked()
+{
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+		COINIT_DISABLE_OLE1DDE);
+	if (SUCCEEDED(hr))
+	{
+		IFileOpenDialog *pFileOpen;
+
+		// Create the FileOpenDialog object.
+		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+			IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+		if (SUCCEEDED(hr))
+		{
+			// Show the Open dialog box.
+			hr = pFileOpen->Show(NULL);
+
+			// Get the file name from the dialog box.
+			if (SUCCEEDED(hr))
+			{
+				IShellItem *pItem;
+				hr = pFileOpen->GetResult(&pItem);
+				if (SUCCEEDED(hr))
+				{
+					LPWSTR pszFilePath;
+					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
+					// Display the file name to the user.
+					if (SUCCEEDED(hr))
+					{
+
+						std::wstring path = wstring(pszFilePath);
+						std::string strPath(path.begin(), path.end());
+
+						if (rend->importModel(strPath))
+						{
+							strPath = "Le modele " + strPath + " a ete importe avec succes!";
+							path = std::wstring(strPath.begin(), strPath.end());
+							LPCWSTR title = (LPCWSTR)path.c_str();
+							MessageBox(NULL, title, L"Succes", MB_OK);
+						}
+						else
+						{
+							strPath = "Le modele n'a pas pu etre importe.";
+							path = std::wstring(strPath.begin(), strPath.end());
+							LPCWSTR title = (LPCWSTR)path.c_str();
+							MessageBox(NULL, title, L"Echec", MB_OK);
+						}
+
+						CoTaskMemFree(pszFilePath);
+					}
+					pItem->Release();
+				}
+			}
+			pFileOpen->Release();
+		}
+		CoUninitialize();
+	}
 }

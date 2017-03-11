@@ -344,14 +344,18 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 	cout << *scn;
 }
 
-void renderer::importModel(string path) {
+bool renderer::importModel(string path) {
 	ofxAssimpModelLoader* model = new ofxAssimpModelLoader();
-	model->loadModel(path, false);
-	model->enableTextures();
-	ofTexture tex = ofTexture();
-	extModel mod = extModel(model);
-	externalModels.push_back(mod);
+	bool ret = model->loadModel(path, false);
+	if (ret)
+	{
+		model->enableTextures();
+		ofTexture tex = ofTexture();
+		extModel mod = extModel(model);
+		externalModels.push_back(mod);
+	}
 	draw();
+	return ret;
 }
 
 void renderer::clearPrimitives()
