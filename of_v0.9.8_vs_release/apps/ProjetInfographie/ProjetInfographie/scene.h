@@ -17,6 +17,7 @@ public:
 
 	void addElement(size_t index, const primitive& p, bool insertFirstChild);
 	void removeElement(size_t index);
+	void clearElements();
 
 	scene_iterator begin();
 	scene_iterator end();
@@ -90,6 +91,7 @@ private:
 
 	group_ptr root;
 
+public:
 	class scene_iterator {
 	public:
 		scene_iterator(const group_ptr& root, size_t index);

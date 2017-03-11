@@ -76,17 +76,15 @@ void renderer::draw()
 
 	ofSetLineWidth(1.0);
 
-	scene::scene_iterator iter_begin = scn->begin();
-	scene::scene_iterator iter_end = scn->end();
-	for (iter_begin; iter_begin != iter_end; ++iter_begin)
+	for (auto& p : *scn)
 	{
-		(*iter_begin).draw(wireFrame);
+		p.draw(wireFrame);
 	}
-	std::list<primitive>::iterator iterator;
-	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
-	{
-		iterator->draw(wireFrame);
-	}
+// 	std::list<primitive>::iterator iterator;
+// 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
+// 	{
+// 		iterator->draw(wireFrame);
+// 	}
 
 	std::list<ofRay>::iterator iterator2;
 	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
@@ -137,8 +135,8 @@ void renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fill
 	{
 		box->setSideColor(i, fillCol);
 	}
- 	primitive prim = primitive(box, fillCol);
- 	primitives.push_back(prim);
+//  	primitive prim = primitive(box, fillCol);
+//  	primitives.push_back(prim);
  	scn->addElement(0, primitive{ box, fillCol }, true);
  	cout << *scn;
 	draw();
@@ -160,8 +158,8 @@ void renderer::createSphere(int x, int y, int z, int size, ofColor color)
 	ball->rotate(rand() % 360, 0, 0.0, 1.0);
 	//ball.set
 
- 	primitive prim = primitive(ball, color);
- 	primitives.push_back(prim);
+//  	primitive prim = primitive(ball, color);
+//  	primitives.push_back(prim);
 	scn->addElement(0, primitive{ ball, color }, true);
 	cout << *scn;
 	draw();
@@ -169,7 +167,7 @@ void renderer::createSphere(int x, int y, int z, int size, ofColor color)
 
 void renderer::clearPrimitives()
 {
-	primitives.clear();
+/*	primitives.clear();*/
 	scn->clearElements();
 }
 
@@ -182,8 +180,6 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 {
 	ofVec3f screenToWorld = camera.screenToWorld(ofVec3f(x, y, 0.0));
 
-	std::list<primitive>::iterator iterator;
-
 	primitive* intersectPrim = nullptr;
 	int distanceClosest = std::numeric_limits<int>::max();
 
@@ -194,19 +190,20 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 	// Pour dessiner le rayon (à des fins de débogage)
 	// rays.push_back(ray);
 
-	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
+/*	for (auto& iterator = primitives.begin(); iterator != primitives.end(); ++iterator)*/
+	for (primitive& p : *scn)
 	{
 		if (!shiftHeld)
 		{
-			iterator->setSelected(false);
+			p.setSelected(false);
 		}
 
 		float* distance = new float(0);
 
-		bool found = iterator->checkIntersectionPlaneAndLine(ray, distance);
+		bool found = p.checkIntersectionPlaneAndLine(ray, distance);
 		if (found)// && *distance >= 0 && *distance < distanceClosest)
 		{
-			intersectPrim = &(*iterator);
+			intersectPrim = &p;
 			//distanceClosest = *distance;
 		}
 	}

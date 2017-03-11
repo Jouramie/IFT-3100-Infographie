@@ -40,7 +40,7 @@ public:
 private:
 	void setupCamera();
 
-	std::list<primitive> primitives;
+	//std::list<primitive> primitives;
 
 	//ofEasyCam mainCam;
 	bool wireFrame;

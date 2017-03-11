@@ -22,6 +22,11 @@ void scene::removeElement(size_t index)
 	root->removeElement(index);
 }
 
+void scene::clearElements() 
+{
+	root = group_ptr{ new group{0, 0} };
+}
+
 scene::scene_iterator scene::begin()
 {
 	return scene_iterator{ root, 0 };
