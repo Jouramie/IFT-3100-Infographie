@@ -361,6 +361,7 @@ void ofApp::initGroups()
 	groupBackground.add(bgBrightess.set(bgBrightess));
 
 	groupTexture.setName("Texture");
+	groupTexture.add(wireFrame);
 	groupTexture.add(noTexture);
 	groupTexture.add(metalTexture);
 	groupTexture.add(waterTexture);
@@ -534,6 +535,10 @@ void ofApp::initOfParameters() {
 	bgBrightess.set(170);
 
 	setColors();
+
+	wireFrame.setName("Forme 3D en file de fer");
+	wireFrame.set(true);
+	wireFrame.addListener(this, &ofApp::wireFrameChanged);
 
 	noTexture.setName("Aucune");
 	noTexture.set(true);
@@ -839,6 +844,12 @@ void ofApp::primTypePointChanged(bool& value) {
 	primTypeTriangle.enableEvents();
 	primTypeLine.enableEvents();
 	primTypePoint.enableEvents();
+}
+
+void ofApp::wireFrameChanged(bool& value) {
+
+	ofLog() << "<app::wireFrameModeChanged>";
+	rend->changeWireFrameMode();
 }
 
 void ofApp::noTextureChanged(bool& value) {

@@ -107,6 +107,7 @@ private:
 
 #pragma endregion
 	ofParameterGroup groupTexture;
+	ofParameter<bool> wireFrame;
 	ofParameter<bool> noTexture;
 	ofParameter<bool> metalTexture;
 	ofParameter<bool> waterTexture;
@@ -161,6 +162,8 @@ private:
 	void primTypeTriangleChanged(bool & value);
 	void primTypeLineChanged(bool & value);
 	void primTypePointChanged(bool & value);
+
+	void wireFrameChanged(bool& value);
 
 	void noTextureChanged(bool & value);
 	void metalTextureChanged(bool & value);
