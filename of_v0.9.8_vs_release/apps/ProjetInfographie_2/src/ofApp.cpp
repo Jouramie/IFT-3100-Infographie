@@ -1,4 +1,5 @@
 #include "ofApp.h"
+#include "ccamera.h"
 
 ofApp::ofApp()
 {
@@ -11,8 +12,8 @@ void ofApp::setup()
 {
 	ofSetWindowTitle("Visualiseur interactif de sc�nes 3D");
 
-	initColors();
-	initPrimitives();
+	initOfParameters();
+	initButtonListener();
 	initGroups();
 
 	setupCameraMenu();
@@ -20,13 +21,7 @@ void ofApp::setup()
 	gui.setDefaultWidth(270);
 	gui.setup();
 
-	isListenersUnlocked = true;
-
 	gui.registerMouseEvents();
-
-	btnSelect.addListener(this, &ofApp::btnSelectClicked);
-	btnDrawPrimitive.addListener(this, &ofApp::btnDrawPrimitiveClicked);
-	btnExit.addListener(this, &ofApp::btnExitClicked);
 
 	setupGui();
 
@@ -73,11 +68,6 @@ void ofApp::draw()
 	gui.draw();
 	cameraMenu.draw();
 
-}
-
-void ofApp::exit()
-{
-	ofLog() << "<app::exit>";
 }
 
 ofApp::~ofApp()
@@ -249,30 +239,21 @@ void ofApp::setupGui() {
 	isListenersUnlocked = false;
 
 	gui.clear();
-	
-	gui.add(groupPrimitiveType);
+
 
 	if (primType2D)
 	{
+		gui.add(groupPrimitiveType2D);
 		gui.add(groupPrimitivePosition2D);
+		if (!primTypePoint)
+			gui.add(groupPrimitiveSize2D);
 
-		if (primTypeCube) {
-			gui.add(groupPrimitiveSizeCube2D);
-		}
-		else {
-			gui.add(groupPrimitiveSizeSphere);
-		}
 	}
 	else
 	{
+		gui.add(groupPrimitiveType3D);
 		gui.add(groupPrimitivePosition3D);
-
-		if (primTypeCube) {
-			gui.add(groupPrimitiveSizeCube3D);
-		}
-		else {
-			gui.add(groupPrimitiveSizeSphere);
-		}
+		gui.add(groupPrimitiveSize3D);
 	}
 
 
@@ -292,6 +273,9 @@ void ofApp::setupGui() {
 		gui.add(groupStroke);
 	}
 
+	gui.setDefaultFillColor(defaultColor);
+	gui.add(groupTexture);
+
 	gui.add(btnDrawPrimitive.setup("Dessiner!"));
 
 	gui.setDefaultFillColor(background);
@@ -301,70 +285,31 @@ void ofApp::setupGui() {
 
 	gui.add(btnSelect.setup("Outils de selection"));
 
+	gui.add(btnImport.setup("Importation de modele"));
+	gui.add(btnExport.setup("Exportation en image"));
+
 	gui.add(btnExit.setup("Quitter"));
 
 	isListenersUnlocked = true;
 }
 
-void ofApp::btnSelectClicked()
-{
-	if (isListenersUnlocked)
-	{
-
-		setupGui();
-	}
-}
-
-void ofApp::btnDrawPrimitiveClicked()
-{
-	if (isListenersUnlocked)
-	{
-		ofLog() << "<app::btnDrawPrimitiveClicked>";
-
-		if (primType2D.get()) {
-			if (primTypeCube.get()){
-				rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
-			}
-			else {
-				if (primTypeSphere.get()) {
-					rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
-				}
-				else {
-					rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
-					rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth)/2, primPosY + primSizeHeight, fill);
-				}
-				
-			}
-		}
-		else {
-			if (primTypeCube.get()) {
-				rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
-			}
-			else {
-				rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
-			}
-		}
-
-	}
-}
-
-void ofApp::btnExitClicked()
-{
-	if (isListenersUnlocked)
-	{
-		ofLog() << "<app::btnExitClicked>";
-		ofExit();		//TODO: Trouver une autre solution
-	}
-}
-
 void ofApp::initGroups()
 {
 
-	groupPrimitiveType.setName("Type");
-	groupPrimitiveType.add(primType2D);
-	groupPrimitiveType.add(primType3D);
-	groupPrimitiveType.add(primTypeSphere);
-	groupPrimitiveType.add(primTypeCube);
+	groupPrimitiveType2D.setName("Type");
+	groupPrimitiveType2D.add(primType2D);
+	groupPrimitiveType2D.add(primType3D);
+	groupPrimitiveType2D.add(primTypeCube);
+	groupPrimitiveType2D.add(primTypeSphere);
+	groupPrimitiveType2D.add(primTypeTriangle);
+	groupPrimitiveType2D.add(primTypeLine);
+	groupPrimitiveType2D.add(primTypePoint);
+
+	groupPrimitiveType3D.setName("Type");
+	groupPrimitiveType3D.add(primType2D);
+	groupPrimitiveType3D.add(primType3D);
+	groupPrimitiveType3D.add(primTypeCube);
+	groupPrimitiveType3D.add(primTypeSphere);
 
 	groupPrimitivePosition2D.setName("Position");
 	groupPrimitivePosition2D.add(primPosX.set(primPosX));
@@ -375,18 +320,15 @@ void ofApp::initGroups()
 	groupPrimitivePosition3D.add(primPosY.set(primPosY));
 	groupPrimitivePosition3D.add(primPosZ.set(primPosZ));
 
-	groupPrimitiveSizeCube2D.setName("Taille");
-	groupPrimitiveSizeCube2D.add(primSizeWidth.set(primSizeWidth));
-	groupPrimitiveSizeCube2D.add(primSizeHeight.set(primSizeHeight));
+	groupPrimitiveSize2D.setName("Taille");
+	groupPrimitiveSize2D.add(primSizeWidth.set(primSizeWidth));
+	groupPrimitiveSize2D.add(primSizeHeight.set(primSizeHeight));
 
-	groupPrimitiveSizeCube3D.setName("Taille");
-	groupPrimitiveSizeCube3D.add(primSizeWidth.set(primSizeWidth));
-	groupPrimitiveSizeCube3D.add(primSizeHeight.set(primSizeHeight));
-	groupPrimitiveSizeCube3D.add(primSizeDepth.set(primSizeDepth));
+	groupPrimitiveSize3D.setName("Taille");
+	groupPrimitiveSize3D.add(primSizeWidth.set(primSizeWidth));
+	groupPrimitiveSize3D.add(primSizeHeight.set(primSizeHeight));
+	groupPrimitiveSize3D.add(primSizeDepth.set(primSizeDepth));
 
-	groupPrimitiveSizeSphere.setName("Taille");
-	groupPrimitiveSizeSphere.add(primSizeRadius);
-	
 	groupThick.setName("Epaisseur des traits");
 	groupThick.add(strokeThickness.set(strokeThickness));
 
@@ -407,12 +349,86 @@ void ofApp::initGroups()
 	groupBackground.add(bgSaturation.set(bgSaturation));
 	groupBackground.add(bgBrightess.set(bgBrightess));
 
-
+	groupTexture.setName("Texture");
+	groupTexture.add(noTexture);
+	groupTexture.add(metalTexture);
+	groupTexture.add(waterTexture);
 
 }
 
-void ofApp::initColors()
-{
+void ofApp::initButtonListener() {
+
+	isListenersUnlocked = true;
+	btnSelect.addListener(this, &ofApp::btnSelectClicked);
+	btnDrawPrimitive.addListener(this, &ofApp::btnDrawPrimitiveClicked);
+	btnExit.addListener(this, &ofApp::btnExitClicked);
+
+	btnExport.addListener(this, &ofApp::btnExportClicked);
+	btnImport.addListener(this, &ofApp::btnImportClicked);
+}
+
+void ofApp::initOfParameters() {
+
+	primType2D.setName("2D");
+	primType2D.set(true);
+	primType2D.addListener(this, &ofApp::primDim2DChanged);
+
+	primType3D.setName("3D");
+	primType3D.set(false);
+	primType3D.addListener(this, &ofApp::primDim3DChanged);
+
+	primTypeCube.setName("Carre");
+	primTypeCube.set(true);
+	primTypeCube.addListener(this, &ofApp::primTypeCubeChanged);
+
+	primTypeSphere.setName("Cercle");
+	primTypeSphere.set(false);
+	primTypeSphere.addListener(this, &ofApp::primTypeSphereChanged);
+
+	primTypeTriangle.setName("Triangle");
+	primTypeTriangle.set(false);
+	primTypeTriangle.addListener(this, &ofApp::primTypeTriangleChanged);
+
+	primTypeLine.setName("Ligne");
+	primTypeLine.set(false);
+	primTypeLine.addListener(this, &ofApp::primTypeLineChanged);
+
+	primTypePoint.setName("Point");
+	primTypePoint.set(false);
+	primTypePoint.addListener(this, &ofApp::primTypePointChanged);
+
+
+	primPosX.setName("X");
+	primPosX.setMin(MinX);
+	primPosX.setMax(MaxX);
+	primPosX.set((MinX + MaxX) / 2);
+
+	primPosY.setName("Y");
+	primPosY.setMin(MinY);
+	primPosY.setMax(MaxY);
+	primPosY.set((MinY + MaxY) / 2);
+
+	primPosZ.setName("Z");
+	primPosZ.setMin(MinZ);
+	primPosZ.setMax(MaxZ);
+	primPosZ.set((MinZ + MaxZ) / 2);
+
+
+	primSizeHeight.setName("Hauteur");
+	primSizeHeight.setMin(0);
+	primSizeHeight.setMax(MaxY);
+	primSizeHeight.set((0 + MaxY) / 2);
+
+	primSizeWidth.setName("Largeur");
+	primSizeWidth.setMin(0);
+	primSizeWidth.setMax(MaxX);
+	primSizeWidth.set((0 + MaxX) / 2);
+
+	primSizeDepth.setName("Profondeur");
+	primSizeDepth.setMin(0);
+	primSizeDepth.setMax(MaxZ);
+	primSizeDepth.set((0 + MaxZ) / 2);
+
 	strokeThickness.setName("Epaisseur");
 	strokeThickness.setMin(0);
 	strokeThickness.setMax(100);
@@ -422,7 +438,6 @@ void ofApp::initColors()
 	fillHue.setMin(0);
 	fillHue.setMax(255);
 	fillHue.set(0);
-	//fillHue.addListener(this, &ofApp::colorParameterChanged);
 
 	fillSaturation.setName("Saturation");
 	fillSaturation.setMin(0);
@@ -477,6 +492,18 @@ void ofApp::initColors()
 	bgBrightess.set(170);
 
 	setColors();
+
+	noTexture.setName("Aucune");
+	noTexture.set(true);
+	noTexture.addListener(this, &ofApp::noTextureChanged);
+
+	metalTexture.setName("Metalique");
+	metalTexture.set(false);
+	metalTexture.addListener(this, &ofApp::metalTextureChanged);
+
+	waterTexture.setName("Aquatique");
+	waterTexture.set(false);
+	waterTexture.addListener(this, &ofApp::waterTextureChanged);
 }
 
 void ofApp::setColors()
@@ -486,9 +513,66 @@ void ofApp::setColors()
 	background = ofColor::fromHsb(bgHue, bgSaturation, bgBrightess);
 }
 
-float ofApp::colorParameterChanged(float& value) {
-	setupGui();
-	return 1;
+void ofApp::btnSelectClicked()
+{
+	if (isListenersUnlocked)
+	{
+
+		setupGui();
+	}
+}
+
+void ofApp::btnDrawPrimitiveClicked()
+{
+	if (isListenersUnlocked)
+	{
+		ofLog() << "<app::btnDrawPrimitiveClicked>";
+
+		if (primType2D.get()) {
+			if (primTypeCube.get()) {
+				//rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
+			}
+			else if (primTypeSphere.get()) {
+				//rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
+			}
+			else if (primTypeTriangle.get()) {
+				//rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight, fill);
+			}
+			else if (primTypeLine.get()) {
+				//rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight, stroke);
+			}
+			else if (primTypePoint.get()) {
+				//rend->createPoint(primPosX, primPosY, stroke);
+			}
+		}
+		else {
+			if (primTypeCube.get()) {
+				//rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
+			}
+			else {
+				//rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
+			}
+		}
+	}
+
+}
+
+void ofApp::btnExitClicked()
+{
+	if (isListenersUnlocked)
+	{
+		ofLog() << "<app::btnExitClicked>";
+		std::exit(0);		//TODO: Trouver une autre solution
+	}
+}
+
+void ofApp::btnExportClicked()
+{
+	rend->imageExport("render", "png");
+}
+
+void ofApp::btnImportClicked()
+{
 }
 
 void ofApp::primDim2DChanged(bool& value) {
@@ -520,77 +604,198 @@ void ofApp::primDim3DChanged(bool& value) {
 }
 
 void ofApp::primTypeCubeChanged(bool& value) {
-	if (primTypeCube.get())
-		primTypeSphere.set(false);
-	else
-		primTypeSphere.set(true);
-	setupGui();
-}
 
-void ofApp::primTypeSphereChanged(bool& value) {
-	if (primTypeSphere.get())
-		primTypeCube.set(false);
+	primTypeSphere.disableEvents();
+	primTypeCube.disableEvents();
+	primTypeTriangle.disableEvents();
+	primTypeLine.disableEvents();
+	primTypePoint.disableEvents();
+
+	if (primTypeCube.get()) {
+		primTypeSphere.set(false);
+		primTypeTriangle.set(false);
+		primTypeLine.set(false);
+		primTypePoint.set(false);
+	}
 	else
 		primTypeCube.set(true);
 	setupGui();
+
+	primTypeSphere.enableEvents();
+	primTypeCube.enableEvents();
+	primTypeTriangle.enableEvents();
+	primTypeLine.enableEvents();
+	primTypePoint.enableEvents();
 }
 
-void ofApp::initPrimitives() {
+void ofApp::primTypeSphereChanged(bool& value) {
 
-	primType2D.setName("2D");
-	primType2D.set(true);
-	primType2D.addListener(this, &ofApp::primDim2DChanged);
+	primTypeSphere.disableEvents();
+	primTypeCube.disableEvents();
+	primTypeTriangle.disableEvents();
+	primTypeLine.disableEvents();
+	primTypePoint.disableEvents();
 
-	primType3D.setName("3D");
-	primType3D.set(false);
-	primType3D.addListener(this, &ofApp::primDim3DChanged);
+	if (primTypeSphere.get()) {
+		primTypeCube.set(false);
+		primTypeTriangle.set(false);
+		primTypeLine.set(false);
+		primTypePoint.set(false);
+	}
+	else
+		primTypeSphere.set(true);
+	setupGui();
 
-	primTypeCube.setName("Carr�");
-	primTypeCube.set(true);
-	primTypeCube.addListener(this, &ofApp::primTypeCubeChanged);
+	primTypeSphere.enableEvents();
+	primTypeCube.enableEvents();
+	primTypeTriangle.enableEvents();
+	primTypeLine.enableEvents();
+	primTypePoint.enableEvents();
+}
 
-	primTypeSphere.setName("Cercle");
-	primTypeSphere.set(false);
-	primTypeSphere.addListener(this, &ofApp::primTypeSphereChanged);
+void ofApp::primTypeTriangleChanged(bool& value) {
 
+	primTypeSphere.disableEvents();
+	primTypeCube.disableEvents();
+	primTypeTriangle.disableEvents();
+	primTypeLine.disableEvents();
+	primTypePoint.disableEvents();
 
-	primPosX.setName("X");
-	primPosX.setMin(MinX);
-	primPosX.setMax(MaxX);
-	primPosX.set((MinX + MaxX) / 2);
+	if (primTypeTriangle.get())
+	{
+		primTypeCube.set(false);
+		primTypeSphere.set(false);
+		primTypeLine.set(false);
+		primTypePoint.set(false);
+	}
+	else
+		primTypeTriangle.set(true);
+	setupGui();
 
-	primPosY.setName("Y");
-	primPosY.setMin(MinY);
-	primPosY.setMax(MaxY);
-	primPosY.set((MinY + MaxY) / 2);
+	primTypeSphere.enableEvents();
+	primTypeCube.enableEvents();
+	primTypeTriangle.enableEvents();
+	primTypeLine.enableEvents();
+	primTypePoint.enableEvents();
+}
 
-	primPosZ.setName("Z");
-	primPosZ.setMin(MinZ);
-	primPosZ.setMax(MaxZ);
-	primPosZ.set((MinZ + MaxZ) / 2);
+void ofApp::primTypeLineChanged(bool& value) {
 
+	primTypeSphere.disableEvents();
+	primTypeCube.disableEvents();
+	primTypeTriangle.disableEvents();
+	primTypeLine.disableEvents();
+	primTypePoint.disableEvents();
 
-	primSizeHeight.setName("Hauteur");
-	primSizeHeight.setMin(0);
-	primSizeHeight.setMax(MaxY);
-	primSizeHeight.set((0 + MaxY) / 2);
+	if (primTypeLine.get())
+	{
+		primTypeCube.set(false);
+		primTypeSphere.set(false);
+		primTypeTriangle.set(false);
+		primTypePoint.set(false);
+	}
+	else
+		primTypeLine.set(true);
+	setupGui();
 
-	primSizeWidth.setName("Largeur");
-	primSizeWidth.setMin(0);
-	primSizeWidth.setMax(MaxX);
-	primSizeWidth.set((0 + MaxX) / 2);
+	primTypeSphere.enableEvents();
+	primTypeCube.enableEvents();
+	primTypeTriangle.enableEvents();
+	primTypeLine.enableEvents();
+	primTypePoint.enableEvents();
+}
 
-	primSizeDepth.setName("Profondeur");
-	primSizeDepth.setMin(0);
-	primSizeDepth.setMax(MaxZ);
-	primSizeDepth.set((0 + MaxZ) / 2);
+void ofApp::primTypePointChanged(bool& value) {
 
-	primSizeRadius.setName("Rayon");
-	primSizeRadius.setMin(0);
-	primSizeRadius.setMax((MaxX + MaxY + MaxZ) / 3);
-	primSizeRadius.set((0 + (MaxX + MaxY + MaxZ) / 3) / 2);
+	primTypeSphere.disableEvents();
+	primTypeCube.disableEvents();
+	primTypeTriangle.disableEvents();
+	primTypeLine.disableEvents();
+	primTypePoint.disableEvents();
 
+	if (primTypePoint.get())
+	{
+		primTypeCube.set(false);
+		primTypeSphere.set(false);
+		primTypeLine.set(false);
+		primTypeTriangle.set(false);
+	}
+	else
+		primTypePoint.set(true);
+	setupGui();
 
+	primTypeSphere.enableEvents();
+	primTypeCube.enableEvents();
+	primTypeTriangle.enableEvents();
+	primTypeLine.enableEvents();
+	primTypePoint.enableEvents();
+}
+
+void ofApp::noTextureChanged(bool& value) {
+
+	ofLog() << "<app::noTextureChanged>";
+
+	noTexture.disableEvents();
+	metalTexture.disableEvents();
+	waterTexture.disableEvents();
+
+	noTexture.set(true);
+	metalTexture.set(false);
+	waterTexture.set(false);
+
+	setupGui();
+
+	noTexture.enableEvents();
+	metalTexture.enableEvents();
+	waterTexture.enableEvents();
+}
+
+void ofApp::metalTextureChanged(bool& value) {
+
+	ofLog() << "<app::metalTextureChanged>";
+
+	noTexture.disableEvents();
+	metalTexture.disableEvents();
+	waterTexture.disableEvents();
+
+	waterTexture.set(false);
+
+	if (metalTexture) {
+		noTexture.set(false);
+	}
+	else {
+		noTexture.set(true);
+	}
+
+	setupGui();
+
+	noTexture.enableEvents();
+	metalTexture.enableEvents();
+	waterTexture.enableEvents();
+}
+
+void ofApp::waterTextureChanged(bool& value) {
+
+	ofLog() << "<app::waterTextureChanged>";
+
+	noTexture.disableEvents();
+	metalTexture.disableEvents();
+	waterTexture.disableEvents();
+
+	metalTexture.set(false);
+
+	if (waterTexture) {
+		noTexture.set(false);
+	}
+	else {
+		noTexture.set(true);
+	}
+
+	setupGui();
+
+	noTexture.enableEvents();
+	metalTexture.enableEvents();
+	waterTexture.enableEvents();
 }
 
 void ofApp::setupCameraMenu() {
