@@ -15,6 +15,9 @@ public:
 	renderer();
 
 	ofColor background;
+	ofColor stroke;
+	ofColor fill;
+	ofParameter<float> strokeThickness;
 
 	bool isCameraMoveLeft;
 	bool isCameraMoveRight;

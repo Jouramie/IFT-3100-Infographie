@@ -30,5 +30,8 @@ private:
 	ofParameter<float> frontClippingPlan;
 	ofParameter<float> backClippingPlan;
 
+	ofParameter<bool> projectionOrthogonal;
+	ofParameter<bool> cameraInteractive;
+
 };
 
