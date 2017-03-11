@@ -645,19 +645,19 @@ void ofApp::btnDrawPrimitiveClicked()
 
 		if (primType2D.get()) {
 			if (primTypeCube.get()) {
-				rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
+				rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fill, stroke);
 			}
 			else if (primTypeSphere.get()) {
-				rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
+				rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fill, stroke);
 			}
 			else if (primTypeTriangle.get()) {
-				rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight, fill);
+				rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight, fill, stroke);
 			}
 			else if (primTypeLine.get()) {
 				rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight, stroke);
 			}
 			else if (primTypePoint.get()) {
-				rend->createPoint(primPosX, primPosY, strokeThickness, stroke);
+				rend->createPoint(primPosX, primPosY, strokeThickness, fill, stroke);
 			}
 		}
 		else {
