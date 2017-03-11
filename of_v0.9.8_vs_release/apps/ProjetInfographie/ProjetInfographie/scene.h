@@ -17,16 +17,14 @@ public:
 
 	void addElement(size_t index, const primitive& p, bool insertFirstChild);
 	void removeElement(size_t index);
-	void clearElements(); //Remplacer le root
-	
+
 	scene_iterator begin();
 	scene_iterator end();
-
+	
 	friend std::ostream& operator<<(std::ostream& os, const scene& s);
 
 private:
-	class element;
-	typedef std::shared_ptr<element> element_ptr;
+
 	class element {
 	public:
 		size_t getSize() const { return size; };
@@ -36,12 +34,11 @@ private:
 		virtual void setHeight(size_t height) { this->height = height; };
 		virtual std::string getType() const = 0;
 
-		virtual size_t addElement(size_t index, primitive_ptr p, bool insertFirstChild) = 0;
+		virtual size_t addElement(size_t index, primitive_ptr& p, bool insertFirstChild) = 0;
 		virtual size_t removeElement(size_t index) = 0;
 		virtual element* getElement(size_t index) = 0;
 
 		friend std::ostream& operator<<(std::ostream& os, const element& e) { return e.print(os); };
-
 	protected:
 		size_t index;
 		size_t size;
@@ -53,17 +50,18 @@ private:
 		virtual std::ostream& print(std::ostream& os) const;
 	};
 	
+	typedef std::shared_ptr<element> element_ptr;
 
 	class node : public element {
 	public:
-		node(size_t index, size_t height, primitive_ptr p);
+		node(size_t index, size_t height, primitive_ptr& p);
 
 		std::string getType() const override;
 
-		size_t addElement(size_t index, primitive_ptr p, bool insertFirstChild) override;
+		size_t addElement(size_t index, primitive_ptr& p, bool insertFirstChild) override;
 		size_t removeElement(size_t index) override;
 		element* getElement(size_t index) override;
-		
+
 		primitive_ptr content;
 	protected:
 		std::string contentType;
@@ -79,7 +77,7 @@ private:
 		void setHeight(size_t height) override;
 		std::string getType() const override;
 
-		size_t addElement(size_t index, primitive_ptr p, bool insertFirstChild) override;
+		size_t addElement(size_t index, primitive_ptr& p, bool insertFirstChild) override;
 		size_t removeElement(size_t index) override;
 		element* getElement(size_t index) override;
 
@@ -92,20 +90,19 @@ private:
 
 	group_ptr root;
 
-public:
 	class scene_iterator {
 	public:
-		scene_iterator(group_ptr& root, size_t index);
-		scene_iterator(const scene_iterator& copy);
+		scene_iterator(const group_ptr& root, size_t index);
 
-		bool operator!=(scene_iterator it) { return p != it.p; }
+		bool operator!=(const scene_iterator& it) { return p != it.p; }
 		primitive& operator*() { return *p; }
 		void operator++();
+
 	private:
-		group_ptr& root;
+		group_ptr root;
 		primitive_ptr p;
 		size_t rootIndex;
 	};
 };
 
-void test();
+void test_scene();

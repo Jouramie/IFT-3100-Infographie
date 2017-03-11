@@ -3,10 +3,7 @@
 
 using namespace std;
 
-scene::scene() : root{ new group{ 0, 0 } }
-{
-	cout << "new group!";
-}
+scene::scene() : root{ new group{ 0, 0} } {}
 
 void scene::addElement(size_t index, const primitive& p, bool insertFirstChild)
 {
@@ -14,23 +11,15 @@ void scene::addElement(size_t index, const primitive& p, bool insertFirstChild)
 	{
 		throw invalid_argument("root don't have parent...");
 	}
-	primitive prim(p);
-	root->addElement(index, primitive_ptr{ &prim }, insertFirstChild);
+	root->addElement(index, primitive_ptr{ new primitive{ p } }, insertFirstChild);
 }
 
 void scene::removeElement(size_t index) 
 {
-	//potentiel memory leak
 	if (index == 0) {
 		throw invalid_argument("can't remove root...");
 	}
 	root->removeElement(index);
-}
-
-void scene::clearElements()
-{
-	//potentiel memory leak
-	root = group_ptr{ new group{0, 0} };
 }
 
 scene::scene_iterator scene::begin()
@@ -40,12 +29,13 @@ scene::scene_iterator scene::begin()
 
 scene::scene_iterator scene::end()
 {
-	return scene_iterator{ root, root->getSize() };
+	return scene_iterator{ root, root->getSize() + 1};
 }
+
 
 ostream & operator<<(ostream & os, const scene & s)
 {
-	return os << s.root;
+	return os << *s.root;
 }
 
 /************************************************************************/
@@ -85,9 +75,10 @@ std::string scene::group::getType() const
 /*
 Ajouter l'élément directement après l'élément à l'index en paramètre
 */
-size_t scene::group::addElement(size_t index, primitive_ptr p, bool insertFirstChild)
+size_t scene::group::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)
 {
 	size_t addedSize = 0;
+	//TODO à tester
 
 	if (this->index == index) {
 		if (insertFirstChild)
@@ -161,10 +152,13 @@ size_t scene::group::addElement(size_t index, primitive_ptr p, bool insertFirstC
 size_t scene::group::removeElement(size_t index)
 {
 	size_t removedSize = 0;
+	//TODO à tester
 	
 	if (this->index == index) {
 		//Retirer tous les enfants
-		//Potenticiel memory leak ici
+		for (auto& i : childrens) {
+			i->removeElement(i->getIndex());
+		}
 		removedSize += size;
 		childrens.clear();
 	}
@@ -246,7 +240,7 @@ scene::element* scene::group::getElement(size_t index)
 	}
 }
 
-std::ostream& scene::group::print(std::ostream & os) const
+std::ostream & scene::group::print(std::ostream & os) const
 {
 	element::print(os);
 	for (auto& i : childrens) {
@@ -260,7 +254,7 @@ std::ostream& scene::group::print(std::ostream & os) const
 /*							SceneNode		                            */
 /************************************************************************/
 
-scene::node::node(size_t index,size_t height, primitive_ptr p) : element(index, height, 1), content{ p }, contentType{ "primitive" } { }
+scene::node::node(size_t index,size_t height, primitive_ptr& p) : element(index, height, 1), content{ p }, contentType{ "primitive" } { }
 
 std::string scene::node::getType() const
 {
@@ -268,7 +262,7 @@ std::string scene::node::getType() const
 }
 
 // insertFirstChild est ignoré
-size_t scene::node::addElement(size_t index, primitive_ptr p, bool insertFirstChild)
+size_t scene::node::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)
 {
 	if (index != this->index) {
 		throw invalid_argument("index need to be equals to the index of the node");
@@ -289,7 +283,7 @@ size_t scene::node::removeElement(size_t index)
 		throw invalid_argument("index need to be equals to the index of the node");
 	}
 	else {
-		this->content = primitive_ptr{ nullptr };
+		this->content = NULL;
 	}
 
 	return size;
@@ -301,9 +295,11 @@ scene::element* scene::node::getElement(size_t index)
 		throw invalid_argument("index need to be equals to the index of the node");
 	}
 	else {
+		//Probleme ici?
 		return this;
 	}
 }
+
 
 /************************************************************************/
 /*							SceneElement	                            */
@@ -322,15 +318,8 @@ std::ostream & scene::element::print(std::ostream & os) const
 /*							scene_iterator                              */
 /************************************************************************/
 
-scene::scene_iterator::scene_iterator(group_ptr & root, size_t index) : root{ root }, rootIndex{ index } {
-	if (rootIndex > 0) {
-		rootIndex--;
-	}
+scene::scene_iterator::scene_iterator(const group_ptr & root, size_t index) : root{ root }, rootIndex{ index } {
 	operator++();
-}
-
-scene::scene_iterator::scene_iterator(const scene_iterator & copy) : root{ copy.root }, rootIndex{ copy.rootIndex }/*, p{ copy.p }*/ {
-
 }
 
 void scene::scene_iterator::operator++()
@@ -350,10 +339,11 @@ void scene::scene_iterator::operator++()
 	}
 }
 
+/************************************************************************/
+/*								TEST                                    */
+/************************************************************************/
 
-
-
-void test() {
+void test_scene() {
 
 	cout << "test" << endl << endl;
 	try {
@@ -404,16 +394,11 @@ void test() {
 		s.removeElement(3);
 		cout << s << endl;
 
-		scene::scene_iterator iter_begin = s.begin();
-		scene::scene_iterator iter_end = s.end();
 		int i = 0;
-		for (iter_begin; iter_begin != iter_end; ++iter_begin)
-		{
+		for (auto& prim : s) {
 			i++;
 			cout << i;
 		}
-
-
 	}
 	catch (exception e) {
 		cout << e.what() << endl;
