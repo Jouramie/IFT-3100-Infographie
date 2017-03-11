@@ -10,7 +10,14 @@ ofApp::ofApp()
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-	ofSetWindowTitle("Visualiseur interactif de sc�nes 3D");
+	ofSetWindowTitle("Visualiseur interactif de scenes 3D");
+
+	rend = new renderer();
+	scn = new scene();
+	cam = new ccamera();
+	rend->setScene(scn);
+	rend->setCamera(cam);
+	rend->setup();
 
 	initOfParameters();
 	initButtonListener();
@@ -32,11 +39,6 @@ void ofApp::setup()
 	isKeyPressLeft = false;
 	isKeyPressRight = false;
 
-	rend = new renderer();
-	scn = new scene();
-	rend->setScene(scn);
-	rend->setup();
-
 	ofLog() << "<app::setup>";
 }
 
@@ -53,12 +55,12 @@ void ofApp::update()
 
 void ofApp::updateKeys()
 {
-	rend->isCameraMoveDown = isKeyPressDown;
-	rend->isCameraMoveUp = isKeyPressUp;
-	rend->isCameraMoveBackward = isKeyPressPageDown;
-	rend->isCameraMoveForward = isKeyPressPageUp;
-	rend->isCameraMoveLeft = isKeyPressLeft;
-	rend->isCameraMoveRight = isKeyPressRight;
+	cam->isCameraMoveDown = isKeyPressDown;
+	cam->isCameraMoveUp = isKeyPressUp;
+	cam->isCameraMoveBackward = isKeyPressPageDown;
+	cam->isCameraMoveForward = isKeyPressPageUp;
+	cam->isCameraMoveLeft = isKeyPressLeft;
+	cam->isCameraMoveRight = isKeyPressRight;
 }
 
 
@@ -132,10 +134,6 @@ void ofApp::keyReleased(int key) {
 	else if (key == 'w') {
 		ofLog() << "<app::wireFrameModeChanged>";
 		rend->changeWireFrameMode();
-	}
-	else if (key == 'v') {
-		ofLog() << "<app::cameraModeChanged>";
-		rend->changeCameraMode();
 	}
 	else if (key == OF_KEY_LEFT)
 	{
@@ -938,17 +936,14 @@ void ofApp::dilateChanged(bool& value) {
 		rend->removeDilate();
 }
 
-void ofApp::setupCameraMenu() {
-
-	cam = new ccamera();
-
+void ofApp::setupCameraMenu() 
+{
 	cameraMenu.setDefaultWidth(270);
 
 	cameraMenu.setup();
 	cameraMenu.add(cam->getParameterGroup());
 
 	cameraMenu.setPosition(ofGetWindowWidth() - 280, 10);
-
 }
 
 void ofApp::setupTransformationMenu() {

@@ -6,6 +6,7 @@
 #include <limits>
 #include "scene.h"
 #include "primitive2d.h"
+#include "ccamera.h"
 #include "extModel.h"
 
 
@@ -19,13 +20,6 @@ public:
 	ofColor stroke;
 	ofColor fill;
 	ofParameter<float> strokeThickness;
-
-	bool isCameraMoveLeft;
-	bool isCameraMoveRight;
-	bool isCameraMoveUp;
-	bool isCameraMoveDown;
-	bool isCameraMoveForward;
-	bool isCameraMoveBackward;
 
 	void setup();
 	void update();
@@ -56,10 +50,17 @@ public:
 
 	void clearPrimitives();
 	void changeWireFrameMode();
-	void changeCameraMode();
 	void selectPrimitive(int x, int y, bool shiftHeld);
 
 	void setScene(scene * scn) { this->scn = scn; }
+	void setCamera(ccamera * cam) { this->cam = cam; }
+
+	void addBlur();
+	void removeBlur();
+	void addInvert();
+	void removeInvert();
+	void addDilate();
+	void removeDilate();
 
 	void addBlur();
 	void removeBlur();
@@ -71,7 +72,6 @@ public:
 	~renderer();
 
 private:
-	void setupCamera();
 
 	//ofEasyCam mainCam;
 	bool wireFrame;
@@ -80,19 +80,13 @@ private:
 	bool invert;
 	bool dilate;
 	//int rotate;
-	
-	float cameraSpeed;
-	float cameraDeplacement;
 
-	float timeCurrent;
-	float timeElapsed;
-	float timeLast;
-
-	ofVec3f cameraPosition;
-	ofVec3f cameraTarget;
+	float time;
+	float dt;
+	float lastTime;
 
 	scene * scn;
-	ofCamera camera;
+	ccamera * cam;
 
 	std::list<ofRay> rays;
 	std::list<extModel> externalModels;

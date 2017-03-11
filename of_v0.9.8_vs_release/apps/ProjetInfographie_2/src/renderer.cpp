@@ -13,63 +13,26 @@ void renderer::setup()
 	/*mainCam = ofEasyCam();
 	rotate = -1;
 	mainCam.begin();*/
-	
+
+	cam->setCamera(new ofCamera{ });
+	cam->setup();
 	filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
 
-	setupCamera();
-	timeCurrent = timeLast = ofGetElapsedTimef();
-
-	isCameraMoveLeft = false;
-	isCameraMoveRight = false;
-	isCameraMoveUp = false;
-	isCameraMoveDown = false;
-	isCameraMoveForward = false;
-	isCameraMoveBackward = false;
 	isFiltered = false;
 	blur = false;
 	invert = false;
 	dilate = false;
-}
 
-void renderer::setupCamera()
-{
-	cameraSpeed = 250.0f;
-	cameraDeplacement = 0.0f;
-	cameraPosition = { 0.0f, 0.0f, -1000.0f };
-	cameraTarget = { 0.0f, 0.0f, 0.0f };
-
-	camera.setPosition(cameraPosition);
-	camera.lookAt(cameraTarget);
+	time = lastTime = ofGetElapsedTimef();
 }
 
 void renderer::update()
 {
-	timeCurrent = ofGetElapsedTimef();
-	timeElapsed = timeCurrent - timeLast;
-	timeLast = timeCurrent;
+	time = ofGetElapsedTimef();
+	dt = time - lastTime;
+	lastTime = time;
 
-	cameraDeplacement = cameraSpeed * timeElapsed;
-
-	if (isCameraMoveLeft)
-		camera.truck(-cameraDeplacement);
-	if (isCameraMoveRight)
-		camera.truck(cameraDeplacement);
-
-	if (isCameraMoveUp)
-		camera.boom(cameraDeplacement);
-	if (isCameraMoveDown)
-		camera.boom(-cameraDeplacement);
-
-	if (isCameraMoveForward)
-		camera.dolly(-cameraDeplacement);
-	if (isCameraMoveBackward)
-		camera.dolly(cameraDeplacement);
-
-	if (camera.getPosition() != cameraPosition) {
-		cameraPosition = camera.getPosition();
-		ofLog() << "<Camera X: " << camera.getX() << " Y:" << camera.getY() << " Z:" << camera.getZ() << ">";
-	}
-
+	cam->update(dt);
 }
 
 
@@ -77,7 +40,7 @@ void renderer::draw()
 {
 	ofClear(background);
 
-	camera.begin();
+	cam->begin();
 
 	ofEnableDepthTest();
 
@@ -111,7 +74,7 @@ void renderer::draw()
 
 	ofDisableDepthTest();
 
-	camera.end();
+	cam->end();
 }
 
 void renderer::imageExport(const string name, const string extension) const
@@ -364,27 +327,17 @@ void renderer::changeWireFrameMode()
 	wireFrame = !wireFrame;
 }
 
-void renderer::changeCameraMode()
-{
-	if (camera.getOrtho()) {
-		camera.disableOrtho();
-	}
-	else {
-		camera.enableOrtho();
-	}
-}
-
 void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 {
-	ofVec3f screenToWorld = camera.screenToWorld(ofVec3f(x, y, 0.0));
+	ofVec3f screenToWorld = (**cam).screenToWorld(ofVec3f(x, y, 0.0));
 
 	primitive* intersectPrim = nullptr;
 	int distanceClosest = std::numeric_limits<int>::max();
 
-	ofVec3f vectNow = (screenToWorld - camera.getPosition());
+	ofVec3f vectNow = (screenToWorld - (**cam).getPosition());
 	vectNow.scale(25);
 
-	ofRay ray(camera.getPosition(), vectNow, true);
+	ofRay ray((**cam).getPosition(), vectNow, true);
 	// Pour dessiner le rayon (à des fins de débogage)
 	// rays.push_back(ray);
 

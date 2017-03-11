@@ -1,76 +1,126 @@
 #include "ccamera.h"
 
-
-ccamera::ccamera()
+void ccamera::setupCamera()
 {
+	speed = 250.0f;
 
+	cam->setPosition( { (MinX + MaxX) / 2, (MinY + MaxY) / 2, MinZ } );
+	cam->lookAt( { 0.0f, 0.0f, 0.0f } );
+}
+
+void ccamera::setupParameters() {
 	posX.setName("Position en X");
 	posX.setMin(MinX);
 	posX.setMax(MaxX);
-	posX.set((MinX + MaxX) / 2);
+	posX.set(-cam->getX());
 
 	posY.setName("Position en Y");
 	posY.setMin(MinY);
 	posY.setMax(MaxY);
-	posY.set((MinY + MaxY) / 2);
+	posY.set(cam->getY());
 
 	posZ.setName("Position en Z");
 	posZ.setMin(MinZ);
 	posZ.setMax(MaxZ);
-	posZ.set((MinZ + MaxZ) / 2);
+	posZ.set(cam->getZ());
 
-	fovH.setName("Champs de vision horizontal");
-	fovH.setMin(0);
-	fovH.setMax(180);
-	fovH.set(90);
+	fov.setName("Champs de vision");
+	fov.setMin(0);
+	fov.setMax(180);
+	fov.set(cam->getFov());
 
-	fovV.setName("Champs de vision vertical");
-	fovV.setMin(0);
-	fovV.setMax(180);
-	fovV.set(90);
+	autoRatio.setName("Ratio d'aspect automatique");
+	autoRatio.set(true);
 
-	aspectRatio.setName("Ratio d'aspect");
-	aspectRatio.setMin(0);
-	aspectRatio.setMax(180);
-	aspectRatio.set(90);
+	ratio.setName("Ratio d'aspect");
+	ratio.setMin(0.25);
+	ratio.setMax(4);
+	ratio.set(cam->getAspectRatio());
 
-	frontClippingPlan.setName("Plan de clipping avant");
-	frontClippingPlan.setMin(0);
-	frontClippingPlan.setMax(MaxZ);
-	frontClippingPlan.set(MaxZ / 2); 
+	nearClip.setName("Plan de clipping avant");
+	nearClip.setMin(0);
+	nearClip.setMax(2 * MaxZ);
+	nearClip.set(cam->getNearClip());
 
-	backClippingPlan.setName("Plan de cliping arriere");
-	backClippingPlan.setMin(0);
-	backClippingPlan.setMax(MaxZ);
-	backClippingPlan.set(MaxZ / 2);
+	farClip.setName("Plan de cliping arriere");
+	farClip.setMin(0);
+	farClip.setMax(2 * MaxZ);
+	farClip.set(cam->getFarClip());
 
-	projectionOrthogonal.setName("Projection orthogonal");
-	projectionOrthogonal.set(false);
+	ortho.setName("Projection orthogonal");
+	ortho.set(false);
 
-	cameraInteractive.setName("Camera interactive");
-	cameraInteractive.set(false);
+	camInteractive.setName("Camera interactive");
+	camInteractive.set(false);
 
 	parameterGroup.setName("Parametre de la camera");
 	parameterGroup.add(posX);
 	parameterGroup.add(posY);
 	parameterGroup.add(posZ);
-	parameterGroup.add(fovH);
-	parameterGroup.add(fovV);
-	parameterGroup.add(aspectRatio);
-	parameterGroup.add(frontClippingPlan);
-	parameterGroup.add(backClippingPlan);
-	parameterGroup.add(projectionOrthogonal);
-	parameterGroup.add(cameraInteractive);
-
+	parameterGroup.add(fov);
+	parameterGroup.add(autoRatio);
+	parameterGroup.add(ratio);
+	parameterGroup.add(nearClip);
+	parameterGroup.add(farClip);
+	parameterGroup.add(ortho);
+	parameterGroup.add(camInteractive);
 }
 
-
-ccamera::~ccamera()
+void ccamera::update(float dt)
 {
+	float dist = speed * dt;
+	float dx = 0;
+	float dy = 0;
+	float dz = 0;
+
+	dx = -cam->getX() - posX.get();
+	if (isCameraMoveLeft)
+		dx += dist;
+	if (isCameraMoveRight)
+		dx -= dist;
+	cam->truck(-dx);
+	posX.set(-cam->getX());
+
+	dy = cam->getY() - posY.get();
+	if (isCameraMoveUp)
+		dy -= dist;
+	if (isCameraMoveDown)
+		dy += dist;
+	cam->boom(-dy);
+	posY.set(cam->getY());
+
+	dz = cam->getZ() - posZ.get();
+	if (isCameraMoveForward)
+		dz -= dist;
+	if (isCameraMoveBackward)
+		dz += dist;
+	cam->dolly(dz);
+	posZ.set(cam->getZ());
+
+	cam->setFov(fov.get());
+	if (autoRatio.get()) {
+		cam->setForceAspectRatio(false);
+	}
+	else {
+		cam->setAspectRatio(ratio.get());
+	}
+	cam->setNearClip(nearClip.get());
+	cam->setFarClip(farClip.get());
+
+	if (ortho.get()) {
+		cam->enableOrtho();
+	}
+	else {
+		cam->disableOrtho();
+	}
 }
 
-
-ofParameterGroup ccamera::getParameterGroup()
+void ccamera::changeMode()
 {
-	return parameterGroup;
+	if (cam->getOrtho()) {
+		cam->disableOrtho();
+	}
+	else {
+		cam->enableOrtho();
+	}
 }
