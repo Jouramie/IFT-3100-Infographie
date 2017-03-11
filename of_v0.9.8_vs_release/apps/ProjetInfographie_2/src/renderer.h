@@ -44,6 +44,7 @@ public:
 	void createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
 	void clearPrimitives();
 	void changeWireFrameMode();
+	void changeCameraMode();
 	void selectPrimitive(int x, int y, bool shiftHeld);
 
 	void setScene(scene * scn) { this->scn = scn; }

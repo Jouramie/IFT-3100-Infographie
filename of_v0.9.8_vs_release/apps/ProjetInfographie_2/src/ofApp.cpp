@@ -52,10 +52,10 @@ void ofApp::update()
 
 void ofApp::updateKeys()
 {
-	rend->isCameraMoveBackward = isKeyPressDown;
-	rend->isCameraMoveForward = isKeyPressUp;
-	rend->isCameraMoveDown = isKeyPressPageDown;
-	rend->isCameraMoveUp = isKeyPressPageUp;
+	rend->isCameraMoveDown = isKeyPressDown;
+	rend->isCameraMoveUp = isKeyPressUp;
+	rend->isCameraMoveBackward = isKeyPressPageDown;
+	rend->isCameraMoveForward = isKeyPressPageUp;
 	rend->isCameraMoveLeft = isKeyPressLeft;
 	rend->isCameraMoveRight = isKeyPressRight;
 }
@@ -125,10 +125,16 @@ void ofApp::keyReleased(int key) {
 		rend->createSphere(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);*/
 	}
 	else if (key == 'c') {
+		ofLog() << "<app::primitiveCleared>";
 		rend->clearPrimitives();
 	}
 	else if (key == 'w') {
+		ofLog() << "<app::wireFrameModeChanged>";
 		rend->changeWireFrameMode();
+	}
+	else if (key == 'v') {
+		ofLog() << "<app::cameraModeChanged>";
+		rend->changeCameraMode();
 	}
 	else if (key == OF_KEY_LEFT)
 	{

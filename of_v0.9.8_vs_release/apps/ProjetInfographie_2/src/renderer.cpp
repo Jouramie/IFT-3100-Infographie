@@ -132,7 +132,6 @@ void renderer::createSquare(float x, float y, float w, float h, ofColor fillColo
 	rect->rectangle(ofRectangle(x, y, w, h));
 	rect->setColor(fillColor);
 	scn->addElement(primitive2d{ rect, fillColor });
-	draw();	
 }
 
 /**
@@ -151,7 +150,6 @@ void renderer::createCircle(float x, float y, float r1, float r2, ofColor fillCo
 	circle->ellipse(x, y, r1, r2);
 	circle->setColor(fillColor);
 	scn->addElement(primitive2d{ circle, fillColor });
-	draw();
 }
 
 /**
@@ -171,7 +169,6 @@ void renderer::createLine(float x, float y, float xDelta, float yDelta, ofColor 
 	line->lineTo(x +  xDelta, y + yDelta);
 	line->setColor(fillColor);	
 	scn->addElement(primitive2d{ line, fillColor });
-	draw();
 }
 
 /**
@@ -190,7 +187,6 @@ void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, 
 	triangle->triangle(x1, y1, x2, y2, x3, y3);
 	triangle->setColor(fillColor);
 	scn->addElement(primitive2d{ triangle, fillColor });
-	draw();
 }
 
 /**
@@ -209,8 +205,6 @@ void renderer::createPoint(float x, float y, float radius, ofColor fillColor) {
 	point->circle(x, y, radius);
 	point->setColor(fillColor);
 	scn->addElement(primitive2d{ point, fillColor });
-	draw();
-
 }
 //-------------3D primitives-----------------------
 void renderer::createCube(int x, int y, int z, int w, int h, int d)
@@ -243,7 +237,6 @@ void renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fill
 	}
  	scn->addElement(primitive3d{ box, fillCol, scaleVec });
  	cout << *scn;
-	draw();
 }
 
 void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
@@ -270,7 +263,6 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 
 	scn->addElement(primitive3d{ ball, color, scaleVec });
 	cout << *scn;
-	draw();
 }
 
 void renderer::clearPrimitives()
@@ -281,7 +273,16 @@ void renderer::clearPrimitives()
 void renderer::changeWireFrameMode()
 {
 	wireFrame = !wireFrame;
-	draw();
+}
+
+void renderer::changeCameraMode()
+{
+	if (camera.getOrtho()) {
+		camera.disableOrtho();
+	}
+	else {
+		camera.enableOrtho();
+	}
 }
 
 void renderer::selectPrimitive(int x, int y, bool shiftHeld)
@@ -324,7 +325,6 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 	{
 		std::cout << "Selected Nothing" << std::endl;
 	}
-	draw();
 }
 
 renderer::~renderer()
