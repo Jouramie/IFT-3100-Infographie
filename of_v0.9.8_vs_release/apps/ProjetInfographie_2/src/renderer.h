@@ -62,13 +62,6 @@ public:
 	void addDilate();
 	void removeDilate();
 
-	void addBlur();
-	void removeBlur();
-	void addInvert();
-	void removeInvert();
-	void addDilate();
-	void removeDilate();
-
 	~renderer();
 
 private:
