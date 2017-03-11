@@ -1,5 +1,4 @@
 #include "ofApp.h"
-#include "camera.h"
 
 ofApp::ofApp()
 {
@@ -122,9 +121,10 @@ void ofApp::keyPressed(int key) {
 void ofApp::keyReleased(int key) {
 	if (key == ' ')
 		rend->imageExport("render", "png");
-	else if (key == 'm')
+	else if (key == 'r')
 	{
-		rend->importModel("..\..\Models\Minion\OBJ\Minion.obj");
+		//ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
+		//rend->createCube(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
 	}
 	else if (key == 's')
 	{
@@ -592,7 +592,7 @@ void ofApp::initPrimitives() {
 
 void ofApp::setupCameraMenu() {
 
-	cam = new camera();
+	cam = new ccamera();
 
 	cameraMenu.setDefaultWidth(270);
 

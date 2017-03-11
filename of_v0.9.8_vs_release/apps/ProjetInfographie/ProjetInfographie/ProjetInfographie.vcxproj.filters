@@ -96,6 +96,7 @@
     <ClInclude Include="primitive2d.h">
       <Filter>src</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="extModel.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -222,6 +223,11 @@
     <ClInclude Include="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\include\assimp\Compiler\pushpack1.h">
       <Filter>addons\ofxAssimpModelLoader\libs\assimp\include\assimp\Compiler</Filter>
     </ClInclude>
+=======
+    <ClInclude Include="camera.h">
+      <Filter>src</Filter>
+    </ClInclude>
+>>>>>>> 6cb6a78640aef2db5223c26fd4e9d52c566d0c5b
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -284,6 +290,7 @@
     <ClCompile Include="primitive2d.cpp">
       <Filter>src</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="extModel.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -322,5 +329,10 @@
     <None Include="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\include\assimp\vector3.inl">
       <Filter>addons\ofxAssimpModelLoader\libs\assimp\include\assimp</Filter>
     </None>
+=======
+    <ClCompile Include="camera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+>>>>>>> 6cb6a78640aef2db5223c26fd4e9d52c566d0c5b
   </ItemGroup>
 </Project>

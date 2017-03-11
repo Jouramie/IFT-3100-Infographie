@@ -244,6 +244,7 @@
     <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay\Projector.h" />
     <ClInclude Include="..\..\..\addons\ofxRay\src\ofxRay\Ray.h" />
     <ClInclude Include="extModel.h" />
+    <ClInclude Include="camera.h" />
     <ClInclude Include="ofApp.h" />
     <ClInclude Include="ofxCheckBox.h" />
     <ClInclude Include="primitive.h" />
@@ -270,6 +271,7 @@
     <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Projector.cpp" />
     <ClCompile Include="..\..\..\addons\ofxRay\src\ofxRay\Ray.cpp" />
     <ClCompile Include="extModel.cpp" />
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ofApp.cpp" />
     <ClCompile Include="ofxCheckBox.cpp" />

@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "renderer.h"
-#include "camera.h"
+#include "ccamera.h"
 #include "ofxRay.h"
 
 class ofApp : public ofBaseApp {
@@ -42,7 +42,7 @@ public:
 
 private:
 	
-	camera *cam;
+	ccamera *cam;
 
 	bool isListenersUnlocked;
 
