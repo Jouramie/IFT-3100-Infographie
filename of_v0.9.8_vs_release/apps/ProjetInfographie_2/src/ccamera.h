@@ -48,15 +48,15 @@ private:
 	ofParameter<float> posY;
 	ofParameter<float> posZ;
 
-	ofParameter<float> fovH;
-	ofParameter<float> fovV;
-	ofParameter<float> aspectRatio;
+	ofParameter<float> fov;
+	ofParameter<bool> autoRatio;
+	ofParameter<float> ratio;
 
-	ofParameter<float> frontClippingPlan;
-	ofParameter<float> backClippingPlan;
+	ofParameter<float> nearClip;
+	ofParameter<float> farClip;
 
-	ofParameter<bool> projectionOrthogonal;
-	ofParameter<bool> cameraInteractive;
+	ofParameter<bool> ortho;
+	ofParameter<bool> camInteractive;
 
 };
 
