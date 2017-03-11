@@ -196,6 +196,7 @@
     <ClCompile Include="src\primitive.cpp" />
     <ClCompile Include="src\primitive2d.cpp" />
     <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.h" />
@@ -260,6 +261,7 @@
     <ClInclude Include="src\primitive.h" />
     <ClInclude Include="src\primitive2d.h" />
     <ClInclude Include="src\renderer.h" />
+    <ClInclude Include="src\scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
