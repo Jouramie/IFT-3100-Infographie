@@ -95,7 +95,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\addons\ofxAssimpModelLoader\libs;..\..\addons\ofxAssimpModelLoader\libs\assimp;..\..\addons\ofxAssimpModelLoader\libs\assimp\include;..\..\addons\ofxAssimpModelLoader\libs\assimp\include\assimp;..\..\addons\ofxAssimpModelLoader\libs\assimp\include\assimp\Compiler;..\..\addons\ofxAssimpModelLoader\libs\assimp\lib;..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\emscripten;..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\vs;..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\Win32;..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\x64;..\..\addons\ofxAssimpModelLoader\libs\assimp\license;..\..\addons\ofxAssimpModelLoader\src;..\..\addons\ofxGui\src;..\..\addons\ofxRay\src;..\..\addons\ofxRay\src\ofxRay</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Université\Session 2\Infographie\TP\infographie-h2017\of_v0.9.8_vs_release\apps\ProjetInfographie_2\src;%(AdditionalIncludeDirectories);..\..\addons\ofxAssimpModelLoader\libs;..\..\addons\ofxAssimpModelLoader\libs\assimp;..\..\addons\ofxAssimpModelLoader\libs\assimp\include;..\..\addons\ofxAssimpModelLoader\libs\assimp\include\assimp;..\..\addons\ofxAssimpModelLoader\libs\assimp\include\assimp\Compiler;..\..\addons\ofxAssimpModelLoader\libs\assimp\lib;..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\emscripten;..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\vs;..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\Win32;..\..\addons\ofxAssimpModelLoader\libs\assimp\lib\vs\x64;..\..\addons\ofxAssimpModelLoader\libs\assimp\license;..\..\addons\ofxAssimpModelLoader\src;..\..\addons\ofxGui\src;..\..\addons\ofxRay\src;..\..\addons\ofxRay\src\ofxRay</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
@@ -190,6 +190,7 @@
     <ClCompile Include="..\..\addons\ofxRay\src\ofxRay\Projector.cpp" />
     <ClCompile Include="..\..\addons\ofxRay\src\ofxRay\Ray.cpp" />
     <ClCompile Include="src\ccamera.cpp" />
+    <ClCompile Include="src\extModel.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\ofxCheckBox.cpp" />
@@ -255,6 +256,7 @@
     <ClInclude Include="..\..\addons\ofxRay\src\ofxRay\Ray.h" />
     <ClInclude Include="..\..\addons\ofxRay\src\ofxRay.h" />
     <ClInclude Include="src\ccamera.h" />
+    <ClInclude Include="src\extModel.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\ofxCheckBox.h" />
     <ClInclude Include="src\primitive.h" />

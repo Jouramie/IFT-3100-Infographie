@@ -53,7 +53,7 @@ void primitive::draw(bool wireframe) {
 	ofSetColor(fillCol);
 	ofScale(scale.x, scale.y, scale.z);
 
-	if (wireframe || selected)
+	if (wireframe)// || selected)
 		prim->drawWireframe();
 	else
 		prim->draw();
