@@ -43,13 +43,13 @@ public:
 private:
 	
 	ccamera *cam;
-
-	bool isListenersUnlocked;
-
-	ofxPanel gui;
+	
+	ofxPanel menu2D;
+	ofxPanel menu3D;
 	ofxPanel cameraMenu;
 	ofxPanel transformationMenu;
 	ofxPanel filterMenu;
+	ofxPanel optionMenu;
 	ofxButton btnSelect;
 	ofxButton btnDrawPrimitive;
 	ofxButton btnExit;
@@ -107,7 +107,6 @@ private:
 
 #pragma endregion
 	ofParameterGroup groupTexture;
-	ofParameter<bool> wireFrame;
 	ofParameter<bool> noTexture;
 	ofParameter<bool> metalTexture;
 	ofParameter<bool> waterTexture;
@@ -135,6 +134,8 @@ private:
 	ofParameter<bool> invert;
 	ofParameter<bool> dilate;
 
+	ofParameterGroup groupWireFrame;
+	ofParameter<bool> wireFrame;
 
 	void initGroups();
 	void initButtonListener();
@@ -144,10 +145,15 @@ private:
 
 	void setRendererParameter();
 		
-	void setupGui(); 
+	void setupMenu2D();
+	void setupMenu3D(); 
 	void setupCameraMenu();
 	void setupTransformationMenu();
 	void setupFilterMenu();
+
+	void setupOptionMenu();
+
+	void updatePositionMenu();
 
 	void btnSelectClicked();
 	void btnDrawPrimitiveClicked();
@@ -172,6 +178,9 @@ private:
 	void blurChanged(bool & value);
 	void invertChanged(bool & value);
 	void dilateChanged(bool & value);
+
+	void drawMenus();
+
 
 	void updateKeys();
 
