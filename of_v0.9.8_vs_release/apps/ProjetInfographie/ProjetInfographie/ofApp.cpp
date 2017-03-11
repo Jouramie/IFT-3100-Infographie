@@ -114,10 +114,9 @@ void ofApp::keyPressed(int key) {
 void ofApp::keyReleased(int key) {
 	if (key == ' ')
 		rend->imageExport("render", "png");
-	else if (key == 'r')
+	else if (key == 'm')
 	{
-		//ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
-		//rend->createCube(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
+		rend->importModel("..\..\Models\Minion\OBJ\Minion.obj");
 	}
 	else if (key == 's')
 	{

@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "ofxCvImage.h"
 
 
 renderer::renderer()
@@ -15,6 +16,12 @@ void renderer::setup()
 	
 	cam->setCamera(new ofCamera{ });
 	cam->setup();
+	filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
+
+	isFiltered = false;
+	blur = false;
+	invert = false;
+	dilate = false;
 
 	time = lastTime = ofGetElapsedTimef();
 }
@@ -55,6 +62,16 @@ void renderer::draw()
 		iterator2->draw();
 	}
 
+	std::list<extModel>::iterator iterator4;
+	for (iterator4 = externalModels.begin(); iterator4 != externalModels.end(); ++iterator4)
+	{
+		iterator4->draw();
+	}
+
+	if (isFiltered) {
+		checkFilters();
+	}
+
 	ofDisableDepthTest();
 
 	cam->end();
@@ -78,49 +95,107 @@ void renderer::imageExport(const string name, const string extension) const
 
 	ofLog() << "<export image: " << fileName << ">";
 }
+
+void renderer::checkFilters(){
+	//--------------Filters
+	sceneImg.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+	scenePixels = sceneImg.getPixels();
+	filter.clear();
+	filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
+	filter.setFromPixels(scenePixels);
+	if (blur) {
+		filter.blur();
+	}
+	if (invert) {
+		filter.invert();
+	}
+	if (dilate) {
+		filter.dilate();
+	}
+	filter.mirror(false, true);
+	filter.draw(-(ofGetWindowWidth()*.75), -(ofGetWindowHeight()*.75), ofGetWindowWidth()*1.5, ofGetWindowHeight()*1.5);
+}
+
+void renderer::sceneTranslate(float x, float y) {
+	sceneImg.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+	scenePixels = sceneImg.getPixels();
+	filter.clear();
+	filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
+	filter.setFromPixels(scenePixels);
+	filter.translate(x, y);
+	filter.mirror(false, true);
+	filter.draw(-(ofGetWindowWidth()*.75), -(ofGetWindowHeight()*.75), ofGetWindowWidth()*1.5, ofGetWindowHeight()*1.5);
+}
+
+void renderer::sceneRotate(float angle, float centerX, float centerY) {
+	sceneImg.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+	scenePixels = sceneImg.getPixels();
+	filter.clear();
+	filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
+	filter.setFromPixels(scenePixels);
+	filter.rotate(angle, centerX, centerY);
+	filter.mirror(false, true);
+	filter.draw(-(ofGetWindowWidth()*.75), -(ofGetWindowHeight()*.75), ofGetWindowWidth()*1.5, ofGetWindowHeight()*1.5);
+}
+
+void renderer::sceneScale(float scaleX, float scaleY) {
+	sceneImg.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+	scenePixels = sceneImg.getPixels();
+	filter.clear();
+	filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
+	filter.setFromPixels(scenePixels);
+	filter.scale(scaleX, scaleY);
+	filter.mirror(false, true);
+	filter.draw(-(ofGetWindowWidth()*.75), -(ofGetWindowHeight()*.75), ofGetWindowWidth()*1.5, ofGetWindowHeight()*1.5);
+}
+
 //-------------------------------- 2D Primitives----------------
 /**
 * Render a square with given width, height and border width.
 */
 void renderer::createSquare(float x, float y, float w, float h) {
-	ofColor c = ofColor(255, 255, 255);
-	createSquare(x,y,w,h,c);
+	ofColor f = ofColor(255, 255, 255);
+	ofColor s = ofColor(255, 255, 255);
+	createSquare(x,y,w,h,f,s);
 }
 
 /**
 * Render a square with given width, height, border width and color.
 */
-void renderer::createSquare(float x, float y, float w, float h, ofColor fillColor) {
+void renderer::createSquare(float x, float y, float w, float h, ofColor fillColor, ofColor strokeColor) {
 	ofPath* rect = new ofPath();
 	rect->rectangle(ofRectangle(x, y, w, h));
 	rect->setColor(fillColor);
-	scn->addElement(primitive2d{ rect, fillColor });
+	rect->setStrokeColor(strokeColor);
+	scn->addElement(primitive2d{ rect, fillColor, strokeColor });
 }
 
 /**
 * Render a circle/ellipse with given radius.
 */
 void renderer::createCircle(float x, float y, float r1, float r2) {
-	ofColor c = ofColor(255, 255, 255);
-	createCircle(x, y, r1, r2, c);
+	ofColor f = ofColor(255, 255, 255);
+	ofColor s = ofColor(255, 255, 255);
+	createCircle(x, y, r1, r2, f,s);
 }
 
 /**
 * Render a circle/ellipse with given radius and color.
 */
-void renderer::createCircle(float x, float y, float r1, float r2, ofColor fillColor) {
+void renderer::createCircle(float x, float y, float r1, float r2, ofColor fillColor, ofColor strokeColor) {
 	ofPath* circle = new ofPath();
 	circle->ellipse(x, y, r1, r2);
 	circle->setColor(fillColor);
-	scn->addElement(primitive2d{ circle, fillColor });
+	circle->setStrokeColor(strokeColor);
+	scn->addElement(primitive2d{ circle, fillColor, strokeColor });
 }
 
 /**
 * Render a line with given x, y and deltas.
 */
 void renderer::createLine(float x, float y, float xDelta, float yDelta) {
-	ofColor c = ofColor(255, 255, 255);
-	createLine(x, y, xDelta, yDelta, c);
+	ofColor f = ofColor(255, 255, 255);
+	createLine(x, y, xDelta, yDelta, f);
 }
 
 /**
@@ -138,36 +213,40 @@ void renderer::createLine(float x, float y, float xDelta, float yDelta, ofColor 
 * Render a triangle with given points.
 */
 void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
-	ofColor c = ofColor(255, 255, 255);
-	createTriangle(x1, y1, x2, y2, x3, y3, c);
+	ofColor f = ofColor(255, 255, 255);
+	ofColor s = ofColor(255, 255, 255);
+	createTriangle(x1, y1, x2, y2, x3, y3, f, s);
 }
 
 /**
 * Render a triangle with given points and color.
 */
-void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, float y3, ofColor fillColor) {
+void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, float y3, ofColor fillColor, ofColor strokeColor) {
 	ofPath* triangle = new ofPath();
 	triangle->triangle(x1, y1, x2, y2, x3, y3);
 	triangle->setColor(fillColor);
-	scn->addElement(primitive2d{ triangle, fillColor });
+	triangle->setStrokeColor(strokeColor);
+	scn->addElement(primitive2d{ triangle, fillColor, strokeColor });
 }
 
 /**
 * Render a line with given x,y and deltas.
 */
 void renderer::createPoint(float x, float y, float radius) {
-	ofColor c = ofColor(255, 255, 255);
-	createPoint(x, y, radius, c);
+	ofColor f = ofColor(255, 255, 255);
+	ofColor s = ofColor(255, 255, 255);
+	createPoint(x, y, radius, f, s);
 }
 
 /**
 * Render a line with given x,y and deltas.
 */
-void renderer::createPoint(float x, float y, float radius, ofColor fillColor) {
+void renderer::createPoint(float x, float y, float radius, ofColor fillColor, ofColor strokeColor) {
 	ofPath* point = new ofPath();
 	point->circle(x, y, radius);
 	point->setColor(fillColor);
-	scn->addElement(primitive2d{ point, fillColor });
+	point->setStrokeColor(strokeColor);
+	scn->addElement(primitive2d{ point, fillColor, strokeColor });
 }
 //-------------3D primitives-----------------------
 void renderer::createCube(int x, int y, int z, int w, int h, int d)
@@ -228,6 +307,16 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 	cout << *scn;
 }
 
+void renderer::importModel(string path) {
+	ofxAssimpModelLoader* model = new ofxAssimpModelLoader();
+	model->loadModel(path, false);
+	model->enableTextures();
+	ofTexture tex = ofTexture();
+	extModel mod = extModel(model);
+	externalModels.push_back(mod);
+	draw();
+}
+
 void renderer::clearPrimitives()
 {
 	scn->clearElements();
@@ -278,6 +367,36 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 	{
 		std::cout << "Selected Nothing" << std::endl;
 	}
+}
+
+void renderer::addBlur() {
+	isFiltered = true;
+	blur = true;
+}
+
+void renderer::removeBlur() {
+	blur = false;
+	isFiltered = false;
+}
+
+void renderer::addInvert() {
+	isFiltered = true;
+	invert = true;
+}
+
+void renderer::removeInvert() {
+	invert = false;
+	isFiltered = false;
+}
+
+void renderer::addDilate() {
+	isFiltered = true;
+	dilate = true;
+}
+
+void renderer::removeDilate() {
+	dilate = false;
+	isFiltered = false;
 }
 
 renderer::~renderer()
