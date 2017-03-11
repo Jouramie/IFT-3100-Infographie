@@ -5,6 +5,7 @@
 #include "renderer.h"
 #include "ccamera.h"
 #include "ofxRay.h"
+#include "scene.h"
 
 class ofApp : public ofBaseApp {
 
@@ -14,14 +15,13 @@ public:
 	const float MinX = -1000, MinY = -1000, MinZ = -1000;
 
 	renderer * rend;
+	scene * scn;
 
 	ofApp();
 
 	void setup();
 	void update();
 	void draw();
-
-	void exit();
 
 	~ofApp();
 
@@ -48,9 +48,14 @@ private:
 
 	ofxPanel gui;
 	ofxPanel cameraMenu;
+	ofxPanel transformationMenu;
+	ofxPanel filterMenu;
 	ofxButton btnSelect;
 	ofxButton btnDrawPrimitive;
 	ofxButton btnExit;
+
+	ofxButton btnExport;
+	ofxButton btnImport;
 
 	ofParameterGroup groupProperty;
 	ofParameterGroup groupThick;
@@ -78,11 +83,15 @@ private:
 
 #pragma region "Primitives"
 
-	ofParameterGroup groupPrimitiveType;
+	ofParameterGroup groupPrimitiveType2D;
+	ofParameterGroup groupPrimitiveType3D;
 	ofParameter<bool> primType2D;
 	ofParameter<bool> primType3D;
 	ofParameter<bool> primTypeSphere;
 	ofParameter<bool> primTypeCube;
+	ofParameter<bool> primTypeTriangle;
+	ofParameter<bool> primTypeLine;
+	ofParameter<bool> primTypePoint;
 
 	ofParameterGroup groupPrimitivePosition3D;
 	ofParameterGroup groupPrimitivePosition2D;
@@ -90,39 +99,79 @@ private:
 	ofParameter<float> primPosY;
 	ofParameter<float> primPosZ;
 
-	ofParameterGroup groupPrimitiveSizeCube2D;
-	ofParameterGroup groupPrimitiveSizeCube3D;
-	ofParameterGroup groupPrimitiveSizeSphere;
+	ofParameterGroup groupPrimitiveSize2D;
+	ofParameterGroup groupPrimitiveSize3D;
 	ofParameter<float> primSizeHeight;
 	ofParameter<float> primSizeWidth;
 	ofParameter<float> primSizeDepth;
-	ofParameter<float> primSizeRadius;
 
 #pragma endregion
+	ofParameterGroup groupTexture;
+	ofParameter<bool> wireFrame;
+	ofParameter<bool> noTexture;
+	ofParameter<bool> metalTexture;
+	ofParameter<bool> waterTexture;
+
+	ofParameterGroup groupTranslate2D;
+	ofParameterGroup groupTranslate3D;
+	ofParameter<float> translateX;
+	ofParameter<float> translateY;
+	ofParameter<float> translateZ;
+
+	ofParameterGroup groupRotate2D;
+	ofParameterGroup groupRotate3D;
+	ofParameter<float> rotateX;
+	ofParameter<float> rotateY;
+	ofParameter<float> rotateZ;
+
+	ofParameterGroup groupProportion2D;
+	ofParameterGroup groupProportion3D;
+	ofParameter<float> proportionX;
+	ofParameter<float> proportionY;
+	ofParameter<float> proportionZ;
+
+	ofParameterGroup groupFilter;
+	ofParameter<bool> blur;
+	ofParameter<bool> invert;
+	ofParameter<bool> dilate;
+
 
 	void initGroups();
+	void initButtonListener();
+	void initOfParameters();
 
-	void initPosition();
-	void initDimension();
-	void initColors();
 	void setColors();
 
-	float colorParameterChanged(float & value);
-	
-	void initPrimitives();
-
+	void setRendererParameter();
+		
 	void setupGui(); 
 	void setupCameraMenu();
+	void setupTransformationMenu();
+	void setupFilterMenu();
 
 	void btnSelectClicked();
 	void btnDrawPrimitiveClicked();
-	void btnDrawClicked();
 	void btnExitClicked();
-
+	void btnExportClicked();
+	void btnImportClicked();
+	
 	void primDim2DChanged(bool& value);
 	void primDim3DChanged(bool& value);
 	void primTypeCubeChanged(bool& value);
 	void primTypeSphereChanged(bool& value);
+	void primTypeTriangleChanged(bool & value);
+	void primTypeLineChanged(bool & value);
+	void primTypePointChanged(bool & value);
+
+	void wireFrameChanged(bool& value);
+
+	void noTextureChanged(bool & value);
+	void metalTextureChanged(bool & value);
+	void waterTextureChanged(bool & value);
+
+	void blurChanged(bool & value);
+	void invertChanged(bool & value);
+	void dilateChanged(bool & value);
 
 	void updateKeys();
 

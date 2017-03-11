@@ -250,6 +250,7 @@
     <ClInclude Include="primitive.h" />
     <ClInclude Include="primitive2d.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\addons\ofxAssimpModelLoader\src\ofxAssimpAnimation.cpp" />
@@ -278,6 +279,7 @@
     <ClCompile Include="primitive.cpp" />
     <ClCompile Include="primitive2d.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\addons\ofxAssimpModelLoader\libs\assimp\include\assimp\color4.inl" />

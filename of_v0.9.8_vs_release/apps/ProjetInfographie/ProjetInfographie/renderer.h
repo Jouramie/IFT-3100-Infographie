@@ -3,6 +3,7 @@
 #include "ofxRay.h"
 #include "primitive.h"
 #include <limits>
+#include "scene.h"
 #include "primitive2d.h"
 #include "extModel.h"
 
@@ -47,14 +48,14 @@ public:
 	void changeWireFrameMode();
 	void selectPrimitive(int x, int y, bool shiftHeld);
 
+	void setScene(scene * scn) { this->scn = scn; }
+
 	~renderer();
 
 private:
 	void setupCamera();
 
-	std::list<primitive> primitives;
-	std::list<primitive2d> primitives2d;
-	std::list<extModel> externalModels;
+    std::list<primitive2d> primitives2d;
 
 	//ofEasyCam mainCam;
 	bool wireFrame;
@@ -70,6 +71,7 @@ private:
 	ofVec3f cameraPosition;
 	ofVec3f cameraTarget;
 
+	scene * scn;
 	ofCamera camera;
 
 	std::list<ofRay> rays;

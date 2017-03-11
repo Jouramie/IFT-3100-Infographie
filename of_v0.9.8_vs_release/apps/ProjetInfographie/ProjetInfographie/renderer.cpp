@@ -76,11 +76,15 @@ void renderer::draw()
 
 	ofSetLineWidth(1.0);
 
-	std::list<primitive>::iterator iterator;
-	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
+	for (auto& p : *scn)
 	{
-		iterator->draw(wireFrame);
+		p.draw(wireFrame);
 	}
+// 	std::list<primitive>::iterator iterator;
+// 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
+// 	{
+// 		iterator->draw(wireFrame);
+// 	}
 
 	std::list<ofRay>::iterator iterator2;
 	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
@@ -258,8 +262,10 @@ void renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fill
 	{
 		box->setSideColor(i, fillCol);
 	}
-	primitive prim = primitive(box, fillCol, scaleVec);
-	primitives.push_back(prim);
+//  	primitive prim = primitive(box, fillCol, scaleVec);
+//  	primitives.push_back(prim);
+ 	scn->addElement(0, primitive{ box, fillCol, scaleVec }, true);
+ 	cout << *scn;
 	draw();
 }
 
@@ -274,6 +280,7 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 	ofSpherePrimitive* ball = new ofSpherePrimitive();
 	ball->setPosition(x, y, z);
 
+
 	float smallest = min(sizeX, min(sizeY, sizeZ));
 
 	ball->setRadius(smallest);
@@ -284,9 +291,11 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 
 	ofVec3f scaleVec = ofVec3f(newX, newY, newZ);
 
-	primitive prim = primitive(ball, color, scaleVec);
 
-	primitives.push_back(prim);
+//  	primitive prim = primitive(ball, color, scaleVec);
+//  	primitives.push_back(prim);
+	scn->addElement(0, primitive{ ball, color, scaleVec }, true);
+	cout << *scn;
 	draw();
 }
 
@@ -300,9 +309,8 @@ void renderer::importModel(string path) {
 
 void renderer::clearPrimitives()
 {
-	primitives.clear();
-	primitives2d.clear();
-	externalModels.clear();
+/*	primitives.clear();*/
+	scn->clearElements();
 }
 
 void renderer::changeWireFrameMode()
@@ -315,8 +323,6 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 {
 	ofVec3f screenToWorld = camera.screenToWorld(ofVec3f(x, y, 0.0));
 
-	std::list<primitive>::iterator iterator;
-
 	primitive* intersectPrim = nullptr;
 	int distanceClosest = std::numeric_limits<int>::max();
 
@@ -327,19 +333,20 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 	// Pour dessiner le rayon (à des fins de débogage)
 	// rays.push_back(ray);
 
-	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
+/*	for (auto& iterator = primitives.begin(); iterator != primitives.end(); ++iterator)*/
+	for (primitive& p : *scn)
 	{
 		if (!shiftHeld)
 		{
-			iterator->setSelected(false);
+			p.setSelected(false);
 		}
 
 		float* distance = new float(0);
 
-		bool found = iterator->checkIntersectionPlaneAndLine(ray, distance);
+		bool found = p.checkIntersectionPlaneAndLine(ray, distance);
 		if (found)// && *distance >= 0 && *distance < distanceClosest)
 		{
-			intersectPrim = &(*iterator);
+			intersectPrim = &p;
 			//distanceClosest = *distance;
 		}
 	}

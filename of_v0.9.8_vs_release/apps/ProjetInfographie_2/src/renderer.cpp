@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "ofxCvImage.h"
 
 
 renderer::renderer()
@@ -13,6 +14,8 @@ void renderer::setup()
 	rotate = -1;
 	mainCam.begin();*/
 	
+	filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
+
 	setupCamera();
 	timeCurrent = timeLast = ofGetElapsedTimef();
 
@@ -22,6 +25,9 @@ void renderer::setup()
 	isCameraMoveDown = false;
 	isCameraMoveForward = false;
 	isCameraMoveBackward = false;
+	blur = false;
+	invert = false;
+	dilate = false;
 }
 
 void renderer::setupCamera()
@@ -76,31 +82,22 @@ void renderer::draw()
 
 	ofSetLineWidth(1.0);
 
-	std::list<primitive>::iterator iterator;
-	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
+	for (auto& p : *scn)
 	{
-		iterator->draw(wireFrame);
+		p.draw(wireFrame);
 	}
+// 	std::list<primitive>::iterator iterator;
+// 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
+// 	{
+// 		iterator->draw(wireFrame);
+// 	}
 
 	std::list<ofRay>::iterator iterator2;
 	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
 	{
 		iterator2->draw();
 	}
-
-	std::list<primitive2d>::iterator iterator3;
-	for (iterator3 = primitives2d.begin(); iterator3 != primitives2d.end(); ++iterator3)
-	{
-		iterator3->getPrimitive2d()->draw();
-	}
-
-	std::list<extModel>::iterator iterator4;
-	for (iterator4 = externalModels.begin(); iterator4 != externalModels.end(); ++iterator4)
-	{
-		iterator4->draw();
-
-	}
-
+	chekFilters();
 	ofDisableDepthTest();
 
 	camera.end();
@@ -124,55 +121,74 @@ void renderer::imageExport(const string name, const string extension) const
 
 	ofLog() << "<export image: " << fileName << ">";
 }
+
+void renderer::chekFilters(){
+	//--------------Filters
+	sceneImg.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+	scenePixels = sceneImg.getPixels();
+	filter.clear();
+	filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
+	filter.setFromPixels(scenePixels);
+	if (blur) {
+		filter.blur();
+	}
+	if (invert) {
+		filter.invert();
+	}
+	if (dilate) {
+		filter.dilate();
+	}
+	filter.mirror(false, true);
+	filter.draw(-(ofGetWindowWidth()*.75), -(ofGetWindowHeight()*.75), ofGetWindowWidth()*1.5, ofGetWindowHeight()*1.5);
+}
+
 //-------------------------------- 2D Primitives----------------
 /**
 * Render a square with given width, height and border width.
 */
 void renderer::createSquare(float x, float y, float w, float h) {
-	ofColor c = ofColor(255, 255, 255);
-	createSquare(x,y,w,h,c);
+	ofColor f = ofColor(255, 255, 255);
+	ofColor s = ofColor(255, 255, 255);
+	createSquare(x,y,w,h,f,s);
 }
 
 /**
 * Render a square with given width, height, border width and color.
 */
-void renderer::createSquare(float x, float y, float w, float h, ofColor fillColor) {
+void renderer::createSquare(float x, float y, float w, float h, ofColor fillColor, ofColor strokeColor) {
 	ofPath* rect = new ofPath();
 	rect->rectangle(ofRectangle(x, y, w, h));
 	rect->setColor(fillColor);
-	primitive2d prim = primitive2d(rect, fillColor);
-	primitives2d.push_back(prim);
-	draw();
-	
+	rect->setStrokeColor(strokeColor);
+	scn->addElement(primitive2d{ rect, fillColor, strokeColor });
 }
 
 /**
 * Render a circle/ellipse with given radius.
 */
 void renderer::createCircle(float x, float y, float r1, float r2) {
-	ofColor c = ofColor(255, 255, 255);
-	createCircle(x, y, r1, r2, c);
+	ofColor f = ofColor(255, 255, 255);
+	ofColor s = ofColor(255, 255, 255);
+	createCircle(x, y, r1, r2, f,s);
 }
 
 /**
 * Render a circle/ellipse with given radius and color.
 */
-void renderer::createCircle(float x, float y, float r1, float r2, ofColor fillColor) {
+void renderer::createCircle(float x, float y, float r1, float r2, ofColor fillColor, ofColor strokeColor) {
 	ofPath* circle = new ofPath();
 	circle->ellipse(x, y, r1, r2);
 	circle->setColor(fillColor);
-	primitive2d prim = primitive2d(circle, fillColor);
-	primitives2d.push_back(prim);
-	draw();
-
+	circle->setStrokeColor(strokeColor);
+	scn->addElement(primitive2d{ circle, fillColor, strokeColor });
 }
 
 /**
 * Render a line with given x, y and deltas.
 */
 void renderer::createLine(float x, float y, float xDelta, float yDelta) {
-	ofColor c = ofColor(255, 255, 255);
-	createLine(x, y, xDelta, yDelta, c);
+	ofColor f = ofColor(255, 255, 255);
+	createLine(x, y, xDelta, yDelta, f);
 }
 
 /**
@@ -182,51 +198,48 @@ void renderer::createLine(float x, float y, float xDelta, float yDelta, ofColor 
 	ofPath* line = new ofPath();
 	line->moveTo(x, y, 0);
 	line->lineTo(x +  xDelta, y + yDelta);
-	line->setColor(fillColor);
-	primitive2d prim = primitive2d(line, fillColor);
-	primitives2d.push_back(prim);
-	draw();
+	line->setColor(fillColor);	
+	scn->addElement(primitive2d{ line, fillColor });
 }
 
 /**
 * Render a triangle with given points.
 */
 void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
-	ofColor c = ofColor(255, 255, 255);
-	createTriangle(x1, y1, x2, y2, x3, y3, c);
+	ofColor f = ofColor(255, 255, 255);
+	ofColor s = ofColor(255, 255, 255);
+	createTriangle(x1, y1, x2, y2, x3, y3, f, s);
 }
 
 /**
 * Render a triangle with given points and color.
 */
-void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, float y3, ofColor fillColor) {
+void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, float y3, ofColor fillColor, ofColor strokeColor) {
 	ofPath* triangle = new ofPath();
 	triangle->triangle(x1, y1, x2, y2, x3, y3);
 	triangle->setColor(fillColor);
-	primitive2d prim = primitive2d(triangle, fillColor);
-	primitives2d.push_back(prim);
-	draw();
+	triangle->setStrokeColor(strokeColor);
+	scn->addElement(primitive2d{ triangle, fillColor, strokeColor });
 }
 
 /**
 * Render a line with given x,y and deltas.
 */
 void renderer::createPoint(float x, float y, float radius) {
-	ofColor c = ofColor(255, 255, 255);
-	createPoint(x, y, radius, c);
+	ofColor f = ofColor(255, 255, 255);
+	ofColor s = ofColor(255, 255, 255);
+	createPoint(x, y, radius, f, s);
 }
 
 /**
 * Render a line with given x,y and deltas.
 */
-void renderer::createPoint(float x, float y, float radius, ofColor fillColor) {
+void renderer::createPoint(float x, float y, float radius, ofColor fillColor, ofColor strokeColor) {
 	ofPath* point = new ofPath();
 	point->circle(x, y, radius);
 	point->setColor(fillColor);
-	primitive2d prim = primitive2d(point, fillColor);
-	primitives2d.push_back(prim);
-	draw();
-
+	point->setStrokeColor(strokeColor);
+	scn->addElement(primitive2d{ point, fillColor, strokeColor });
 }
 //-------------3D primitives-----------------------
 void renderer::createCube(int x, int y, int z, int w, int h, int d)
@@ -257,9 +270,8 @@ void renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fill
 	{
 		box->setSideColor(i, fillCol);
 	}
-	primitive prim = primitive(box, fillCol, scaleVec);
-	primitives.push_back(prim);
-	draw();
+ 	scn->addElement(primitive3d{ box, fillCol, scaleVec });
+ 	cout << *scn;
 }
 
 void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
@@ -273,6 +285,7 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 	ofSpherePrimitive* ball = new ofSpherePrimitive();
 	ball->setPosition(x, y, z);
 
+
 	float smallest = min(sizeX, min(sizeY, sizeZ));
 
 	ball->setRadius(smallest);
@@ -283,10 +296,8 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 
 	ofVec3f scaleVec = ofVec3f(newX, newY, newZ);
 
-	primitive prim = primitive(ball, color, scaleVec);
-
-	primitives.push_back(prim);
-	draw();
+	scn->addElement(primitive3d{ ball, color, scaleVec });
+	cout << *scn;
 }
 
 void renderer::importModel(string path) {
@@ -301,22 +312,27 @@ void renderer::importModel(string path) {
 
 void renderer::clearPrimitives()
 {
-	primitives.clear();
-	primitives2d.clear();
-	externalModels.clear();
+	scn->clearElements();
 }
 
 void renderer::changeWireFrameMode()
 {
 	wireFrame = !wireFrame;
-	draw();
+}
+
+void renderer::changeCameraMode()
+{
+	if (camera.getOrtho()) {
+		camera.disableOrtho();
+	}
+	else {
+		camera.enableOrtho();
+	}
 }
 
 void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 {
 	ofVec3f screenToWorld = camera.screenToWorld(ofVec3f(x, y, 0.0));
-
-	std::list<primitive>::iterator iterator;
 
 	primitive* intersectPrim = nullptr;
 	int distanceClosest = std::numeric_limits<int>::max();
@@ -328,19 +344,19 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 	// Pour dessiner le rayon (à des fins de débogage)
 	// rays.push_back(ray);
 
-	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
+	for (primitive& p : *scn)
 	{
 		if (!shiftHeld)
 		{
-			iterator->setSelected(false);
+			p.setSelected(false);
 		}
 
 		float* distance = new float(0);
 
-		bool found = iterator->checkIntersectionPlaneAndLine(ray, distance);
+		bool found = p.checkIntersectionPlaneAndLine(ray, distance);
 		if (found)// && *distance >= 0 && *distance < distanceClosest)
 		{
-			intersectPrim = &(*iterator);
+			intersectPrim = &p;
 			//distanceClosest = *distance;
 		}
 	}
@@ -354,7 +370,30 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 	{
 		std::cout << "Selected Nothing" << std::endl;
 	}
-	draw();
+}
+
+void renderer::addBlur() {
+	blur = true;
+}
+
+void renderer::removeBlur() {
+	blur = false;
+}
+
+void renderer::addInvert() {
+	invert = true;
+}
+
+void renderer::removeInvert() {
+	invert = false;
+}
+
+void renderer::addDilate() {
+	dilate = true;
+}
+
+void renderer::removeDilate() {
+	dilate = false;
 }
 
 renderer::~renderer()
