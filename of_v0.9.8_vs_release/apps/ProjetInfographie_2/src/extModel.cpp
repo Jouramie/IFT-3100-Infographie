@@ -4,18 +4,21 @@ extModel::extModel()
 {
 	model = 0;
 	transfo = ofMatrix4x4();
+	selected = ofParameter<bool>(false);
 }
 
 extModel::extModel(ofxAssimpModelLoader* mod)
 {
 	model = mod;
 	transfo = ofMatrix4x4();
+	selected = ofParameter<bool>(false);
 }
 
 extModel::extModel(ofxAssimpModelLoader* mod, ofMatrix4x4 transfo)
 {
 	model = mod;
 	transfo = transfo;
+	selected = ofParameter<bool>(false);
 }
 
 ofxAssimpModelLoader* extModel::getModel() {
@@ -49,7 +52,7 @@ void extModel::draw(bool wireframe) {
 
 	ofTranslate(transfo.getTranslation());
 
-	if (wireframe || selected)
+	if (wireframe || selected.get())
 		model->drawWireframe();
 	else
 		model->drawFaces();
