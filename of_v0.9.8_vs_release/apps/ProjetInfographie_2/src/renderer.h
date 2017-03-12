@@ -68,9 +68,9 @@ public:
 
 	//Rotation;
 	float getTheta() { return theta; }
-	float getCenterX() { centerX; }
+	float getCenterX() { return centerX; }
 	float getCenterY() { return centerY; }
-	float getCenterZ() { centerZ; }
+	float getCenterZ() { return centerZ; }
 	//Scale
 	float getScaleX() { return scaleX; }
 	float getScaleY() { return scaleY; }
