@@ -26,9 +26,9 @@ public:
 	void draw();
 	void imageExport(const string name, const string extension) const;
 	void checkFilters();
-	void sceneTranslate(float x, float y);
-	void sceneRotate(float angle, float centerX, float centerY);
-	void sceneScale(float scaleX, float scaleY);
+	void sceneTranslate(float x, float y, float z = 0);
+	void sceneRotate(float angle, float centerX, float centerY, float centerZ);
+	void sceneScale(float scaleX, float scaleY, float scaleZ = 0);
 	//2D primitives
 	void createSquare(float x, float y, float width, float height);
 	void createSquare(float x, float y, float width, float height, ofColor fillColor, ofColor strokeColor);
@@ -61,7 +61,6 @@ public:
 	void removeInvert();
 	void addDilate();
 	void removeDilate();
-	void enableTransform();
 
 	~renderer();
 
@@ -69,12 +68,21 @@ private:
 
 	//ofEasyCam mainCam;
 	bool wireFrame;
+	//Filters
 	bool isFiltered;
 	bool blur;
 	bool invert;
 	bool dilate;
-	bool transform;
-	//int rotate;
+	//Transformations
+	bool translate;
+	bool rotate;
+	bool scale;
+	//Translations
+	float deltaX, deltaY, deltaZ; 
+	//Rotation;
+	float theta, centerX, centerY, centerZ;
+	//Scale
+	float scaleX, scaleY, scaleZ;
 
 	ofVec3f cameraPosition;
 	ofVec3f cameraTarget;

@@ -119,7 +119,18 @@ void ofApp::keyReleased(int key) {
 		rend->imageExport("render", "png");
 	else if (key == 'r')
 	{
-		rend->enableTransform();
+		ofLog() << "rotate X:" << rotateX << "Y:" << rotateY << "Z:" << rotateZ;
+		rend->sceneRotate(45, rotateX, rotateY, rotateZ);
+	}
+	else if (key == 't')
+	{
+		ofLog() << "translate X:" << translateX << "Y:" << translateY << "Z:" << translateZ;
+		rend->sceneTranslate(translateX, translateY, translateZ);
+	}
+	else if (key == 's')
+	{
+		ofLog() << "scale X:" << translateX << "Y:" << translateY;
+		rend->sceneScale(proportionX, proportionY, proportionZ);
 	}
 	else if (key == 'm')
 	{
