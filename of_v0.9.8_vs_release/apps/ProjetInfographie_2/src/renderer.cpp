@@ -524,7 +524,8 @@ void renderer::addBlur() {
 
 void renderer::removeBlur() {
 	blur = false;
-	isFiltered = false;
+	if (!invert && !dilate) 
+		isFiltered = false;
 }
 
 void renderer::addInvert() {
@@ -534,7 +535,8 @@ void renderer::addInvert() {
 
 void renderer::removeInvert() {
 	invert = false;
-	isFiltered = false;
+	if (!blur && !dilate)
+		isFiltered = false;
 }
 
 void renderer::addDilate() {
@@ -544,7 +546,8 @@ void renderer::addDilate() {
 
 void renderer::removeDilate() {
 	dilate = false;
-	isFiltered = false;
+	if (!blur && !invert)
+		isFiltered = false;
 }
 
 renderer::~renderer()
