@@ -28,7 +28,6 @@ void ofApp::setup()
 	setupMenu3D();
 	setupCameraMenu();
 	setupTransformationMenu();
-	setupFilterMenu();
 	setupOptionMenu();
 
 	initButtonListener();
@@ -972,14 +971,13 @@ void ofApp::drawMenus() {
 
 	cameraMenu.draw();
 	transformationMenu.draw();
-	filterMenu.draw();
 	optionMenu.draw();
 
 }
 
 void ofApp::setupMenu2D() {
 
-	menu2D.setDefaultWidth(270);
+	menu2D.setDefaultWidth(200);
 
 	menu2D.setup();
 	
@@ -1002,7 +1000,7 @@ void ofApp::setupMenu2D() {
 
 void ofApp::setupMenu3D() {
 
-	menu3D.setDefaultWidth(270);
+	menu3D.setDefaultWidth(200);
 
 	menu3D.setup();
 	
@@ -1021,44 +1019,47 @@ void ofApp::setupMenu3D() {
 
 void ofApp::setupCameraMenu() 
 {
-	cameraMenu.setDefaultWidth(270);
+	cameraMenu.setDefaultWidth(200);
 
 	cameraMenu.setup();
 	cameraMenu.add(cam->getParameterGroup());
 
-	cameraMenu.setPosition(ofGetWindowWidth() - 280, 10);
+	cameraMenu.setPosition(ofGetWindowWidth() - 210, 10);
 
 	cameraMenu.registerMouseEvents();
 }
 
 void ofApp::setupTransformationMenu() {
 
-	transformationMenu.setDefaultWidth(270);
+	transformationMenu.setDefaultWidth(200);
 
 	transformationMenu.setup("Menu de Transformation");
 	transformationMenu.add(groupTranslate3D);
 	transformationMenu.add(groupRotate3D);
 	transformationMenu.add(groupProportion3D);
+	transformationMenu.add(groupFilter);
 
-	transformationMenu.setPosition(ofGetWindowWidth() - 280, 260);
+	transformationMenu.setPosition(ofGetWindowWidth() - 210, 260);
 
 	transformationMenu.registerMouseEvents();
 
 }
 
 void ofApp::setupFilterMenu() {
-
-	filterMenu.setDefaultWidth(270);
+	//Jamais utilisé
+	filterMenu.setDefaultWidth(200);
 
 	filterMenu.setup();
 	filterMenu.add(groupFilter);
 
-	filterMenu.setPosition(ofGetWindowWidth() - 280, 540);
+	filterMenu.setPosition(ofGetWindowWidth() - 210, 540);
 
 	filterMenu.registerMouseEvents();
 }
 
 void ofApp::setupOptionMenu() {
+
+	optionMenu.setDefaultWidth(200);
 
 	optionMenu.setup();
 
@@ -1082,9 +1083,9 @@ void ofApp::updatePositionMenu() {
 	menu2D.setPosition(10, 260);
 	menu3D.setPosition(10, 260);
 
-	cameraMenu.setPosition(ofGetWindowWidth() - 280, 10);
-	transformationMenu.setPosition(ofGetWindowWidth() - 280, 260);
-	filterMenu.setPosition(ofGetWindowWidth() - 280, 540);
+	//cameraMenu.setPosition(ofGetWindowWidth() - 280, 10);
+	//transformationMenu.setPosition(ofGetWindowWidth() - 280, 260);
+	//filterMenu.setPosition(ofGetWindowWidth() - 280, 540);
 	optionMenu.setPosition(10, 10);
 }
 
