@@ -474,8 +474,8 @@ void ofApp::initOfParameters() {
 
 	strokeThickness.setName("Epaisseur");
 	strokeThickness.setMin(0);
-	strokeThickness.setMax(100);
-	strokeThickness.set(10);
+	strokeThickness.setMax(20);
+	strokeThickness.set(3);
 
 	fillHue.setName("Teinte");
 	fillHue.setMin(0);

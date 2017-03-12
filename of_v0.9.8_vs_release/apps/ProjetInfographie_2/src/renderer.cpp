@@ -192,7 +192,8 @@ void renderer::createSquare(float x, float y, float w, float h, ofColor fillColo
 	rect->rectangle(ofRectangle(x, y, w, h));
 	rect->setColor(fillColor);
 	rect->setStrokeColor(strokeColor);
-	scn->addElement(primitive2d{ rect, fillColor, strokeColor });
+	rect->setStrokeWidth(strokeThickness);
+	scn->addElement(primitive2d{ rect, fillColor, strokeColor,strokeThickness });
 }
 
 /**
@@ -210,7 +211,8 @@ void renderer::createCircle(float x, float y, float r1, float r2, ofColor fillCo
 	circle->ellipse(x, y, r1, r2);
 	circle->setColor(fillColor);
 	circle->setStrokeColor(strokeColor);
-	scn->addElement(primitive2d{ circle, fillColor, strokeColor });
+	circle->setStrokeWidth(strokeThickness);
+	scn->addElement(primitive2d{ circle, fillColor, strokeColor, strokeThickness });
 }
 
 /**
@@ -228,7 +230,8 @@ void renderer::createLine(float x, float y, float xDelta, float yDelta, ofColor 
 	line->moveTo(x, y, 0);
 	line->lineTo(x +  xDelta, y + yDelta);
 	line->setColor(fillColor);	
-	scn->addElement(primitive2d{ line, fillColor });
+	line->setStrokeWidth(strokeThickness);
+	scn->addElement(primitive2d{ line, fillColor, strokeThickness });
 }
 
 /**
@@ -246,7 +249,8 @@ void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, 
 	triangle->triangle(x1, y1, x2, y2, x3, y3);
 	triangle->setColor(fillColor);
 	triangle->setStrokeColor(strokeColor);
-	scn->addElement(primitive2d{ triangle, fillColor, strokeColor });
+	triangle->setStrokeWidth(strokeThickness);
+	scn->addElement(primitive2d{ triangle, fillColor, strokeColor, strokeThickness });
 }
 
 /**
@@ -264,7 +268,8 @@ void renderer::createPoint(float x, float y, float radius, ofColor fillColor, of
 	point->circle(x, y, radius);
 	point->setColor(fillColor);
 	point->setStrokeColor(strokeColor);
-	scn->addElement(primitive2d{ point, fillColor, strokeColor });
+	point->setStrokeWidth(strokeThickness);
+	scn->addElement(primitive2d{ point, fillColor, strokeColor, strokeThickness });
 }
 //-------------3D primitives-----------------------
 void renderer::createCube(int x, int y, int z, int w, int h, int d)

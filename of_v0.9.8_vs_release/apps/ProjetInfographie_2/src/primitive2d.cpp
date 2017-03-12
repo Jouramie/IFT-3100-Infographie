@@ -20,6 +20,16 @@ primitive2d::primitive2d(ofPath* primitive, ofColor fill, ofColor stroke) : prim
 
 }
 
+primitive2d::primitive2d(ofPath * primitive, ofColor fill, ofParameter<float> strokeThickness) : primitive{}, prim{ primitive }, fillCol{ fill }, strokeThickness{ strokeThickness }
+{
+
+}
+
+primitive2d::primitive2d(ofPath * primitive, ofColor fill, ofColor stroke, ofParameter<float> strokeThickness) : primitive{}, prim{ primitive }, fillCol{ fill }, strokeCol{ stroke }, strokeThickness{ strokeThickness }
+{
+
+}
+
 
 ofPath* primitive2d::getPrimitive2d() {
 	return prim;
@@ -36,7 +46,7 @@ ofColor primitive2d::getStrokeColor() {
 void primitive2d::draw(bool wireframe)
 {
 	ofSetLineWidth(1.0);
-	prim->setStrokeWidth(3);
+	prim->setStrokeWidth(strokeThickness);
 	if (wireframe) {
 		prim->setFilled(false);
 	}
