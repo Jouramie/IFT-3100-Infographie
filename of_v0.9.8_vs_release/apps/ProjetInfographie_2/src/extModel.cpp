@@ -1,8 +1,17 @@
 #include "extModel.h"
 
-extModel::extModel(ofxAssimpModelLoader* mod) : extModel(mod, ofMatrix4x4())
+extModel::extModel()
 {
+	model = nullptr;
+	transfo = ofMatrix4x4();
+	selected = ofParameter<bool>(false);
+}
 
+extModel::extModel(ofxAssimpModelLoader* mod)
+{
+	model = mod;
+	transfo = ofMatrix4x4();
+	selected = ofParameter<bool>(false);
 }
 
 extModel::extModel(ofxAssimpModelLoader* mod, ofMatrix4x4 transfo)
@@ -43,7 +52,7 @@ void extModel::draw(bool wireframe) {
 
 	ofTranslate(transfo.getTranslation());
 
-	if (wireframe || selected)
+	if (wireframe || selected.get())
 		model->drawWireframe();
 	else
 		model->drawFaces();

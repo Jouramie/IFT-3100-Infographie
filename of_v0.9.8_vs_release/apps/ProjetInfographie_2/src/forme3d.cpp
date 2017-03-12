@@ -1,30 +1,40 @@
 #include "forme3d.h"
 #include <algorithm>
 
-forme3d::forme3d() : forme3d{ nullptr, ofColor(255, 255, 255), ofVec3f(1, 1, 1) }
+forme3d::forme3d() : forme3d{ nullptr }
 {
 
 }
 
-forme3d::forme3d(of3dPrimitive* primitive) : forme3d{ primitive, ofColor(255, 255, 255), ofVec3f(1, 1, 1) }
+forme3d::forme3d(of3dPrimitive* primitive) : forme3d{ primitive, ofColor(255, 255, 255) }
 {
 
 }
 
-forme3d::forme3d(of3dPrimitive* primitive, ofColor fill) : forme3d{ primitive, fill, ofVec3f(1, 1, 1) }
+forme3d::forme3d(of3dPrimitive* primitive, ofColor fill) : forme3d{ primitive, fill, ofMatrix4x4() }
 {
 
 }
 
-forme3d::forme3d(of3dPrimitive* primitive, ofColor fill, ofVec3f scal) : primitive{}, prims{ primitive }, fillCol{ fill }, scale{ scal }
+forme3d::forme3d(of3dPrimitive* primitive, ofColor fill, ofMatrix4x4 matrix) : primitive{ matrix }, prims{ primitive }, fillCol{ fill } 
 {
 
 }
 
 void forme3d::draw(bool wireframe) {
 
+	ofPushMatrix();
+	ofTranslate(transfoMatrix.getTranslation());
 	ofSetColor(fillCol);
-	ofScale(scale.x, scale.y, scale.z);
+
+	ofQuaternion rotation = transfoMatrix.getRotate();
+	float rotationAmount;
+	ofVec3f rotationAngle;
+	rotation.getRotate(rotationAmount, rotationAngle);
+
+	ofRotate(rotationAmount, rotationAngle.x, rotationAngle.y, rotationAngle.z);
+
+	ofScale(transfoMatrix.getScale());
 
 	if (wireframe || selected)
 		for (auto& i : prims) {
@@ -35,5 +45,5 @@ void forme3d::draw(bool wireframe) {
 			i->draw();
 		}
 
-	ofScale(1 / scale.x, 1 / scale.y, 1 / scale.z);
+	ofPopMatrix();
 }

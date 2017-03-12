@@ -9,7 +9,7 @@ class extModel
 {
 public:
 
-	extModel() : extModel(nullptr, ofMatrix4x4()) {}
+	extModel();
 	extModel(ofxAssimpModelLoader* mod);
 	extModel(ofxAssimpModelLoader* mod, ofMatrix4x4 transfoMatrix);
 	ofxAssimpModelLoader* getModel();

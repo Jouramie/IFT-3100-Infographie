@@ -63,7 +63,7 @@ void primitive2d::draw(bool wireframe)
 
 	ofTranslate(transfoMatrix.getTranslation());
 
-	if (wireframe || selected)
+	if (wireframe || selected.get())
 		prim->setFilled(false);
 	else
 		prim->setFilled(true);
