@@ -5,8 +5,8 @@
 class primitive
 {
 public:
-	primitive() : primitive{ ofMatrix4x4() } {}
-	primitive(ofMatrix4x4 matrix) : transfoMatrix{ matrix } { selected = ofParameter<bool>(false); };
+	primitive() : primitive{ ofMatrix4x4() } { }
+	primitive(ofMatrix4x4 matrix) : transfoMatrix{ matrix }, selected{ false } { }
 
 	virtual void draw() { draw(false); }
 	virtual void draw(bool wireframe) = 0;

@@ -3,7 +3,7 @@
 
 \section{Image}
 \subsection{Importation}
-Nom implémenté
+Non implémenté
 
 \subsection{Exportation}
 Implémenté
@@ -17,6 +17,7 @@ Implémenté
 \subsection{Image procédurale}
 Non implémenté
 
+\pagebreak
 \section{Dessin vectoriel}
 \subsection{Curseur dynamique}
 Implémenté
@@ -25,7 +26,13 @@ Implémenté
 Implémenté
 
 \subsection{Formes vectorielles}
-Implémenté
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=5cm]{fig/iceCream.png}
+	\caption{Cornet de crème glacé!}
+	\label{fig:iceCream}
+\end{figure}
 
 \subsection{Outils de dessin}
 Implémenté
@@ -33,6 +40,7 @@ Implémenté
 \subsection{Interface}
 Implémenté
 
+\pagebreak
 \section{Transformation}
 \subsection{Transformation interactive}
 Implémenté
@@ -164,6 +172,7 @@ Non-implémenté
 \subsection{Historique}
 Non-implémenté
 
+\pagebreak
 \section{Géométrie}
 \subsection{Particules}
 Non-implémenté
@@ -183,17 +192,29 @@ Non-implémenté
 \pagebreak
 \section{Caméra}
 \subsection{Propriétés de caméra}
-Helllo there????
+Les propriétés de la caméra tel que le champ de vision, le ratio d'aspect ainsi que la distance du plan de clipping avant et arrière. Ils peuvent être modifier dans l'interface graphique à l'aide de slider. L'essentiel du code se trouve dans «ccamera::update()».
+
+
+\begin{lstlisting}
+	cam->setFov(fov.get());
+	if (autoRatio.get()) {
+		cam->setForceAspectRatio(false);
+	} else {
+		cam->setAspectRatio(ratio.get());
+	}
+	cam->setNearClip(nearClip.get());
+	cam->setFarClip(farClip.get());
+\end{lstlisting}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=5cm]{fig/proprieteCamera.png}
 	\caption{Propriété de la caméra dans l'interface}
-	\label{fig:test}
+	\label{fig:propriete}
 \end{figure}
 
 \subsection{Mode de projection}
-Le changement de mode de projection de perspective à orthogonale a été implémenté dans l'application. L'essentiel du travail se fait dans la méthode ccamera::changeMode(). Elle est appelé lorsqu'on appuit sur le bouton à cet effet dans l'interface graphique.
+Le changement de mode de projection de perspective à orthogonale a été implémenté dans l'application. L'essentiel du travail se fait dans la méthode «ccamera::changeMode()». Elle est appelé lorsqu'on appuit sur le bouton à cet effet dans l'interface graphique.
 
 \begin{lstlisting}
 	if (ortho.get()) {
