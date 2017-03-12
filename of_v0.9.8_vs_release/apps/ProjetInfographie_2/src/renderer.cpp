@@ -452,10 +452,9 @@ ofParameter<bool> renderer::importModel(string path) {
 		}
 
 		mod.setName(fName + " " + to_string(externalModels.size() + 1));
-		externalModels.push_back(mod);
+		scn->addElement(mod);
 		return mod.selected;
 	}
-	draw();
 	return ofParameter<bool>(true);
 }
 
