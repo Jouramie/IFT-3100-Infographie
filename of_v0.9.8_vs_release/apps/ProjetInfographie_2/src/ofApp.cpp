@@ -33,8 +33,6 @@ void ofApp::setup()
 
 	initButtonListener();
 
-	//gui.registerMouseEvents();
-
 	isKeyPressDown = false;
 	isKeyPressUp = false;
 	isKeyPressPageDown = false;
@@ -187,16 +185,77 @@ void ofApp::mouseMoved(int x, int y) {
 }
 
 bool ofApp::cursorIsInControl(int x, int y) {
-	/*vector<string> names = gui.getControlNames();
+	vector<string> names = menu2D.getControlNames();
+
 	for each (string name in names)
 	{
-		ofxBaseGui* control = gui.getControl(name);
+		ofxBaseGui* control = menu2D.getControl(name);
 		ofPoint pos = control->getPosition();
 		float h = control->getHeight();
 		float w = control->getWidth();
 		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
 			return true;
-	}*/
+	}
+
+	names = menu3D.getControlNames();
+
+	for each (string name in names)
+	{
+		ofxBaseGui* control = menu3D.getControl(name);
+		ofPoint pos = control->getPosition();
+		float h = control->getHeight();
+		float w = control->getWidth();
+		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+			return true;
+	}
+
+	names = cameraMenu.getControlNames();
+
+	for each (string name in names)
+	{
+		ofxBaseGui* control = cameraMenu.getControl(name);
+		ofPoint pos = control->getPosition();
+		float h = control->getHeight();
+		float w = control->getWidth();
+		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+			return true;
+	}
+
+	names = transformationMenu.getControlNames();
+
+	for each (string name in names)
+	{
+		ofxBaseGui* control = transformationMenu.getControl(name);
+		ofPoint pos = control->getPosition();
+		float h = control->getHeight();
+		float w = control->getWidth();
+		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+			return true;
+	}
+
+	names = filterMenu.getControlNames();
+
+	for each (string name in names)
+	{
+		ofxBaseGui* control = filterMenu.getControl(name);
+		ofPoint pos = control->getPosition();
+		float h = control->getHeight();
+		float w = control->getWidth();
+		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+			return true;
+	}
+
+	names = optionMenu.getControlNames();
+
+	for each (string name in names)
+	{
+		ofxBaseGui* control = optionMenu.getControl(name);
+		ofPoint pos = control->getPosition();
+		float h = control->getHeight();
+		float w = control->getWidth();
+		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+			return true;
+	}
 	return false;
 }
 
@@ -897,6 +956,8 @@ void ofApp::setupMenu2D() {
 	menu2D.add(groupTexture);
 
 	menu2D.minimizeAll();
+
+	menu2D.registerMouseEvents();
 }
 
 void ofApp::setupMenu3D() {
@@ -914,6 +975,8 @@ void ofApp::setupMenu3D() {
 	menu3D.add(groupTexture);
 
 	menu3D.minimizeAll();
+
+	menu3D.registerMouseEvents();
 }
 
 void ofApp::setupCameraMenu() 
@@ -924,6 +987,8 @@ void ofApp::setupCameraMenu()
 	cameraMenu.add(cam->getParameterGroup());
 
 	cameraMenu.setPosition(ofGetWindowWidth() - 280, 10);
+
+	cameraMenu.registerMouseEvents();
 }
 
 void ofApp::setupTransformationMenu() {
@@ -937,6 +1002,8 @@ void ofApp::setupTransformationMenu() {
 
 	transformationMenu.setPosition(ofGetWindowWidth() - 280, 260);
 
+	transformationMenu.registerMouseEvents();
+
 }
 
 void ofApp::setupFilterMenu() {
@@ -948,6 +1015,7 @@ void ofApp::setupFilterMenu() {
 
 	filterMenu.setPosition(ofGetWindowWidth() - 280, 540);
 
+	filterMenu.registerMouseEvents();
 }
 
 void ofApp::setupOptionMenu() {
@@ -966,6 +1034,8 @@ void ofApp::setupOptionMenu() {
 	optionMenu.add(btnExport.setup("Exportation en image"));
 
 	optionMenu.add(btnExit.setup("Quitter"));
+
+	optionMenu.registerMouseEvents();
 }
 
 void ofApp::updatePositionMenu() {
