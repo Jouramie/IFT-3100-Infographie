@@ -681,27 +681,27 @@ void ofApp::btnDrawPrimitiveClicked()
 
 	if (primType2D.get()) {
 		if (primTypeCube.get()) {
-			rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight);
+			selectionMenu.add(rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight));
 		}
 		else if (primTypeSphere.get()) {
-			rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight);
+			selectionMenu.add(rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight));
 		}
 		else if (primTypeTriangle.get()) {
-			rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight);
+			selectionMenu.add(rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight));
 		}
 		else if (primTypeLine.get()) {
-			rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight);
+			selectionMenu.add(rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight));
 		}
 		else if (primTypePoint.get()) {
-			rend->createPoint(primPosX, primPosY, strokeThickness);
+			selectionMenu.add(rend->createPoint(primPosX, primPosY, strokeThickness));
 		}
 	}
 	else {
 		if (primTypeCube.get()) {
-			rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth);
+			selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
 		else {
-			rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth);
+			selectionMenu.add(rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
 	}
 
@@ -1079,11 +1079,11 @@ void ofApp::setupFilterMenu() {
 
 void ofApp::setupSelectionMenu() {
 
-	selectionMenu.setDefaultWidth(200);
+	selectionMenu.setDefaultWidth(100);
 
 	selectionMenu.setup();
 
-	selectionMenu.setPosition(ofGetWindowWidth() - 420, 10);
+	selectionMenu.setPosition(ofGetWindowWidth() - 320, 10);
 
 	selectionMenu.registerMouseEvents();
 }
