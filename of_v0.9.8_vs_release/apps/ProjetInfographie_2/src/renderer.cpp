@@ -122,7 +122,7 @@ void renderer::checkFilters(){
 	if (dilate) {
 		filter.dilate();
 	}
-	filter.mirror(true, false);
+	filter.mirror(false, true);
 	filter.resize(scenePixels.getWidth()*3.125, scenePixels.getHeight()*3.125);
 	filter.draw(0 - filter.getWidth()/2, 0 - filter.getHeight()/2);
 }
