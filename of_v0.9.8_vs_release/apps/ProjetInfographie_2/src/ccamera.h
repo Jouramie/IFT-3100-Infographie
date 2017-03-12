@@ -32,8 +32,6 @@ public:
 	bool isCameraMoveForward = false;
 	bool isCameraMoveBackward = false;
 
-	void changeMode();
-
 	const ofEasyCam& operator*() const { return *cam; }
 
 private:
