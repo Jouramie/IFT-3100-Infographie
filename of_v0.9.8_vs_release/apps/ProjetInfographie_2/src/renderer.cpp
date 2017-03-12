@@ -47,15 +47,18 @@ void renderer::draw()
 	ofClear(background);
 
 	cam->begin();
+	ofPushMatrix();
 
 	ofEnableDepthTest();
 
 	ofSetLineWidth(1.0);
 
+
 	for (auto& p : *scn)
 	{
 		p.draw(wireFrame);
 	}
+	
 // 	std::list<primitive>::iterator iterator;
 // 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
 // 	{
@@ -74,14 +77,14 @@ void renderer::draw()
 		iterator4->draw();
 	}
 
+	ofDisableDepthTest();
+
 	if (isFiltered) {
 		checkFilters();
 	}
-	if (transform) {
-		filter.draw(0 - filter.getWidth() / 2, 0 - filter.getHeight() / 2);
-	}
-	ofDisableDepthTest();
+	
 
+	ofPopMatrix();
 	cam->end();
 }
 
@@ -124,7 +127,7 @@ void renderer::checkFilters(){
 	}
 	filter.mirror(false, true);
 	filter.resize(scenePixels.getWidth()*3.125, scenePixels.getHeight()*3.125);
-	filter.draw(0 - filter.getWidth()/2, 0 - filter.getHeight()/2);
+	filter.draw(0 - filter.getWidth() / 2, 0 - filter.getHeight() / 2);
 }
 
 void renderer::sceneTranslate(float x, float y) {	
@@ -414,6 +417,10 @@ void renderer::addDilate() {
 void renderer::removeDilate() {
 	dilate = false;
 	isFiltered = false;
+}
+
+void renderer::enableTransform() {
+	transform = true;
 }
 
 renderer::~renderer()

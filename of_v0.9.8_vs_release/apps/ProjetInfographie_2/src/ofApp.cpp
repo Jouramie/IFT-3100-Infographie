@@ -119,6 +119,10 @@ void ofApp::keyPressed(int key) {
 void ofApp::keyReleased(int key) {
 	if (key == ' ')
 		rend->imageExport("render", "png");
+	else if (key == 'r')
+	{
+		rend->enableTransform();
+	}
 	else if (key == 'm')
 	{
 		//ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);

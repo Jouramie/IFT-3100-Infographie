@@ -61,6 +61,7 @@ public:
 	void removeInvert();
 	void addDilate();
 	void removeDilate();
+	void enableTransform();
 
 	~renderer();
 
