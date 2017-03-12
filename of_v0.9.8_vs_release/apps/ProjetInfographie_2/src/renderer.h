@@ -50,6 +50,7 @@ public:
 
 	void clearPrimitives();
 	void changeWireFrameMode();
+	void setWireFrameMode(bool wf);
 	void selectPrimitive(int x, int y, bool shiftHeld);
 
 	void setScene(scene * scn) { this->scn = scn; }

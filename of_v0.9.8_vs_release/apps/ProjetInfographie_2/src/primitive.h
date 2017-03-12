@@ -15,7 +15,10 @@ public:
 	void changeSelected() {	selected = !selected; }
 
 	string getName() { return name; }
-	void setName(string n) { name = n; selected.setName(n); }
+	void setName(string n) {
+		name = n;
+		selected.setName(n);
+	}
 
 	ofMatrix4x4 getTransfo() { return transfoMatrix; }
 	void setTransfo(ofMatrix4x4 matrix) { this->transfoMatrix = matrix; }
