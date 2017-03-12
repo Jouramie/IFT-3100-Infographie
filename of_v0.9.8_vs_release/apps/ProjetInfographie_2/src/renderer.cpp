@@ -13,32 +13,18 @@ void renderer::setup()
 	/*mainCam = ofEasyCam();
 	rotate = -1;
 	mainCam.begin();*/
-	
-	setupCamera();
-	timeCurrent = timeLast = ofGetElapsedTimef();
 
-	isCameraMoveLeft = false;
-	isCameraMoveRight = false;
-	isCameraMoveUp = false;
-	isCameraMoveDown = false;
-	isCameraMoveForward = false;
-	isCameraMoveBackward = false;
+	cam->setCamera(new ofCamera{ });
+	cam->setup();
+	//filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
+
 	isFiltered = false;
 	blur = false;
 	invert = false;
 	dilate = false;
 	transform = false;
-}
 
-void renderer::setupCamera()
-{
-	cameraSpeed = 250.0f;
-	cameraDeplacement = 0.0f;
-	cameraPosition = { 0.0f, 0.0f, -1000.0f };
-	cameraTarget = { 0.0f, 0.0f, 0.0f };
-
-	camera.setPosition(cameraPosition);
-	camera.lookAt(cameraTarget);
+	time = lastTime = ofGetElapsedTimef();
 }
 
 void renderer::update()
@@ -47,32 +33,12 @@ void renderer::update()
 	int h = ofGetHeight();
 
 	if (w != 1024 || h != 768) ofSetWindowShape(1024, 768);
-	timeCurrent = ofGetElapsedTimef();
-	timeElapsed = timeCurrent - timeLast;
-	timeLast = timeCurrent;
 
-	cameraDeplacement = cameraSpeed * timeElapsed;
+	time = ofGetElapsedTimef();
+	dt = time - lastTime;
+	lastTime = time;
 
-	if (isCameraMoveLeft)
-		camera.truck(-cameraDeplacement);
-	if (isCameraMoveRight)
-		camera.truck(cameraDeplacement);
-
-	if (isCameraMoveUp)
-		camera.boom(cameraDeplacement);
-	if (isCameraMoveDown)
-		camera.boom(-cameraDeplacement);
-
-	if (isCameraMoveForward)
-		camera.dolly(-cameraDeplacement);
-	if (isCameraMoveBackward)
-		camera.dolly(cameraDeplacement);
-
-	if (camera.getPosition() != cameraPosition) {
-		cameraPosition = camera.getPosition();
-		ofLog() << "<Camera X: " << camera.getX() << " Y:" << camera.getY() << " Z:" << camera.getZ() << ">";
-	}
-
+	cam->update(dt);
 }
 
 
@@ -80,7 +46,7 @@ void renderer::draw()
 {
 	ofClear(background);
 
-	camera.begin();
+	cam->begin();
 
 	ofEnableDepthTest();
 
@@ -101,6 +67,13 @@ void renderer::draw()
 	{
 		iterator2->draw();
 	}
+
+	std::list<extModel>::iterator iterator4;
+	for (iterator4 = externalModels.begin(); iterator4 != externalModels.end(); ++iterator4)
+	{
+		iterator4->draw();
+	}
+
 	if (isFiltered) {
 		checkFilters();
 	}
@@ -109,7 +82,7 @@ void renderer::draw()
 	}
 	ofDisableDepthTest();
 
-	camera.end();
+	cam->end();
 }
 
 void renderer::imageExport(const string name, const string extension) const
@@ -149,8 +122,8 @@ void renderer::checkFilters(){
 	if (dilate) {
 		filter.dilate();
 	}
-	filter.mirror(false, true);
-	filter.resize(scenePixels.getWidth()*1.5625, scenePixels.getHeight()*1.5625);
+	filter.mirror(true, false);
+	filter.resize(scenePixels.getWidth()*3.125, scenePixels.getHeight()*3.125);
 	filter.draw(0 - filter.getWidth()/2, 0 - filter.getHeight()/2);
 }
 
@@ -357,14 +330,18 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 	cout << *scn;
 }
 
-void renderer::importModel(string path) {
+bool renderer::importModel(string path) {
 	ofxAssimpModelLoader* model = new ofxAssimpModelLoader();
-	model->loadModel(path, false);
-	model->enableTextures();
-	ofTexture tex = ofTexture();
-	extModel mod = extModel(model);
-	externalModels.push_back(mod);
+	bool ret = model->loadModel(path, false);
+	if (ret)
+	{
+		model->enableTextures();
+		ofTexture tex = ofTexture();
+		extModel mod = extModel(model);
+		externalModels.push_back(mod);
+	}
 	draw();
+	return ret;
 }
 
 void renderer::clearPrimitives()
@@ -377,27 +354,17 @@ void renderer::changeWireFrameMode()
 	wireFrame = !wireFrame;
 }
 
-void renderer::changeCameraMode()
-{
-	if (camera.getOrtho()) {
-		camera.disableOrtho();
-	}
-	else {
-		camera.enableOrtho();
-	}
-}
-
 void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 {
-	ofVec3f screenToWorld = camera.screenToWorld(ofVec3f(x, y, 0.0));
+	ofVec3f screenToWorld = (**cam).screenToWorld(ofVec3f(x, y, 0.0));
 
 	primitive* intersectPrim = nullptr;
 	int distanceClosest = std::numeric_limits<int>::max();
 
-	ofVec3f vectNow = (screenToWorld - camera.getPosition());
+	ofVec3f vectNow = (screenToWorld - (**cam).getPosition());
 	vectNow.scale(25);
 
-	ofRay ray(camera.getPosition(), vectNow, true);
+	ofRay ray((**cam).getPosition(), vectNow, true);
 	// Pour dessiner le rayon (à des fins de débogage)
 	// rays.push_back(ray);
 
