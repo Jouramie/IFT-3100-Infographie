@@ -414,11 +414,12 @@ void ofApp::initGroups()
 	groupFilter.add(blur);
 	groupFilter.add(invert);
 	groupFilter.add(dilate);
-
+	/*
 	groupSelection.setName("Selection");
-	groupSelection.add(selTransfoMatrix);
+	groupSelection.add(selTransfoMatrix);*/
 }
 
+/*
 void ofApp::selectionChanged()
 {
 
@@ -427,7 +428,7 @@ void ofApp::selectionChanged()
 void ofApp::transfoChanged(ofMatrix4x4& value)
 {
 
-}
+}*/
 
 void ofApp::initButtonListener() {
 		btnSelect.addListener(this, &ofApp::btnSelectClicked);
@@ -647,10 +648,10 @@ void ofApp::initOfParameters() {
 	dilate.setName("Dilater");
 	dilate.set(false);
 	dilate.addListener(this, &ofApp::dilateChanged);
-
+/*
 	selTransfoMatrix.setName("Transformation");
 	selTransfoMatrix.set(ofMatrix4x4());
-	selTransfoMatrix.addListener(this, &ofApp::transfoChanged);
+	selTransfoMatrix.addListener(this, &ofApp::transfoChanged);*/
 }
 
 void ofApp::setColors()
@@ -1080,7 +1081,7 @@ void ofApp::setupSelectionMenu() {
 	selectionMenu.setDefaultWidth(270);
 
 	selectionMenu.setup();
-	selectionMenu.add(groupSelection);
+	//selectionMenu.add(groupSelection);
 
 	selectionMenu.setPosition(10, 540);
 
