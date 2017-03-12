@@ -27,7 +27,7 @@ public:
 	void imageExport(const string name, const string extension) const;
 	void checkFilters();
 	void sceneTranslate(float x, float y);
-	void sceneRotate(float angle, float centerX, float centerY);
+	void sceneRotate(float angle, float centerX, float centerY, float centerZ);
 	void sceneScale(float scaleX, float scaleY);
 	//2D primitives
 	void createSquare(float x, float y, float width, float height);
@@ -61,7 +61,6 @@ public:
 	void removeInvert();
 	void addDilate();
 	void removeDilate();
-	void enableTransform();
 
 	~renderer();
 
@@ -69,12 +68,21 @@ private:
 
 	//ofEasyCam mainCam;
 	bool wireFrame;
+	//Filters
 	bool isFiltered;
 	bool blur;
 	bool invert;
 	bool dilate;
-	bool transform;
-	//int rotate;
+	//Transformations
+	bool translate;
+	bool rotate;
+	bool scale;
+	//Translations
+	float deltaX, deltaY; 
+	//Rotation;
+	float theta, centerX, centerY, centerZ;
+	//Scale
+	float scaleX, scaleY;
 
 	ofVec3f cameraPosition;
 	ofVec3f cameraTarget;
