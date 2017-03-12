@@ -5,7 +5,7 @@
 class primitive
 {
 public:
-	primitive();
+	primitive() { selected = ofParameter<bool>(false); };
 
 	virtual void draw() { draw(false); }
 	virtual void draw(bool wireframe) = 0;
@@ -15,14 +15,15 @@ public:
 	void changeSelected() {	selected = !selected; }
 
 	string getName() { return name; }
-	void setName(string n) { name = n; }
+	void setName(string n) { name = n; selected.setName(n); }
 
 	ofMatrix4x4 getTransfo() { return transfoMatrix; }
 	void setTransfo(ofMatrix4x4 matrix) { this->transfoMatrix = matrix; }
 
 	virtual bool checkIntersectionPlaneAndLine(ofRay ray, float *result) const { return false; };
+	ofParameter<bool> selected;
+
 protected:
-	bool selected;
 	ofMatrix4x4 transfoMatrix;
 	string name;
 };
