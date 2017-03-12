@@ -1,5 +1,7 @@
 #include "ofApp.h"
 #include "ccamera.h"
+#include <windows.h>      // For common windows data types and function headers
+#include <shobjidl.h>     // for IFileDialogEvents and IFileDialogControlEvents
 
 ofApp::ofApp()
 {
@@ -20,17 +22,16 @@ void ofApp::setup()
 	rend->setup();
 
 	initOfParameters();
-	initButtonListener();
 	initGroups();
 
-	setupCameraMenu(); 
+	setupMenu2D();
+	setupMenu3D();
+	setupCameraMenu();
 	setupTransformationMenu();
 	setupFilterMenu();
-	gui.setup();
+	setupOptionMenu();
 
-	gui.registerMouseEvents();
-
-	setupGui();
+	initButtonListener();
 
 	isKeyPressDown = false;
 	isKeyPressUp = false;
@@ -47,6 +48,7 @@ void ofApp::update()
 {
 	setColors();
 	setRendererParameter();
+	updatePositionMenu();
 
 	rend->update();
 
@@ -68,11 +70,7 @@ void ofApp::updateKeys()
 void ofApp::draw()
 {
 	rend->draw();
-	gui.draw();
-	cameraMenu.draw();
-	transformationMenu.draw();
-	filterMenu.draw();
-
+	drawMenus();
 }
 
 ofApp::~ofApp()
@@ -121,13 +119,28 @@ void ofApp::keyReleased(int key) {
 		rend->imageExport("render", "png");
 	else if (key == 'r')
 	{
-		//ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
-		//rend->createCube(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
+		ofLog() << "rotate X:" << rotateX << "Y:" << rotateY << "Z:" << rotateZ;
+		rend->sceneRotate(45, rotateX, rotateY, rotateZ);
+	}
+	else if (key == 't')
+	{
+		ofLog() << "translate X:" << translateX << "Y:" << translateY << "Z:" << translateZ;
+		rend->sceneTranslate(translateX, translateY, translateZ);
 	}
 	else if (key == 's')
 	{
-		/*ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
-		rend->createSphere(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);*/
+		ofLog() << "scale X:" << translateX << "Y:" << translateY;
+		rend->sceneScale(proportionX, proportionY, proportionZ);
+	}
+	else if (key == 'm')
+	{
+		//ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
+		//rend->createCube(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
+		rend->importModel("..\\..\\Models\\IronMan\\Iron_Man.obj");
+	}
+	else if (key == 'n')
+	{
+		rend->importModel("..\\..\\Models\\IronMan\\Iron_Man.obj");
 	}
 	else if (key == 'c') {
 		ofLog() << "<app::primitiveCleared>";
@@ -191,10 +204,71 @@ void ofApp::mouseMoved(int x, int y) {
 }
 
 bool ofApp::cursorIsInControl(int x, int y) {
-	vector<string> names = gui.getControlNames();
+	vector<string> names = menu2D.getControlNames();
+
 	for each (string name in names)
 	{
-		ofxBaseGui* control = gui.getControl(name);
+		ofxBaseGui* control = menu2D.getControl(name);
+		ofPoint pos = control->getPosition();
+		float h = control->getHeight();
+		float w = control->getWidth();
+		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+			return true;
+	}
+
+	names = menu3D.getControlNames();
+
+	for each (string name in names)
+	{
+		ofxBaseGui* control = menu3D.getControl(name);
+		ofPoint pos = control->getPosition();
+		float h = control->getHeight();
+		float w = control->getWidth();
+		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+			return true;
+	}
+
+	names = cameraMenu.getControlNames();
+
+	for each (string name in names)
+	{
+		ofxBaseGui* control = cameraMenu.getControl(name);
+		ofPoint pos = control->getPosition();
+		float h = control->getHeight();
+		float w = control->getWidth();
+		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+			return true;
+	}
+
+	names = transformationMenu.getControlNames();
+
+	for each (string name in names)
+	{
+		ofxBaseGui* control = transformationMenu.getControl(name);
+		ofPoint pos = control->getPosition();
+		float h = control->getHeight();
+		float w = control->getWidth();
+		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+			return true;
+	}
+
+	names = filterMenu.getControlNames();
+
+	for each (string name in names)
+	{
+		ofxBaseGui* control = filterMenu.getControl(name);
+		ofPoint pos = control->getPosition();
+		float h = control->getHeight();
+		float w = control->getWidth();
+		if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+			return true;
+	}
+
+	names = optionMenu.getControlNames();
+
+	for each (string name in names)
+	{
+		ofxBaseGui* control = optionMenu.getControl(name);
 		ofPoint pos = control->getPosition();
 		float h = control->getHeight();
 		float w = control->getWidth();
@@ -243,67 +317,6 @@ void ofApp::gotMessage(ofMessage msg) {
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo) {
 	//TODO importer le model3d?
-}
-
-void ofApp::setupGui() {
-
-	gui.setDefaultWidth(270);
-
-	isListenersUnlocked = false;
-
-	gui.clear();
-
-
-	if (primType2D)
-	{
-		gui.add(groupPrimitiveType2D);
-		gui.add(groupPrimitivePosition2D);
-		if (!primTypePoint)
-			gui.add(groupPrimitiveSize2D);
-
-	}
-	else
-	{
-		gui.add(groupPrimitiveType3D);
-		gui.add(groupPrimitivePosition3D);
-		gui.add(groupPrimitiveSize3D);
-	}
-
-
-	ofColor defaultColor = gui.getFillColor();
-
-	if (primType2D)
-	{
-		gui.add(groupThick);
-	}
-
-	gui.setDefaultFillColor(fill);
-	gui.add(groupFill);
-
-	if (primType2D)
-	{
-		gui.setDefaultFillColor(stroke);
-		gui.add(groupStroke);
-	}
-
-	gui.setDefaultFillColor(defaultColor);
-	gui.add(groupTexture);
-
-	gui.add(btnDrawPrimitive.setup("Dessiner!"));
-
-	gui.setDefaultFillColor(background);
-	gui.add(groupBackground);
-
-	gui.setDefaultFillColor(defaultColor);
-
-	gui.add(btnSelect.setup("Outils de selection"));
-
-	gui.add(btnImport.setup("Importation de modele"));
-	gui.add(btnExport.setup("Exportation en image"));
-
-	gui.add(btnExit.setup("Quitter"));
-
-	isListenersUnlocked = true;
 }
 
 void ofApp::initGroups()
@@ -363,10 +376,12 @@ void ofApp::initGroups()
 	groupBackground.add(bgBrightess.set(bgBrightess));
 
 	groupTexture.setName("Texture");
-	groupTexture.add(wireFrame);
 	groupTexture.add(noTexture);
 	groupTexture.add(metalTexture);
 	groupTexture.add(waterTexture);
+
+	groupWireFrame.setName("Représentation 3D");
+	groupWireFrame.add(wireFrame);
 
 	groupTranslate2D.setName("Translation");
 	groupTranslate2D.add(translateX);
@@ -402,9 +417,7 @@ void ofApp::initGroups()
 }
 
 void ofApp::initButtonListener() {
-
-	isListenersUnlocked = true;
-	btnSelect.addListener(this, &ofApp::btnSelectClicked);
+		btnSelect.addListener(this, &ofApp::btnSelectClicked);
 	btnDrawPrimitive.addListener(this, &ofApp::btnDrawPrimitiveClicked);
 	btnExit.addListener(this, &ofApp::btnExitClicked);
 
@@ -476,8 +489,8 @@ void ofApp::initOfParameters() {
 
 	strokeThickness.setName("Epaisseur");
 	strokeThickness.setMin(0);
-	strokeThickness.setMax(100);
-	strokeThickness.set(10);
+	strokeThickness.setMax(20);
+	strokeThickness.set(3);
 
 	fillHue.setName("Teinte");
 	fillHue.setMin(0);
@@ -559,46 +572,55 @@ void ofApp::initOfParameters() {
 	translateX.setMin(MinX);
 	translateX.setMax(MaxX);
 	translateX.set((MinX + MaxX) / 2);
+	translateX.addListener(this, &ofApp::translateChanged);
 
 	translateY.setName("Y");
 	translateY.setMin(MinY);
 	translateY.setMax(MaxY);
 	translateY.set((MinY + MaxY) / 2);
+	translateY.addListener(this, &ofApp::translateChanged);
 
 	translateZ.setName("Z");
 	translateZ.setMin(MinZ);
 	translateZ.setMax(MaxZ);
 	translateZ.set((MinZ + MaxZ) / 2);
+	translateZ.addListener(this, &ofApp::translateChanged);
 
 	rotateX.setName("X");
 	rotateX.setMin(0);
 	rotateX.setMax(360);
 	rotateX.set(0);
+	rotateX.addListener(this, &ofApp::rotateChanged);
 
 	rotateY.setName("Y");
 	rotateY.setMin(0);
 	rotateY.setMax(360);
 	rotateY.set(0);
+	rotateY.addListener(this, &ofApp::rotateChanged);
 
 	rotateZ.setName("Z");
 	rotateZ.setMin(0);
 	rotateZ.setMax(360);
 	rotateZ.set(0);
+	rotateZ.addListener(this, &ofApp::rotateChanged);
 
 	proportionX.setName("X");
-	proportionX.setMin(MinX);
-	proportionX.setMax(MaxX);
-	proportionX.set((MinX + MaxX) / 2);
+	proportionX.setMin(0);
+	proportionX.setMax(10);
+	proportionX.set(1);
+	proportionX.addListener(this, &ofApp::scaleChanged);
 
 	proportionY.setName("Y");
-	proportionY.setMin(MinY);
-	proportionY.setMax(MaxY);
-	proportionY.set((MinY + MaxY) / 2);
+	proportionY.setMin(0);
+	proportionY.setMax(10);
+	proportionY.set(1);
+	proportionY.addListener(this, &ofApp::scaleChanged);
 
 	proportionZ.setName("Z");
-	proportionZ.setMin(MinZ);
-	proportionZ.setMax(MaxZ);
-	proportionZ.set((MinZ + MaxZ) / 2);
+	proportionZ.setMin(0);
+	proportionZ.setMax(10);
+	proportionZ.set(1);
+	proportionZ.addListener(this, &ofApp::scaleChanged);
 
 
 	blur.setName("Brouiller");
@@ -622,7 +644,7 @@ void ofApp::setColors()
 }
 
 void ofApp::setRendererParameter() {
-	
+
 	rend->stroke = stroke;
 	rend->fill = fill;
 	rend->background = background;
@@ -632,43 +654,36 @@ void ofApp::setRendererParameter() {
 
 void ofApp::btnSelectClicked()
 {
-	if (isListenersUnlocked)
-	{
 
-		setupGui();
-	}
 }
 
 void ofApp::btnDrawPrimitiveClicked()
 {
-	if (isListenersUnlocked)
-	{
-		ofLog() << "<app::btnDrawPrimitiveClicked>";
+	ofLog() << "<app::btnDrawPrimitiveClicked>";
 
-		if (primType2D.get()) {
-			if (primTypeCube.get()) {
-				rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
-			}
-			else if (primTypeSphere.get()) {
-				rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fill);
-			}
-			else if (primTypeTriangle.get()) {
-				rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight, fill);
-			}
-			else if (primTypeLine.get()) {
-				rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight, stroke);
-			}
-			else if (primTypePoint.get()) {
-				rend->createPoint(primPosX, primPosY, strokeThickness, stroke);
-			}
+	if (primType2D.get()) {
+		if (primTypeCube.get()) {
+			rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight);
+		}
+		else if (primTypeSphere.get()) {
+			rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight);
+		}
+		else if (primTypeTriangle.get()) {
+			rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight);
+		}
+		else if (primTypeLine.get()) {
+			rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight);
+		}
+		else if (primTypePoint.get()) {
+			rend->createPoint(primPosX, primPosY, strokeThickness);
+		}
+	}
+	else {
+		if (primTypeCube.get()) {
+			rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth);
 		}
 		else {
-			if (primTypeCube.get()) {
-				rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
-			}
-			else {
-				rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
-			}
+			rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth);
 		}
 	}
 
@@ -676,20 +691,14 @@ void ofApp::btnDrawPrimitiveClicked()
 
 void ofApp::btnExitClicked()
 {
-	if (isListenersUnlocked)
-	{
-		ofLog() << "<app::btnExitClicked>";
-		std::exit(0);
-	}
+	ofLog() << "<app::btnExitClicked>";
+	std::exit(0);
 }
 
 void ofApp::btnExportClicked()
 {
+	rend->draw();
 	rend->imageExport("render", "png");
-}
-
-void ofApp::btnImportClicked()
-{
 }
 
 void ofApp::primDim2DChanged(bool& value) {
@@ -703,7 +712,7 @@ void ofApp::primDim2DChanged(bool& value) {
 		primTypeCube.setName("Cube");
 		primTypeSphere.setName("Sphere");
 	}
-	setupGui();
+
 }
 
 void ofApp::primDim3DChanged(bool& value) {
@@ -717,7 +726,7 @@ void ofApp::primDim3DChanged(bool& value) {
 		primTypeCube.setName("Carre");
 		primTypeSphere.setName("Cercle");
 	}
-	setupGui();
+
 }
 
 void ofApp::primTypeCubeChanged(bool& value) {
@@ -736,7 +745,7 @@ void ofApp::primTypeCubeChanged(bool& value) {
 	}
 	else
 		primTypeCube.set(true);
-	setupGui();
+
 
 	primTypeSphere.enableEvents();
 	primTypeCube.enableEvents();
@@ -761,7 +770,7 @@ void ofApp::primTypeSphereChanged(bool& value) {
 	}
 	else
 		primTypeSphere.set(true);
-	setupGui();
+
 
 	primTypeSphere.enableEvents();
 	primTypeCube.enableEvents();
@@ -787,7 +796,7 @@ void ofApp::primTypeTriangleChanged(bool& value) {
 	}
 	else
 		primTypeTriangle.set(true);
-	setupGui();
+
 
 	primTypeSphere.enableEvents();
 	primTypeCube.enableEvents();
@@ -813,7 +822,7 @@ void ofApp::primTypeLineChanged(bool& value) {
 	}
 	else
 		primTypeLine.set(true);
-	setupGui();
+
 
 	primTypeSphere.enableEvents();
 	primTypeCube.enableEvents();
@@ -839,7 +848,7 @@ void ofApp::primTypePointChanged(bool& value) {
 	}
 	else
 		primTypePoint.set(true);
-	setupGui();
+
 
 	primTypeSphere.enableEvents();
 	primTypeCube.enableEvents();
@@ -866,7 +875,7 @@ void ofApp::noTextureChanged(bool& value) {
 	metalTexture.set(false);
 	waterTexture.set(false);
 
-	setupGui();
+
 
 	noTexture.enableEvents();
 	metalTexture.enableEvents();
@@ -890,7 +899,7 @@ void ofApp::metalTextureChanged(bool& value) {
 		noTexture.set(true);
 	}
 
-	setupGui();
+
 
 	noTexture.enableEvents();
 	metalTexture.enableEvents();
@@ -914,32 +923,100 @@ void ofApp::waterTextureChanged(bool& value) {
 		noTexture.set(true);
 	}
 
-	setupGui();
+
 
 	noTexture.enableEvents();
 	metalTexture.enableEvents();
 	waterTexture.enableEvents();
 }
 
+void ofApp::translateChanged(float& value) {
+	rend->sceneTranslate(translateX, translateY, translateZ);
+}
+
+void ofApp::rotateChanged(float& value) {
+	rend->sceneRotate(45, rotateX, rotateY, rotateZ);
+}
+
+void ofApp::scaleChanged(float& value) {
+	rend->sceneScale(proportionX, proportionY, proportionZ);
+}
+
 void ofApp::blurChanged(bool& value) {
 	if (blur)
-		;//rend->addBlur();
+		rend->addBlur();
 	else
-		;//rend->removeBlur();
+		rend->removeBlur();
 }
 
 void ofApp::invertChanged(bool& value) {
 	if (invert)
-		;//rend->addInvert();
+		rend->addInvert();
 	else
-		;//rend->removeInvert();
+		rend->removeInvert();
 }
 
 void ofApp::dilateChanged(bool& value) {
 	if (dilate)
-		;//rend->addDilate();
+		rend->addDilate();
 	else
-		;//rend->removeDilate();
+		rend->removeDilate();
+}
+
+void ofApp::drawMenus() {
+
+	if (primType2D)
+		menu2D.draw();
+	else
+		menu3D.draw();
+
+	cameraMenu.draw();
+	transformationMenu.draw();
+	filterMenu.draw();
+	optionMenu.draw();
+
+}
+
+void ofApp::setupMenu2D() {
+
+	menu2D.setDefaultWidth(270);
+
+	menu2D.setup();
+	
+	menu2D.add(groupPrimitiveType2D);
+	menu2D.add(groupPrimitivePosition2D);
+	menu2D.add(groupPrimitiveSize2D);
+
+	menu2D.add(groupThick);
+
+	menu2D.add(groupFill);
+
+	menu2D.add(groupStroke);
+
+	menu2D.add(groupTexture);
+
+	menu2D.minimizeAll();
+
+	menu2D.registerMouseEvents();
+}
+
+void ofApp::setupMenu3D() {
+
+	menu3D.setDefaultWidth(270);
+
+	menu3D.setup();
+	
+	menu3D.add(groupPrimitiveType3D);
+	menu3D.add(groupPrimitivePosition3D);
+	menu3D.add(groupPrimitiveSize3D);
+
+	menu3D.add(groupFill);
+
+	menu3D.add(groupTexture);
+
+	menu3D.minimizeAll();
+
+	menu3D.registerMouseEvents();
 }
 
 void ofApp::setupCameraMenu() 
@@ -950,10 +1027,12 @@ void ofApp::setupCameraMenu()
 	cameraMenu.add(cam->getParameterGroup());
 
 	cameraMenu.setPosition(ofGetWindowWidth() - 280, 10);
+
+	cameraMenu.registerMouseEvents();
 }
 
 void ofApp::setupTransformationMenu() {
-	
+
 	transformationMenu.setDefaultWidth(270);
 
 	transformationMenu.setup("Menu de Transformation");
@@ -962,6 +1041,8 @@ void ofApp::setupTransformationMenu() {
 	transformationMenu.add(groupProportion3D);
 
 	transformationMenu.setPosition(ofGetWindowWidth() - 280, 260);
+
+	transformationMenu.registerMouseEvents();
 
 }
 
@@ -974,4 +1055,95 @@ void ofApp::setupFilterMenu() {
 
 	filterMenu.setPosition(ofGetWindowWidth() - 280, 540);
 
+	filterMenu.registerMouseEvents();
+}
+
+void ofApp::setupOptionMenu() {
+
+	optionMenu.setup();
+
+	optionMenu.add(btnDrawPrimitive.setup("Ajouter une primitive"));
+
+	optionMenu.add(groupBackground);
+
+	optionMenu.add(groupWireFrame);
+
+	optionMenu.add(btnSelect.setup("Outils de selection"));
+
+	optionMenu.add(btnImport.setup("Importation de modele"));
+	optionMenu.add(btnExport.setup("Exportation en image"));
+
+	optionMenu.add(btnExit.setup("Quitter"));
+
+	optionMenu.registerMouseEvents();
+}
+
+void ofApp::updatePositionMenu() {
+	menu2D.setPosition(10, 260);
+	menu3D.setPosition(10, 260);
+
+	cameraMenu.setPosition(ofGetWindowWidth() - 280, 10);
+	transformationMenu.setPosition(ofGetWindowWidth() - 280, 260);
+	filterMenu.setPosition(ofGetWindowWidth() - 280, 540);
+	optionMenu.setPosition(10, 10);
+}
+
+void ofApp::btnImportClicked()
+{
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+		COINIT_DISABLE_OLE1DDE);
+	if (SUCCEEDED(hr))
+	{
+		IFileOpenDialog *pFileOpen;
+
+		// Create the FileOpenDialog object.
+		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+			IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+		if (SUCCEEDED(hr))
+		{
+			// Show the Open dialog box.
+			hr = pFileOpen->Show(NULL);
+
+			// Get the file name from the dialog box.
+			if (SUCCEEDED(hr))
+			{
+				IShellItem *pItem;
+				hr = pFileOpen->GetResult(&pItem);
+				if (SUCCEEDED(hr))
+				{
+					LPWSTR pszFilePath;
+					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
+					// Display the file name to the user.
+					if (SUCCEEDED(hr))
+					{
+
+						std::wstring path = wstring(pszFilePath);
+						std::string strPath(path.begin(), path.end());
+
+						if (rend->importModel(strPath))
+						{
+							strPath = "Le modele " + strPath + " a ete importe avec succes!";
+							path = std::wstring(strPath.begin(), strPath.end());
+							LPCWSTR title = (LPCWSTR)path.c_str();
+							MessageBox(NULL, title, L"Succes", MB_OK);
+						}
+						else
+						{
+							strPath = "Le modele n'a pas pu etre importe.";
+							path = std::wstring(strPath.begin(), strPath.end());
+							LPCWSTR title = (LPCWSTR)path.c_str();
+							MessageBox(NULL, title, L"Echec", MB_OK);
+						}
+
+						CoTaskMemFree(pszFilePath);
+					}
+					pItem->Release();
+				}
+			}
+			pFileOpen->Release();
+		}
+		CoUninitialize();
+	}
 }

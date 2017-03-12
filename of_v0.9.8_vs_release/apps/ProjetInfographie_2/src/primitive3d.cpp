@@ -117,8 +117,8 @@ bool primitive3d::checkIntersectionPlaneAndLine(ofRay ray, float *result) const 
 		ofMeshFace face = *i;
 
 		ofVec3f P1, P2;
-		P1 = ray.s;
-		P2 = ray.s + ray.t;
+		P1 = ray.getStart();
+		P2 = ray.getEnd();
 
 		ofVec3f p1, p2, p3;
 		p1 = face.getVertex(0);

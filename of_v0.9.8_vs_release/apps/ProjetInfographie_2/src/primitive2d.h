@@ -9,8 +9,12 @@ public:
 	primitive2d();
 	primitive2d(ofPath* primitive);
 	primitive2d(ofPath* primitive, ofColor fill);
+	primitive2d(ofPath* primitive, ofColor fill, ofColor stroke);
+	primitive2d(ofPath* primitive, ofColor fill, ofParameter<float> strokeThickness);
+	primitive2d(ofPath* primitive, ofColor fill, ofColor stroke, ofParameter<float> strokeThickness);
 	ofPath* getPrimitive2d();
 	ofColor getFillColor();
+	ofColor getStrokeColor();
 
 	void draw(bool wireframe) override;
 
@@ -18,5 +22,6 @@ private:
 
 	ofPath* prim;
 	ofColor fillCol;
-
+	ofColor strokeCol;
+	float strokeThickness = 3;
 };

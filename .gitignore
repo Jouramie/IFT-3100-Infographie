@@ -217,6 +217,9 @@ FakesAssemblies/
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
 
+# Custom
+of_v0.9.8_vs_release/libs/openFrameworksCompiled/project/vs/obj/Win32/*
+
 # Visual Studio 6 build log
 *.plg
 
