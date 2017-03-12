@@ -124,13 +124,13 @@ void ofApp::keyReleased(int key) {
 	}
 	else if (key == 't')
 	{
-		ofLog() << "translate X:" << translateX << "Y:" << translateY;
-		rend->sceneTranslate(translateX, translateY);
+		ofLog() << "translate X:" << translateX << "Y:" << translateY << "Z:" << translateZ;
+		rend->sceneTranslate(translateX, translateY, translateZ);
 	}
 	else if (key == 's')
 	{
 		ofLog() << "scale X:" << translateX << "Y:" << translateY;
-		rend->sceneScale(proportionX, proportionY);
+		rend->sceneScale(proportionX, proportionY, proportionZ);
 	}
 	else if (key == 'm')
 	{
