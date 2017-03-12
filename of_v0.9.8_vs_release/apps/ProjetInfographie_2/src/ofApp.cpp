@@ -688,9 +688,9 @@ void ofApp::btnApplySelectClicked() {
 
 	ofMatrix4x4 matrix = ofMatrix4x4();
 	matrix.scale(proportionX, proportionY, proportionZ);
-	ofQuaternion quat = ofQuaternion();
-	quat.set(rotateX, rotateY, rotateZ, 45);
-	matrix.rotate(quat);
+
+	ofMatrix4x4 matrixX = ofMatrix4x4(1, 0, 0, 0, 0, cos(rotateX), -sin(rotateX), 0, 0, sin(rotateX), cos(rotateX), 0, 0, 0, 0, 1);
+
 	matrix.setTranslation(translateX, translateY, translateZ);
 
 	rend->applySelection(matrix);
@@ -1146,10 +1146,11 @@ void ofApp::btnImportClicked()
 
 						std::wstring path = wstring(pszFilePath);
 						std::string strPath(path.begin(), path.end());
-						ofParameter<bool>* param = nullptr;
+						ofParameter<bool> param = rend->importModel(strPath);
 
-						if (rend->importModel(strPath, param))
+						if (param.get() == false)
 						{
+							selectionMenu.add(param);
 							strPath = "Le modele " + strPath + " a ete importe avec succes!";
 							path = std::wstring(strPath.begin(), strPath.end());
 							LPCWSTR title = (LPCWSTR)path.c_str();

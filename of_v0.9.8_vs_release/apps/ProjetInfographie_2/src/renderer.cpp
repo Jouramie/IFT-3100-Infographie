@@ -416,7 +416,7 @@ ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int 
 	return forme.selected;
 }
 
-bool renderer::importModel(string path, ofParameter<bool>* selectedHandler) {
+ofParameter<bool> renderer::importModel(string path) {
 	ofxAssimpModelLoader* model = new ofxAssimpModelLoader();
 	bool ret = model->loadModel(path, false);
 	if (ret)
@@ -425,12 +425,30 @@ bool renderer::importModel(string path, ofParameter<bool>* selectedHandler) {
 		ofTexture tex = ofTexture();
 		extModel mod = extModel(model);
 
-		mod.setName(path.substr(path.find_last_of("\\"), path.find_last_of(".")));
-		selectedHandler = &(mod.selected);
+		string fName(path);
+		size_t pos = fName.rfind(".");
+		if (pos != string::npos)
+		{
+			if (pos != 0)
+			{
+				fName = fName.substr(0, pos);
+			}
+		}
+		pos = fName.rfind("\\");
+		if (pos != string::npos)
+		{
+			if (pos != 0)
+			{
+				fName = fName.substr(pos + 1);
+			}
+		}
+
+		mod.setName(fName + " " + to_string(externalModels.size() + 1));
 		externalModels.push_back(mod);
+		return mod.selected;
 	}
 	draw();
-	return ret;
+	return ofParameter<bool>(true);
 }
 
 void renderer::clearPrimitives()
