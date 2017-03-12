@@ -59,7 +59,7 @@ private:
 	ofxButton btnImport;
 	
 	ofxButton btnApplySelect;
-	ofxButton btnApplyAll;
+	ofParameter<bool> applyAll;
 
 	ofParameterGroup groupProperty;
 	ofParameterGroup groupThick;
@@ -159,13 +159,12 @@ private:
 
 	void updatePositionMenu();
 
-	void btnSelectClicked();
 	void btnDrawPrimitiveClicked();
 	void btnClearClicked();
 	void btnExitClicked();
 	void btnExportClicked();
 	void btnApplySelectClicked();
-	void btnApplyAllClicked();
+	void applyAllChanged(bool& value);
 	void btnImportClicked();
 	
 	void primDim2DChanged(bool& value);

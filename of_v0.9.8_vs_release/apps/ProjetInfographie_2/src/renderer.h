@@ -24,7 +24,7 @@ public:
 	void setup();
 	void update();
 	void draw();
-	void imageExport(const string name, const string extension) const;
+	void imageExport(const string name, const string extension);
 	void checkFilters();
 	void sceneTranslate(float x, float y, float z);
 	void sceneRotate(float angle, float centerX, float centerY, float centerZ);

@@ -390,7 +390,6 @@ void ofApp::initButtonListener() {
 	btnImport.addListener(this, &ofApp::btnImportClicked);
 
 	btnApplySelect.addListener(this, &ofApp::btnApplySelectClicked);
-	btnApplyAll.addListener(this, &ofApp::btnApplyAllClicked);
 }
 
 void ofApp::initOfParameters() {
@@ -540,56 +539,59 @@ void ofApp::initOfParameters() {
 	translateX.setMin(MinX);
 	translateX.setMax(MaxX);
 	translateX.set((MinX + MaxX) / 2);
-	//translateX.addListener(this, &ofApp::translateChanged);
+	translateX.addListener(this, &ofApp::translateChanged);
 
 	translateY.setName("Y");
 	translateY.setMin(MinY);
 	translateY.setMax(MaxY);
 	translateY.set((MinY + MaxY) / 2);
-	//translateY.addListener(this, &ofApp::translateChanged);
+	translateY.addListener(this, &ofApp::translateChanged);
 
 	translateZ.setName("Z");
 	translateZ.setMin(MinZ);
 	translateZ.setMax(MaxZ);
 	translateZ.set((MinZ + MaxZ) / 2);
-	//translateZ.addListener(this, &ofApp::translateChanged);
+	translateZ.addListener(this, &ofApp::translateChanged);
 
 	rotateX.setName("X");
 	rotateX.setMin(0);
 	rotateX.setMax(360);
 	rotateX.set(0);
-	//rotateX.addListener(this, &ofApp::rotateChanged);
+	rotateX.addListener(this, &ofApp::rotateChanged);
 
 	rotateY.setName("Y");
 	rotateY.setMin(0);
 	rotateY.setMax(360);
 	rotateY.set(0);
-	//rotateY.addListener(this, &ofApp::rotateChanged);
+	rotateY.addListener(this, &ofApp::rotateChanged);
 
 	rotateZ.setName("Z");
 	rotateZ.setMin(0);
 	rotateZ.setMax(360);
 	rotateZ.set(0);
-	//rotateZ.addListener(this, &ofApp::rotateChanged);
+	rotateZ.addListener(this, &ofApp::rotateChanged);
 
 	proportionX.setName("X");
 	proportionX.setMin(0);
 	proportionX.setMax(10);
 	proportionX.set(1);
-	//proportionX.addListener(this, &ofApp::scaleChanged);
+	proportionX.addListener(this, &ofApp::scaleChanged);
 
 	proportionY.setName("Y");
 	proportionY.setMin(0);
 	proportionY.setMax(10);
 	proportionY.set(1);
-	//proportionY.addListener(this, &ofApp::scaleChanged);
+	proportionY.addListener(this, &ofApp::scaleChanged);
 
 	proportionZ.setName("Z");
 	proportionZ.setMin(0);
 	proportionZ.setMax(10);
 	proportionZ.set(1);
-	//proportionZ.addListener(this, &ofApp::scaleChanged);
+	proportionZ.addListener(this, &ofApp::scaleChanged);
 
+	applyAll.setName("Appliquer a la scene");
+	applyAll.set(true);
+	applyAll.addListener(this, &ofApp::applyAllChanged);
 
 	blur.setName("Brouiller");
 	blur.set(false);
@@ -602,10 +604,6 @@ void ofApp::initOfParameters() {
 	dilate.setName("Dilater");
 	dilate.set(false);
 	dilate.addListener(this, &ofApp::dilateChanged);
-/*
-	selTransfoMatrix.setName("Transformation");
-	selTransfoMatrix.set(ofMatrix4x4());
-	selTransfoMatrix.addListener(this, &ofApp::transfoChanged);*/
 }
 
 void ofApp::setColors()
@@ -622,11 +620,6 @@ void ofApp::setRendererParameter() {
 	rend->background = background;
 
 	rend->strokeThickness = strokeThickness;
-}
-
-void ofApp::btnSelectClicked()
-{
-
 }
 
 void ofApp::btnDrawPrimitiveClicked()
@@ -654,7 +647,7 @@ void ofApp::btnDrawPrimitiveClicked()
 		if (primTypeCube.get()) {
 			selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
-		else if(primTypeSphere.get()) {
+		else if (primTypeSphere.get()) {
 			selectionMenu.add(rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
 		else if (primTypeTriangle.get()) {
@@ -680,7 +673,6 @@ void ofApp::btnExitClicked()
 
 void ofApp::btnExportClicked()
 {
-	rend->draw();
 	rend->imageExport("render", "png");
 }
 
@@ -706,10 +698,35 @@ void ofApp::btnApplySelectClicked() {
 	rend->applySelection(matrix);
 }
 
-void ofApp::btnApplyAllClicked() {
-	rend->sceneTranslate(translateX, translateY, translateZ);
-	rend->sceneRotate(45, rotateX, rotateY, rotateZ);
-	rend->sceneScale(proportionX, proportionY, proportionZ);
+void ofApp::applyAllChanged(bool& value) {
+	if (applyAll) {
+		btnApplySelect.removeListener(this, &ofApp::btnApplySelectClicked);
+
+		translateX.set((MinX + MaxX) / 2);
+		translateY.set((MinY + MaxY) / 2);
+		translateZ.set((MinZ + MaxZ) / 2);
+		rotateX.set(0);
+		rotateY.set(0);
+		rotateZ.set(0);
+		proportionX.set(1);
+		proportionY.set(1);
+		proportionZ.set(1);
+		
+	}
+	else {
+		btnApplySelect.addListener(this, &ofApp::btnApplySelectClicked);
+
+		translateX.set((MinX + MaxX) / 2);
+		translateY.set((MinY + MaxY) / 2);
+		translateZ.set((MinZ + MaxZ) / 2);
+		rotateX.set(0);
+		rotateY.set(0);
+		rotateZ.set(0);
+		proportionX.set(1);
+		proportionY.set(1);
+		proportionZ.set(1);
+
+	}
 }
 
 void ofApp::primDim2DChanged(bool& value) {
@@ -946,19 +963,24 @@ void ofApp::waterTextureChanged(bool& value) {
 	metalTexture.enableEvents();
 	waterTexture.enableEvents();
 }
-/*
+
 void ofApp::translateChanged(float& value) {
-	rend->sceneTranslate(translateX, translateY, translateZ);
+	if (applyAll) {
+		rend->sceneTranslate(translateX, translateY, translateZ);
+	}
 }
 
 void ofApp::rotateChanged(float& value) {
-
-	rend->sceneRotate(45, rotateX, rotateY, rotateZ);
+	if (applyAll) {
+		rend->sceneRotate(45, rotateX, rotateY, rotateZ);
+	}
 }
 
 void ofApp::scaleChanged(float& value) {
-	rend->sceneScale(proportionX, proportionY, proportionZ);
-}*/
+	if (applyAll) {
+		rend->sceneScale(proportionX, proportionY, proportionZ);
+	}
+}
 
 void ofApp::blurChanged(bool& value) {
 	if (blur)
@@ -999,7 +1021,7 @@ void ofApp::setupMenu2D() {
 	menu2D.setDefaultWidth(200);
 
 	menu2D.setup();
-	
+
 	menu2D.add(groupPrimitiveType2D);
 	menu2D.add(groupPrimitivePosition2D);
 	menu2D.add(groupPrimitiveSize2D);
@@ -1022,7 +1044,7 @@ void ofApp::setupMenu3D() {
 	menu3D.setDefaultWidth(200);
 
 	menu3D.setup();
-	
+
 	menu3D.add(groupPrimitiveType3D);
 	menu3D.add(groupPrimitivePosition3D);
 	menu3D.add(groupPrimitiveSize3D);
@@ -1036,7 +1058,7 @@ void ofApp::setupMenu3D() {
 	menu3D.registerMouseEvents();
 }
 
-void ofApp::setupCameraMenu() 
+void ofApp::setupCameraMenu()
 {
 	cameraMenu.setDefaultWidth(200);
 
@@ -1056,9 +1078,9 @@ void ofApp::setupTransformationMenu() {
 	transformationMenu.add(groupTranslate3D);
 	transformationMenu.add(groupRotate3D);
 	transformationMenu.add(groupProportion3D);
-	
+
+	transformationMenu.add(applyAll);
 	transformationMenu.add(btnApplySelect.setup("Modifier la selection"));
-	transformationMenu.add(btnApplyAll.setup(	"Appliquer a la scene"));
 
 	transformationMenu.add(groupFilter);
 

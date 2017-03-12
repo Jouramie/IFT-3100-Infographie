@@ -94,8 +94,10 @@ void renderer::draw()
 	}
 }
 
-void renderer::imageExport(const string name, const string extension) const
+void renderer::imageExport(const string name, const string extension)
 {
+	draw();
+
 	ofImage imageTemp;
 
 	// extraire des données temporelles formatées
