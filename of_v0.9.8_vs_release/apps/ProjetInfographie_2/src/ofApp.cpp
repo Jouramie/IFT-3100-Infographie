@@ -689,7 +689,17 @@ void ofApp::btnApplySelectClicked() {
 	ofMatrix4x4 matrix = ofMatrix4x4();
 	matrix.scale(proportionX, proportionY, proportionZ);
 
-	ofMatrix4x4 matrixX = ofMatrix4x4(1, 0, 0, 0, 0, cos(rotateX), -sin(rotateX), 0, 0, sin(rotateX), cos(rotateX), 0, 0, 0, 0, 1);
+	float rotX = (rotateX * PI) / 180;
+	float rotY = (rotateY * PI) / 180;
+	float rotZ = (rotateZ * PI) / 180;
+
+	ofMatrix4x4 matrixX = ofMatrix4x4(1, 0, 0, 0, 0, cos(rotX), -sin(rotX), 0, 0, sin(rotX), cos(rotX), 0, 0, 0, 0, 1);
+	ofMatrix4x4 matrixY = ofMatrix4x4(cos(rotY), 0, sin(rotY), 0, 0, 1, 0, 0, -sin(rotY), 0, cos(rotY), 0, 0, 0, 0, 1);
+	ofMatrix4x4 matrixZ = ofMatrix4x4(cos(rotZ), -sin(rotZ), 0, 0, sin(rotZ), cos(rotZ), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+
+	matrix = matrix * matrixX;
+	matrix = matrix * matrixY;
+	matrix = matrix * matrixZ;
 
 	matrix.setTranslation(translateX, translateY, translateZ);
 
