@@ -568,46 +568,55 @@ void ofApp::initOfParameters() {
 	translateX.setMin(MinX);
 	translateX.setMax(MaxX);
 	translateX.set((MinX + MaxX) / 2);
+	translateX.addListener(this, &ofApp::translateChanged);
 
 	translateY.setName("Y");
 	translateY.setMin(MinY);
 	translateY.setMax(MaxY);
 	translateY.set((MinY + MaxY) / 2);
+	translateY.addListener(this, &ofApp::translateChanged);
 
 	translateZ.setName("Z");
 	translateZ.setMin(MinZ);
 	translateZ.setMax(MaxZ);
 	translateZ.set((MinZ + MaxZ) / 2);
+	translateZ.addListener(this, &ofApp::translateChanged);
 
 	rotateX.setName("X");
 	rotateX.setMin(0);
 	rotateX.setMax(360);
 	rotateX.set(0);
+	rotateX.addListener(this, &ofApp::rotateChanged);
 
 	rotateY.setName("Y");
 	rotateY.setMin(0);
 	rotateY.setMax(360);
 	rotateY.set(0);
+	rotateY.addListener(this, &ofApp::rotateChanged);
 
 	rotateZ.setName("Z");
 	rotateZ.setMin(0);
 	rotateZ.setMax(360);
 	rotateZ.set(0);
+	rotateZ.addListener(this, &ofApp::rotateChanged);
 
 	proportionX.setName("X");
-	proportionX.setMin(MinX);
-	proportionX.setMax(MaxX);
-	proportionX.set((MinX + MaxX) / 2);
+	proportionX.setMin(0);
+	proportionX.setMax(10);
+	proportionX.set(1);
+	proportionX.addListener(this, &ofApp::scaleChanged);
 
 	proportionY.setName("Y");
-	proportionY.setMin(MinY);
-	proportionY.setMax(MaxY);
-	proportionY.set((MinY + MaxY) / 2);
+	proportionY.setMin(0);
+	proportionY.setMax(10);
+	proportionY.set(1);
+	proportionY.addListener(this, &ofApp::scaleChanged);
 
 	proportionZ.setName("Z");
-	proportionZ.setMin(MinZ);
-	proportionZ.setMax(MaxZ);
-	proportionZ.set((MinZ + MaxZ) / 2);
+	proportionZ.setMin(0);
+	proportionZ.setMax(10);
+	proportionZ.set(1);
+	proportionZ.addListener(this, &ofApp::scaleChanged);
 
 
 	blur.setName("Brouiller");
@@ -915,6 +924,18 @@ void ofApp::waterTextureChanged(bool& value) {
 	noTexture.enableEvents();
 	metalTexture.enableEvents();
 	waterTexture.enableEvents();
+}
+
+void ofApp::translateChanged(float& value) {
+	rend->sceneTranslate(translateX, translateY, translateZ);
+}
+
+void ofApp::rotateChanged(float& value) {
+	rend->sceneRotate(45, rotateX, rotateY, rotateZ);
+}
+
+void ofApp::scaleChanged(float& value) {
+	rend->sceneScale(proportionX, proportionY, proportionZ);
 }
 
 void ofApp::blurChanged(bool& value) {

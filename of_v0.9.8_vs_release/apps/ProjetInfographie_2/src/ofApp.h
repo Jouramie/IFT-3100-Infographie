@@ -174,6 +174,10 @@ private:
 	void metalTextureChanged(bool & value);
 	void waterTextureChanged(bool & value);
 
+	void translateChanged(float & value);
+	void rotateChanged(float & value);
+	void scaleChanged(float & value);
+
 	void blurChanged(bool & value);
 	void invertChanged(bool & value);
 	void dilateChanged(bool & value);
