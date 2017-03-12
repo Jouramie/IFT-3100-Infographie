@@ -489,32 +489,32 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 	// Pour dessiner le rayon (à des fins de débogage)
 	// rays.push_back(ray);
 
-	for (primitive& p : *scn)
-	{
-		if (!shiftHeld)
-		{
-			p.setSelected(false);
-		}
+	//for (primitive& p : *scn)
+	//{
+	//	if (!shiftHeld)
+	//	{
+	//		p.setSelected(false);
+	//	}
 
-		float* distance = new float(0);
+	//	float* distance = new float(0);
 
-		bool found = p.checkIntersectionPlaneAndLine(ray, distance);
-		if (found)// && *distance >= 0 && *distance < distanceClosest)
-		{
-			intersectPrim = &p;
-			//distanceClosest = *distance;
-		}
-	}
+	//	bool found = p.checkIntersectionPlaneAndLine(ray, distance);
+	//	if (found)// && *distance >= 0 && *distance < distanceClosest)
+	//	{
+	//		intersectPrim = &p;
+	//		//distanceClosest = *distance;
+	//	}
+	//}
 
-	if (distanceClosest < (std::numeric_limits<int>::max() - 1))
-	{
-		intersectPrim->setSelected(!intersectPrim->getSelected());
-		std::cout << "Selected Primitive" << std::endl;
-	}
-	else
-	{
-		std::cout << "Selected Nothing" << std::endl;
-	}
+	//if (distanceClosest < (std::numeric_limits<int>::max() - 1))
+	//{
+	//	intersectPrim->setSelected(!intersectPrim->getSelected());
+	//	std::cout << "Selected Primitive" << std::endl;
+	//}
+	//else
+	//{
+	//	std::cout << "Selected Nothing" << std::endl;
+	//}
 }
 
 void renderer::addBlur() {
