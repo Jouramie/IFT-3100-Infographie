@@ -177,9 +177,8 @@ void renderer::sceneScale(float scaleX, float scaleY) {
 * Render a square with given width, height and border width.
 */
 void renderer::createSquare(float x, float y, float w, float h) {
-	ofColor f = ofColor(255, 255, 255);
-	ofColor s = ofColor(255, 255, 255);
-	createSquare(x,y,w,h,f,s);
+	
+	createSquare(x,y,w,h,fill, stroke);
 }
 
 /**
@@ -197,9 +196,7 @@ void renderer::createSquare(float x, float y, float w, float h, ofColor fillColo
 * Render a circle/ellipse with given radius.
 */
 void renderer::createCircle(float x, float y, float r1, float r2) {
-	ofColor f = ofColor(255, 255, 255);
-	ofColor s = ofColor(255, 255, 255);
-	createCircle(x, y, r1, r2, f,s);
+	createCircle(x, y, r1, r2, fill, stroke);
 }
 
 /**
@@ -217,8 +214,7 @@ void renderer::createCircle(float x, float y, float r1, float r2, ofColor fillCo
 * Render a line with given x, y and deltas.
 */
 void renderer::createLine(float x, float y, float xDelta, float yDelta) {
-	ofColor f = ofColor(255, 255, 255);
-	createLine(x, y, xDelta, yDelta, f);
+	createLine(x, y, xDelta, yDelta, stroke);
 }
 
 /**
@@ -236,9 +232,7 @@ void renderer::createLine(float x, float y, float xDelta, float yDelta, ofColor 
 * Render a triangle with given points.
 */
 void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
-	ofColor f = ofColor(255, 255, 255);
-	ofColor s = ofColor(255, 255, 255);
-	createTriangle(x1, y1, x2, y2, x3, y3, f, s);
+	createTriangle(x1, y1, x2, y2, x3, y3, fill, stroke);
 }
 
 /**
@@ -256,9 +250,7 @@ void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, 
 * Render a line with given x,y and deltas.
 */
 void renderer::createPoint(float x, float y, float radius) {
-	ofColor f = ofColor(255, 255, 255);
-	ofColor s = ofColor(255, 255, 255);
-	createPoint(x, y, radius, f, s);
+	createPoint(x, y, radius, fill, stroke);
 }
 
 /**
@@ -274,8 +266,7 @@ void renderer::createPoint(float x, float y, float radius, ofColor fillColor, of
 //-------------3D primitives-----------------------
 void renderer::createCube(int x, int y, int z, int w, int h, int d)
 {
-	ofColor c = ofColor(255, 255, 255);
-	createCube(x, y, z, w, h, d, c);
+	createCube(x, y, z, w, h, d, fill);
 }
 
 void renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol)
@@ -306,8 +297,7 @@ void renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fill
 
 void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
 {
-	ofColor c = ofColor(255, 255, 255);
-	createSphere(x, y, z, sizeX, sizeY, sizeZ, c);
+	createSphere(x, y, z, sizeX, sizeY, sizeZ, fill);
 }
 
 void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
