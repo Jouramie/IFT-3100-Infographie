@@ -9,7 +9,7 @@ public:
 	primitive3d();
 	primitive3d(of3dPrimitive* primitive);
 	primitive3d(of3dPrimitive* primitive, ofColor fill);
-	primitive3d(of3dPrimitive* primitive, ofColor fill, ofVec3f scal);
+	primitive3d(of3dPrimitive* primitive, ofColor fill, ofMatrix4x4 matrix);
 	of3dPrimitive* getPrimitive();
 	ofColor getFillColor();
 	void draw(bool wireframe) override;
@@ -23,6 +23,6 @@ private:
 
 	of3dPrimitive* prim;
 	ofColor fillCol;
-	ofVec3f scale;
+	//ofVec3f scale;
 
 };

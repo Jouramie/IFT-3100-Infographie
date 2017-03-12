@@ -29,6 +29,7 @@ void ofApp::setup()
 	setupCameraMenu();
 	setupTransformationMenu();
 	setupOptionMenu();
+	setupSelectionMenu();
 
 	initButtonListener();
 
@@ -413,6 +414,19 @@ void ofApp::initGroups()
 	groupFilter.add(blur);
 	groupFilter.add(invert);
 	groupFilter.add(dilate);
+
+	groupSelection.setName("Selection");
+	groupSelection.add(selTransfoMatrix);
+}
+
+void ofApp::selectionChanged()
+{
+
+}
+
+void ofApp::transfoChanged(ofMatrix4x4& value)
+{
+
 }
 
 void ofApp::initButtonListener() {
@@ -633,6 +647,10 @@ void ofApp::initOfParameters() {
 	dilate.setName("Dilater");
 	dilate.set(false);
 	dilate.addListener(this, &ofApp::dilateChanged);
+
+	selTransfoMatrix.setName("Transformation");
+	selTransfoMatrix.set(ofMatrix4x4());
+	selTransfoMatrix.addListener(this, &ofApp::transfoChanged);
 }
 
 void ofApp::setColors()
@@ -972,7 +990,7 @@ void ofApp::drawMenus() {
 	cameraMenu.draw();
 	transformationMenu.draw();
 	optionMenu.draw();
-
+	selectionMenu.draw();
 }
 
 void ofApp::setupMenu2D() {
@@ -1055,6 +1073,20 @@ void ofApp::setupFilterMenu() {
 	filterMenu.setPosition(ofGetWindowWidth() - 210, 540);
 
 	filterMenu.registerMouseEvents();
+}
+
+void ofApp::setupSelectionMenu() {
+
+	selectionMenu.setDefaultWidth(270);
+
+	selectionMenu.setup();
+	selectionMenu.add(groupSelection);
+
+	selectionMenu.setPosition(10, 540);
+
+	selectionMenu.minimizeAll();
+
+	selectionMenu.registerMouseEvents();
 }
 
 void ofApp::setupOptionMenu() {

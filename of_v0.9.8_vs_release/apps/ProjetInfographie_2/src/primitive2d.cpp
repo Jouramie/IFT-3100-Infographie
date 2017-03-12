@@ -47,11 +47,27 @@ void primitive2d::draw(bool wireframe)
 {
 	ofSetLineWidth(1.0);
 	prim->setStrokeWidth(strokeThickness);
-	if (wireframe) {
+
+	//ofSetColor(strokeCol);
+
+	ofPushMatrix();
+
+	ofScale(transfoMatrix.getScale());
+
+	ofQuaternion rotation = transfoMatrix.getRotate();
+	float rotationAmount;
+	ofVec3f rotationAngle;
+	rotation.getRotate(rotationAmount, rotationAngle);
+
+	ofRotate(rotationAmount, rotationAngle.x, rotationAngle.y, rotationAngle.z);
+
+	ofTranslate(transfoMatrix.getTranslation());
+
+	if (wireframe || selected)
 		prim->setFilled(false);
-	}
-	else {
+	else
 		prim->setFilled(true);
-	}
 	prim->draw();
+
+	ofPopMatrix();
 }
