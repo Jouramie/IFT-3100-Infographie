@@ -110,13 +110,3 @@ void ccamera::update(float dt)
 		cam->disableOrtho();
 	}
 }
-
-void ccamera::changeMode()
-{
-	if (cam->getOrtho()) {
-		cam->disableOrtho();
-	}
-	else {
-		cam->enableOrtho();
-	}
-}

@@ -164,14 +164,20 @@ void renderer::applySelection(ofMatrix4x4 matrix)
 {
 	for (auto& p : *scn)
 	{
-		ofMatrix4x4 oldMat = p.getTransfo();
-		p.setTransfo(oldMat * matrix);
+		if (p.selected.get())
+		{
+			ofMatrix4x4 oldMat = p.getTransfo();
+			p.setTransfo(oldMat * matrix);
+		}
 	}
 	std::list<extModel>::iterator iterator4;
 	for (iterator4 = externalModels.begin(); iterator4 != externalModels.end(); ++iterator4)
 	{
-		ofMatrix4x4 oldMat = iterator4->getTransfo();
-		iterator4->setTransfo(oldMat * matrix);
+		if (iterator4->selected.get())
+		{
+			ofMatrix4x4 oldMat = iterator4->getTransfo();
+			iterator4->setTransfo(oldMat * matrix);
+		}
 	}
 }
 

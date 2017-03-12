@@ -112,7 +112,6 @@ Ajouter l'élément directement après l'élément à l'index en paramètre
 size_t scene::group::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)
 {
 	size_t addedSize = 0;
-	//TODO à tester
 
 	if (this->index == index) {
 		if (insertFirstChild)
@@ -186,7 +185,6 @@ size_t scene::group::addElement(size_t index, primitive_ptr& p, bool insertFirst
 size_t scene::group::removeElement(size_t index)
 {
 	size_t removedSize = 0;
-	//TODO à tester
 	
 	if (this->index == index) {
 		//Retirer tous les enfants
@@ -295,7 +293,6 @@ std::string scene::node::getType() const
 	return contentType;
 }
 
-// insertFirstChild est ignoré
 size_t scene::node::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)
 {
 	if (index != this->index) {
@@ -353,6 +350,7 @@ std::ostream & scene::element::print(std::ostream & os) const
 /************************************************************************/
 
 scene::scene_iterator::scene_iterator(const group_ptr & root, size_t index) : root{ root }, rootIndex{ index } {
+	// Trouver le premier element
 	operator++();
 }
 
