@@ -622,11 +622,6 @@ void ofApp::setRendererParameter() {
 	rend->strokeThickness = strokeThickness;
 }
 
-void ofApp::btnSelectClicked()
-{
-
-}
-
 void ofApp::btnDrawPrimitiveClicked()
 {
 	ofLog() << "<app::btnDrawPrimitiveClicked>";
@@ -652,7 +647,7 @@ void ofApp::btnDrawPrimitiveClicked()
 		if (primTypeCube.get()) {
 			selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
-		else if(primTypeSphere.get()) {
+		else if (primTypeSphere.get()) {
 			selectionMenu.add(rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
 		else if (primTypeTriangle.get()) {
@@ -683,34 +678,37 @@ void ofApp::btnExportClicked()
 
 void ofApp::btnApplySelectClicked() {
 
+	ofLog() << "<app::btnApplySelectClicked>";
 }
 
 void ofApp::applyAllChanged(bool& value) {
 	if (applyAll) {
-		translateX.enableEvents();
-		translateY.enableEvents();
-		translateZ.enableEvents();
-		rotateX.enableEvents();
-		rotateY.enableEvents();
-		rotateZ.enableEvents();
-		proportionX.enableEvents();
-		proportionY.enableEvents();
-		proportionZ.enableEvents();
+		btnApplySelect.removeListener(this, &ofApp::btnApplySelectClicked);
 
-		btnApplySelect.addListener(this, &ofApp::btnApplySelectClicked);
+		translateX.set((MinX + MaxX) / 2);
+		translateY.set((MinY + MaxY) / 2);
+		translateZ.set((MinZ + MaxZ) / 2);
+		rotateX.set(0);
+		rotateY.set(0);
+		rotateZ.set(0);
+		proportionX.set(1);
+		proportionY.set(1);
+		proportionZ.set(1);
+		
 	}
 	else {
-		translateX.disableEvents();
-		translateY.disableEvents();
-		translateZ.disableEvents();
-		rotateX.disableEvents();
-		rotateY.disableEvents();
-		rotateZ.disableEvents();
-		proportionX.disableEvents();
-		proportionY.disableEvents();
-		proportionZ.disableEvents();
+		btnApplySelect.addListener(this, &ofApp::btnApplySelectClicked);
 
-		btnApplySelect.removeListener(this, &ofApp::btnApplySelectClicked);
+		translateX.set((MinX + MaxX) / 2);
+		translateY.set((MinY + MaxY) / 2);
+		translateZ.set((MinZ + MaxZ) / 2);
+		rotateX.set(0);
+		rotateY.set(0);
+		rotateZ.set(0);
+		proportionX.set(1);
+		proportionY.set(1);
+		proportionZ.set(1);
+
 	}
 }
 
@@ -950,16 +948,21 @@ void ofApp::waterTextureChanged(bool& value) {
 }
 
 void ofApp::translateChanged(float& value) {
-	rend->sceneTranslate(translateX, translateY, translateZ);
+	if (applyAll) {
+		rend->sceneTranslate(translateX, translateY, translateZ);
+	}
 }
 
 void ofApp::rotateChanged(float& value) {
-
-	rend->sceneRotate(45, rotateX, rotateY, rotateZ);
+	if (applyAll) {
+		rend->sceneRotate(45, rotateX, rotateY, rotateZ);
+	}
 }
 
 void ofApp::scaleChanged(float& value) {
-	rend->sceneScale(proportionX, proportionY, proportionZ);
+	if (applyAll) {
+		rend->sceneScale(proportionX, proportionY, proportionZ);
+	}
 }
 
 void ofApp::blurChanged(bool& value) {
@@ -1001,7 +1004,7 @@ void ofApp::setupMenu2D() {
 	menu2D.setDefaultWidth(200);
 
 	menu2D.setup();
-	
+
 	menu2D.add(groupPrimitiveType2D);
 	menu2D.add(groupPrimitivePosition2D);
 	menu2D.add(groupPrimitiveSize2D);
@@ -1024,7 +1027,7 @@ void ofApp::setupMenu3D() {
 	menu3D.setDefaultWidth(200);
 
 	menu3D.setup();
-	
+
 	menu3D.add(groupPrimitiveType3D);
 	menu3D.add(groupPrimitivePosition3D);
 	menu3D.add(groupPrimitiveSize3D);
@@ -1038,7 +1041,7 @@ void ofApp::setupMenu3D() {
 	menu3D.registerMouseEvents();
 }
 
-void ofApp::setupCameraMenu() 
+void ofApp::setupCameraMenu()
 {
 	cameraMenu.setDefaultWidth(200);
 
@@ -1058,7 +1061,7 @@ void ofApp::setupTransformationMenu() {
 	transformationMenu.add(groupTranslate3D);
 	transformationMenu.add(groupRotate3D);
 	transformationMenu.add(groupProportion3D);
-	
+
 	transformationMenu.add(applyAll);
 	transformationMenu.add(btnApplySelect.setup("Modifier la selection"));
 

@@ -159,7 +159,6 @@ private:
 
 	void updatePositionMenu();
 
-	void btnSelectClicked();
 	void btnDrawPrimitiveClicked();
 	void btnClearClicked();
 	void btnExitClicked();
