@@ -337,6 +337,7 @@ void ofApp::initGroups()
 	groupPrimitiveType3D.add(primTypeCube);
 	groupPrimitiveType3D.add(primTypeSphere);
 	groupPrimitiveType3D.add(primTypeTriangle);
+	groupPrimitiveType3D.add(primTypeLine);
 
 	groupPrimitivePosition2D.setName("Position");
 	groupPrimitivePosition2D.add(primPosX.set(primPosX));
@@ -686,8 +687,11 @@ void ofApp::btnDrawPrimitiveClicked()
 		else if(primTypeSphere.get()) {
 			rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth);
 		}
-		else {
+		else if (primTypeTriangle.get()) {
 			rend->createCone(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth);
+		}
+		else {
+			rend->createIcecream(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth);
 		}
 	}
 
@@ -711,12 +715,14 @@ void ofApp::primDim2DChanged(bool& value) {
 		primTypeCube.setName("Carre");
 		primTypeSphere.setName("Cercle");
 		primTypeTriangle.setName("Triangle");
+		primTypeLine.setName("Ligne");
 	}
 	else {
 		primType3D.set(true);
 		primTypeCube.setName("Cube");
 		primTypeSphere.setName("Sphere");
 		primTypeTriangle.setName("Cone");
+		primTypeLine.setName("IceCream");
 	}
 
 }
@@ -727,12 +733,14 @@ void ofApp::primDim3DChanged(bool& value) {
 		primTypeCube.setName("Cube");
 		primTypeSphere.setName("Sphere");
 		primTypeTriangle.setName("Cone");
+		primTypeLine.setName("IceCream");
 	}
 	else {
 		primType2D.set(true);
 		primTypeCube.setName("Carre");
 		primTypeSphere.setName("Cercle");
 		primTypeTriangle.setName("Triangle");
+		primTypeLine.setName("Ligne");
 	}
 
 }
@@ -930,8 +938,6 @@ void ofApp::waterTextureChanged(bool& value) {
 	else {
 		noTexture.set(true);
 	}
-
-
 
 	noTexture.enableEvents();
 	metalTexture.enableEvents();

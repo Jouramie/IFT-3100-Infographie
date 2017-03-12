@@ -1,5 +1,6 @@
 #include "renderer.h"
 #include "ofxCvImage.h"
+#include "forme3d.h"
 
 
 renderer::renderer()
@@ -294,7 +295,6 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 	ofSpherePrimitive* ball = new ofSpherePrimitive();
 	ball->setPosition(x, y, z);
 
-
 	float smallest = min(sizeX, min(sizeY, sizeZ));
 
 	ball->setRadius(smallest/2);
@@ -320,7 +320,7 @@ void renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, 
 	cone->setPosition(x, y, z);
 
 	float smallest = min(sizeX, sizeZ);
-	cone->setRadius(smallest/2);
+	cone->setRadius(smallest / 2);
 	cone->setHeight(sizeY);
 
 	float newX = (float)sizeX / smallest;
@@ -341,22 +341,29 @@ void renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int siz
 void renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
 {
 	ofSpherePrimitive* ball = new ofSpherePrimitive();
-	ball->setPosition(x, y + sizeY / 2, z);
+	ball->setPosition(x, y + sizeY / 3, z);
 
 	ofConePrimitive* cone = new ofConePrimitive();
-	cone->setPosition(x, y - sizeY / 2, z);
+	cone->setPosition(x, y - sizeY / 3, z);
 
-	float smallest = min(sizeX, min(sizeY, sizeZ));
-	ball->setRadius(smallest);
+	float smallestSphere = min(sizeX, min(sizeY, sizeZ));
+	ball->setRadius(smallestSphere / 2);
 
+	float newX = (float)sizeX / smallestSphere;
+	float newY = (float)sizeY / smallestSphere;
+	float newZ = (float)sizeZ / smallestSphere;
 
-	float newX = (float)sizeX / smallest;
-	float newY = (float)sizeY / smallest;
-	float newZ = (float)sizeZ / smallest;
+	float smallestCone = min(sizeX, sizeZ);
+	cone->setRadius(smallestCone / 2);
+	cone->setHeight(sizeY);
 
+	// TODO corriger ça...
 	ofVec3f scaleVec = ofVec3f(newX, newY, newZ);
 
-	scn->addElement(primitive3d{ ball, color, scaleVec });
+	forme3d forme{ ball, color, scaleVec };
+	forme.addPrimitive(cone);
+
+	scn->addElement(forme);
 	cout << *scn;
 }
 

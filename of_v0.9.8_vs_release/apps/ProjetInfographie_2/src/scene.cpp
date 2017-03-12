@@ -1,7 +1,5 @@
 #include "scene.h"
 #include <string>
-#include "primitive2d.h"
-#include "primitive3d.h"
 
 using namespace std;
 
@@ -25,6 +23,15 @@ void scene::addElement(size_t index, const primitive3d& p, bool insertFirstChild
 		throw invalid_argument("root don't have parent...");
 	}
 	addElement(index, primitive_ptr{ new primitive3d{ p } }, insertFirstChild);
+}
+
+void scene::addElement(size_t index, const forme3d& p, bool insertFirstChild)
+{
+	if (index == 0 && !insertFirstChild)
+	{
+		throw invalid_argument("root don't have parent...e");
+	}
+	addElement(index, primitive_ptr{ new forme3d{ p } }, insertFirstChild);
 }
 
 void scene::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)
