@@ -51,12 +51,15 @@ private:
 	ofxPanel optionMenu;
 	ofxPanel selectionMenu;
 
-	ofxButton btnSelect;
 	ofxButton btnDrawPrimitive;
+	ofxButton btnClear;
 	ofxButton btnExit;
 
 	ofxButton btnExport;
 	ofxButton btnImport;
+	
+	ofxButton btnApplySelect;
+	ofxButton btnApplyAll;
 
 	ofParameterGroup groupProperty;
 	ofParameterGroup groupThick;
@@ -158,8 +161,11 @@ private:
 
 	void btnSelectClicked();
 	void btnDrawPrimitiveClicked();
+	void btnClearClicked();
 	void btnExitClicked();
 	void btnExportClicked();
+	void btnApplySelectClicked();
+	void btnApplyAllClicked();
 	void btnImportClicked();
 	
 	void primDim2DChanged(bool& value);

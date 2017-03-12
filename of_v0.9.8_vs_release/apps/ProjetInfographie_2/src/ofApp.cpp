@@ -414,29 +414,18 @@ void ofApp::initGroups()
 	groupFilter.add(blur);
 	groupFilter.add(invert);
 	groupFilter.add(dilate);
-	/*
-	groupSelection.setName("Selection");
-	groupSelection.add(selTransfoMatrix);*/
 }
-
-/*
-void ofApp::selectionChanged()
-{
-
-}
-
-void ofApp::transfoChanged(ofMatrix4x4& value)
-{
-
-}*/
 
 void ofApp::initButtonListener() {
-		btnSelect.addListener(this, &ofApp::btnSelectClicked);
 	btnDrawPrimitive.addListener(this, &ofApp::btnDrawPrimitiveClicked);
+	btnClear.addListener(this, &ofApp::btnClearClicked);
 	btnExit.addListener(this, &ofApp::btnExitClicked);
 
 	btnExport.addListener(this, &ofApp::btnExportClicked);
 	btnImport.addListener(this, &ofApp::btnImportClicked);
+
+	btnApplySelect.addListener(this, &ofApp::btnApplySelectClicked);
+	btnApplyAll.addListener(this, &ofApp::btnApplyAllClicked);
 }
 
 void ofApp::initOfParameters() {
@@ -565,7 +554,7 @@ void ofApp::initOfParameters() {
 
 	setColors();
 
-	wireFrame.setName("Forme 3D en file de fer");
+	wireFrame.setName("Mode file de fer");
 	wireFrame.set(true);
 	wireFrame.addListener(this, &ofApp::wireFrameChanged);
 
@@ -586,55 +575,55 @@ void ofApp::initOfParameters() {
 	translateX.setMin(MinX);
 	translateX.setMax(MaxX);
 	translateX.set((MinX + MaxX) / 2);
-	translateX.addListener(this, &ofApp::translateChanged);
+	//translateX.addListener(this, &ofApp::translateChanged);
 
 	translateY.setName("Y");
 	translateY.setMin(MinY);
 	translateY.setMax(MaxY);
 	translateY.set((MinY + MaxY) / 2);
-	translateY.addListener(this, &ofApp::translateChanged);
+	//translateY.addListener(this, &ofApp::translateChanged);
 
 	translateZ.setName("Z");
 	translateZ.setMin(MinZ);
 	translateZ.setMax(MaxZ);
 	translateZ.set((MinZ + MaxZ) / 2);
-	translateZ.addListener(this, &ofApp::translateChanged);
+	//translateZ.addListener(this, &ofApp::translateChanged);
 
 	rotateX.setName("X");
 	rotateX.setMin(0);
 	rotateX.setMax(360);
 	rotateX.set(0);
-	rotateX.addListener(this, &ofApp::rotateChanged);
+	//rotateX.addListener(this, &ofApp::rotateChanged);
 
 	rotateY.setName("Y");
 	rotateY.setMin(0);
 	rotateY.setMax(360);
 	rotateY.set(0);
-	rotateY.addListener(this, &ofApp::rotateChanged);
+	//rotateY.addListener(this, &ofApp::rotateChanged);
 
 	rotateZ.setName("Z");
 	rotateZ.setMin(0);
 	rotateZ.setMax(360);
 	rotateZ.set(0);
-	rotateZ.addListener(this, &ofApp::rotateChanged);
+	//rotateZ.addListener(this, &ofApp::rotateChanged);
 
 	proportionX.setName("X");
 	proportionX.setMin(0);
 	proportionX.setMax(10);
 	proportionX.set(1);
-	proportionX.addListener(this, &ofApp::scaleChanged);
+	//proportionX.addListener(this, &ofApp::scaleChanged);
 
 	proportionY.setName("Y");
 	proportionY.setMin(0);
 	proportionY.setMax(10);
 	proportionY.set(1);
-	proportionY.addListener(this, &ofApp::scaleChanged);
+	//proportionY.addListener(this, &ofApp::scaleChanged);
 
 	proportionZ.setName("Z");
 	proportionZ.setMin(0);
 	proportionZ.setMax(10);
 	proportionZ.set(1);
-	proportionZ.addListener(this, &ofApp::scaleChanged);
+	//proportionZ.addListener(this, &ofApp::scaleChanged);
 
 
 	blur.setName("Brouiller");
@@ -707,6 +696,11 @@ void ofApp::btnDrawPrimitiveClicked()
 
 }
 
+void ofApp::btnClearClicked() {
+	rend->clearPrimitives();
+	selectionMenu.clear();
+}
+
 void ofApp::btnExitClicked()
 {
 	ofLog() << "<app::btnExitClicked>";
@@ -717,6 +711,16 @@ void ofApp::btnExportClicked()
 {
 	rend->draw();
 	rend->imageExport("render", "png");
+}
+
+void ofApp::btnApplySelectClicked() {
+
+}
+
+void ofApp::btnApplyAllClicked() {
+	rend->sceneTranslate(translateX, translateY, translateZ);
+	rend->sceneRotate(45, rotateX, rotateY, rotateZ);
+	rend->sceneScale(proportionX, proportionY, proportionZ);
 }
 
 void ofApp::primDim2DChanged(bool& value) {
@@ -947,7 +951,7 @@ void ofApp::waterTextureChanged(bool& value) {
 	metalTexture.enableEvents();
 	waterTexture.enableEvents();
 }
-
+/*
 void ofApp::translateChanged(float& value) {
 	rend->sceneTranslate(translateX, translateY, translateZ);
 }
@@ -959,7 +963,7 @@ void ofApp::rotateChanged(float& value) {
 
 void ofApp::scaleChanged(float& value) {
 	rend->sceneScale(proportionX, proportionY, proportionZ);
-}
+}*/
 
 void ofApp::blurChanged(bool& value) {
 	if (blur)
@@ -1057,6 +1061,10 @@ void ofApp::setupTransformationMenu() {
 	transformationMenu.add(groupTranslate3D);
 	transformationMenu.add(groupRotate3D);
 	transformationMenu.add(groupProportion3D);
+	
+	transformationMenu.add(btnApplySelect.setup("Modifier la selection"));
+	transformationMenu.add(btnApplyAll.setup(	"Appliquer a la scene"));
+
 	transformationMenu.add(groupFilter);
 
 	transformationMenu.setPosition(ofGetWindowWidth() - 210, 260);
@@ -1095,12 +1103,11 @@ void ofApp::setupOptionMenu() {
 	optionMenu.setup();
 
 	optionMenu.add(btnDrawPrimitive.setup("Ajouter une primitive"));
+	optionMenu.add(btnClear.setup("Supprimer la scene"));
 
 	optionMenu.add(groupBackground);
 
 	optionMenu.add(groupWireFrame);
-
-	optionMenu.add(btnSelect.setup("Outils de selection"));
 
 	optionMenu.add(btnImport.setup("Importation de modele"));
 	optionMenu.add(btnExport.setup("Exportation en image"));
