@@ -878,7 +878,7 @@ void ofApp::primTypePointChanged(bool& value) {
 void ofApp::wireFrameChanged(bool& value) {
 
 	ofLog() << "<app::wireFrameModeChanged>";
-	rend->changeWireFrameMode();
+	rend->setWireFrameMode(value);
 }
 
 void ofApp::noTextureChanged(bool& value) {

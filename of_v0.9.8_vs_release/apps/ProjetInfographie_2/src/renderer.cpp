@@ -179,7 +179,7 @@ ofParameter<bool> renderer::createSquare(float x, float y, float w, float h, ofC
 	rect->setStrokeColor(strokeColor);
 	rect->setStrokeWidth(strokeThickness);
 	primitive2d prim = primitive2d{ rect, fillColor, strokeColor,strokeThickness };
-	prim.setName("Carre " + (scn->nbElements() + 1));
+	prim.setName("Carre " + to_string(scn->nbElements() + 1));
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -201,7 +201,7 @@ ofParameter<bool> renderer::createCircle(float x, float y, float r1, float r2, o
 	circle->setStrokeColor(strokeColor);
 	circle->setStrokeWidth(strokeThickness);
 	primitive2d prim = primitive2d{ circle, fillColor, strokeColor, strokeThickness };
-	prim.setName("Cercle " + (scn->nbElements() + 1));
+	prim.setName("Cercle " + to_string(scn->nbElements() + 1));
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -224,7 +224,7 @@ ofParameter<bool> renderer::createLine(float x, float y, float xDelta, float yDe
 	line->setStrokeWidth(strokeThickness);
 
 	primitive2d prim = primitive2d{ line, fillColor, strokeThickness };
-	prim.setName("Ligne " + (scn->nbElements() + 1));
+	prim.setName("Ligne " + to_string(scn->nbElements() + 1));
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -247,7 +247,7 @@ ofParameter<bool> renderer::createTriangle(float x1, float y1, float x2, float y
 	triangle->setStrokeWidth(strokeThickness);
 
 	primitive2d prim = primitive2d{ triangle, fillColor, strokeColor, strokeThickness };
-	prim.setName("Triangle " + (scn->nbElements() + 1));
+	prim.setName("Triangle " + to_string(scn->nbElements() + 1));
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -270,7 +270,7 @@ ofParameter<bool> renderer::createPoint(float x, float y, float radius, ofColor 
 	point->setStrokeWidth(strokeThickness);
 
 	primitive2d prim = primitive2d{ point, fillColor, strokeColor, strokeThickness };
-	prim.setName("Point " + (scn->nbElements() + 1));
+	prim.setName("Point " + to_string(scn->nbElements() + 1));
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -304,7 +304,7 @@ ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d,
 	}
 
 	primitive3d prim = primitive3d{ box, fillCol, matrix };
-	prim.setName("Cube " + (scn->nbElements() + 1));
+	prim.setName("Cube " + to_string(scn->nbElements() + 1));
 	scn->addElement(prim);
 	return prim.selected;
 
@@ -335,7 +335,7 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 	matrix.setTranslation(x, y, z);
 
 	primitive3d prim = primitive3d{ ball, color, matrix };
-	prim.setName("Sphere " + (scn->nbElements() + 1));
+	prim.setName("Sphere " + to_string(scn->nbElements() + 1));
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -360,11 +360,17 @@ bool renderer::importModel(string path, ofParameter<bool>* selectedHandler) {
 void renderer::clearPrimitives()
 {
 	scn->clearElements();
+	externalModels.clear();
 }
 
 void renderer::changeWireFrameMode()
 {
 	wireFrame = !wireFrame;
+}
+
+void renderer::setWireFrameMode(bool wf)
+{
+	wireFrame = wf;
 }
 
 void renderer::selectPrimitive(int x, int y, bool shiftHeld)
