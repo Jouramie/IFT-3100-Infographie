@@ -574,27 +574,27 @@ void ofApp::btnDrawPrimitiveClicked()
 
 	if (primType2D.get()) {
 		if (primTypeCube.get()) {
-			rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight, fill, stroke);
+			rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight);
 		}
 		else if (primTypeSphere.get()) {
-			rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight, fill, stroke);
+			rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight);
 		}
 		else if (primTypeTriangle.get()) {
-			rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight, fill, stroke);
+			rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight);
 		}
 		else if (primTypeLine.get()) {
-			rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight, stroke);
+			rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight);
 		}
 		else if (primTypePoint.get()) {
-			rend->createPoint(primPosX, primPosY, strokeThickness, fill, stroke);
+			rend->createPoint(primPosX, primPosY, strokeThickness);
 		}
 	}
 	else {
 		if (primTypeCube.get()) {
-			rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
+			rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth);
 		}
 		else {
-			rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, fill);
+			rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth);
 		}
 	}
 
@@ -894,7 +894,7 @@ void ofApp::setupMenu2D() {
 
 	menu2D.add(groupTexture);
 
-
+	menu2D.minimizeAll();
 }
 
 void ofApp::setupMenu3D() {
@@ -911,7 +911,7 @@ void ofApp::setupMenu3D() {
 
 	menu3D.add(groupTexture);
 
-
+	menu3D.minimizeAll();
 }
 
 void ofApp::setupCameraMenu() 
@@ -967,13 +967,13 @@ void ofApp::setupOptionMenu() {
 }
 
 void ofApp::updatePositionMenu() {
-	menu2D.setPosition(10, 10);
-	menu3D.setPosition(10, 10);
+	menu2D.setPosition(10, 260);
+	menu3D.setPosition(10, 260);
 
 	cameraMenu.setPosition(ofGetWindowWidth() - 280, 10);
 	transformationMenu.setPosition(ofGetWindowWidth() - 280, 260);
 	filterMenu.setPosition(ofGetWindowWidth() - 280, 540);
-	optionMenu.setPosition(10, 640);
+	optionMenu.setPosition(10, 10);
 }
 
 void ofApp::btnImportClicked()
