@@ -14,7 +14,7 @@ void renderer::setup()
 	rotate = -1;
 	mainCam.begin();*/
 
-	cam->setCamera(new ofCamera{ });
+	cam->setCamera(new ofEasyCam{ });
 	cam->setup();
 	//filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
 

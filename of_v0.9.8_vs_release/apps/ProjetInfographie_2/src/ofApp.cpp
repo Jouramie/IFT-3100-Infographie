@@ -150,7 +150,7 @@ void ofApp::keyReleased(int key) {
 		ofLog() << "<app::wireFrameModeChanged>";
 		rend->changeWireFrameMode();
 	}
-	else if (key == 'r') {
+	else if (key == 'z') {
 		ofLog() << "<app::resetCamera>";
 		cam->resetPos();
 	}
