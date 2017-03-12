@@ -45,7 +45,11 @@ public:
 	void createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol);
 	void createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
 	void createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
-
+	void createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
+	void createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
+	void createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
+	void createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
+	
 	bool importModel(string path);
 
 	void clearPrimitives();

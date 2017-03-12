@@ -56,25 +56,21 @@ void renderer::draw()
 	ofSetLineWidth(1.0);
 
 	if (translate) {
-		ofTranslate(deltaX, deltaY);
+		ofTranslate(deltaX, deltaY, deltaZ);
 	}
 	if (rotate) {
-		ofRotate(theta, centerX, centerY, centerZ);
+		ofRotate(centerX, 1, 0, 0);
+		ofRotate(centerY, 0, 1, 0);
+		ofRotate(centerZ, 0, 0, 1);
 	}
 	if (scale) {
-		ofScale(scaleX, scaleY);
+		ofScale(scaleX, scaleY, scaleZ);
 	}
 
 	for (auto& p : *scn)
 	{
 		p.draw(wireFrame);
 	}
-	
-// 	std::list<primitive>::iterator iterator;
-// 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
-// 	{
-// 		iterator->draw(wireFrame);
-// 	}
 
 	std::list<ofRay>::iterator iterator2;
 	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
@@ -151,7 +147,6 @@ void renderer::sceneRotate(float angle, float cX, float cY, float cZ) {
 	centerX = cX;
 	centerY = cY;
 	centerZ = cZ;
-
 }
 
 void renderer::sceneScale(float sX, float sY, float sZ) {
@@ -302,7 +297,58 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 
 	float smallest = min(sizeX, min(sizeY, sizeZ));
 
+	ball->setRadius(smallest/2);
+
+	float newX = (float)sizeX / smallest;
+	float newY = (float)sizeY / smallest;
+	float newZ = (float)sizeZ / smallest;
+
+	ofVec3f scaleVec = ofVec3f(newX, newY, newZ);
+
+	scn->addElement(primitive3d{ ball, color, scaleVec });
+	cout << *scn;
+}
+
+void renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
+{
+	createCone(x, y, z, sizeX, sizeY, sizeZ, fill);
+}
+
+void renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
+{
+	ofConePrimitive* cone = new ofConePrimitive();
+	cone->setPosition(x, y, z);
+
+	float smallest = min(sizeX, sizeZ);
+	cone->setRadius(smallest/2);
+	cone->setHeight(sizeY);
+
+	float newX = (float)sizeX / smallest;
+	float newY = 1.0f;
+	float newZ = (float)sizeZ / smallest;
+
+	ofVec3f scaleVec = ofVec3f(newX, newY, newZ);
+
+	scn->addElement(primitive3d{ cone, color, scaleVec });
+	cout << *scn;
+}
+
+void renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
+{
+	createIcecream(x, y, z, sizeX, sizeY, sizeZ, fill);
+}
+
+void renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
+{
+	ofSpherePrimitive* ball = new ofSpherePrimitive();
+	ball->setPosition(x, y + sizeY / 2, z);
+
+	ofConePrimitive* cone = new ofConePrimitive();
+	cone->setPosition(x, y - sizeY / 2, z);
+
+	float smallest = min(sizeX, min(sizeY, sizeZ));
 	ball->setRadius(smallest);
+
 
 	float newX = (float)sizeX / smallest;
 	float newY = (float)sizeY / smallest;

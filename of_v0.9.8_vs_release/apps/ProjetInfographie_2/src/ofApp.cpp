@@ -336,6 +336,7 @@ void ofApp::initGroups()
 	groupPrimitiveType3D.add(primType3D);
 	groupPrimitiveType3D.add(primTypeCube);
 	groupPrimitiveType3D.add(primTypeSphere);
+	groupPrimitiveType3D.add(primTypeTriangle);
 
 	groupPrimitivePosition2D.setName("Position");
 	groupPrimitivePosition2D.add(primPosX.set(primPosX));
@@ -682,8 +683,11 @@ void ofApp::btnDrawPrimitiveClicked()
 		if (primTypeCube.get()) {
 			rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth);
 		}
-		else {
+		else if(primTypeSphere.get()) {
 			rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth);
+		}
+		else {
+			rend->createCone(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth);
 		}
 	}
 
@@ -706,11 +710,13 @@ void ofApp::primDim2DChanged(bool& value) {
 		primType3D.set(false);
 		primTypeCube.setName("Carre");
 		primTypeSphere.setName("Cercle");
+		primTypeTriangle.setName("Triangle");
 	}
 	else {
 		primType3D.set(true);
 		primTypeCube.setName("Cube");
 		primTypeSphere.setName("Sphere");
+		primTypeTriangle.setName("Cone");
 	}
 
 }
@@ -720,11 +726,13 @@ void ofApp::primDim3DChanged(bool& value) {
 		primType2D.set(false);
 		primTypeCube.setName("Cube");
 		primTypeSphere.setName("Sphere");
+		primTypeTriangle.setName("Cone");
 	}
 	else {
 		primType2D.set(true);
 		primTypeCube.setName("Carre");
 		primTypeSphere.setName("Cercle");
+		primTypeTriangle.setName("Triangle");
 	}
 
 }
