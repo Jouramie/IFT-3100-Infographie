@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿  of3dPrimitives.cpp
   of3dUtils.cpp
   ofCamera.cpp
@@ -65,3 +66,6 @@
   ofVideoGrabber.cpp
   ofVideoPlayer.cpp
   openframeworksLib.vcxproj -> C:\Université\Session 2\Infographie\TP\infographie-h2017\of_v0.9.8_vs_release\libs\openFrameworksCompiled\project\vs\..\..\lib\vs\Win32\openframeworksLib_debug.lib
+=======
+﻿  openframeworksLib.vcxproj -> C:\Users\Utilisateur\Documents\Infographie\of_v0.9.8_vs_release\libs\openFrameworksCompiled\project\vs\..\..\lib\vs\Win32\openframeworksLib_debug.lib
+>>>>>>> c82c7cb30f630b8915740abd679ce5c2c2cad1ae
