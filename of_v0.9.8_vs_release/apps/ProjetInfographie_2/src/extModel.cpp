@@ -41,7 +41,7 @@ void extModel::draw(bool wireframe) {
 
 	ofPushMatrix();
 
-	ofScale(transfo.getScale());
+	ofTranslate(transfo.getTranslation());
 
 	ofQuaternion rotation = transfo.getRotate();
 	float rotationAmount;
@@ -50,7 +50,7 @@ void extModel::draw(bool wireframe) {
 
 	ofRotate(rotationAmount, rotationAngle.x, rotationAngle.y, rotationAngle.z);
 
-	ofTranslate(transfo.getTranslation());
+	ofScale(transfo.getScale());
 
 	if (wireframe || selected.get())
 		model->drawWireframe();

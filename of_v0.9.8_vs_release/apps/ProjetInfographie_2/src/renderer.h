@@ -29,6 +29,7 @@ public:
 	void sceneTranslate(float x, float y, float z);
 	void sceneRotate(float angle, float centerX, float centerY, float centerZ);
 	void sceneScale(float scaleX, float scaleY, float scaleZ);
+	void applySelection(ofMatrix4x4 matrix);
 	//2D primitives
 	ofParameter<bool> createSquare(float x, float y, float width, float height);
 	ofParameter<bool> createSquare(float x, float y, float width, float height, ofColor fillColor, ofColor strokeColor);
@@ -50,7 +51,7 @@ public:
 	ofParameter<bool> createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
 	ofParameter<bool> createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
 
-	bool importModel(string path, ofParameter<bool>* selectedHandler);
+	ofParameter<bool> importModel(string path);
 
 	void clearPrimitives();
 	void changeWireFrameMode();
@@ -59,6 +60,21 @@ public:
 
 	void setScene(scene * scn) { this->scn = scn; }
 	void setCamera(ccamera * cam) { this->cam = cam; }
+
+	//Translations
+	float getDeltaX() { return deltaX; }
+	float getDeltaY() { return deltaY; }
+	float getDeltaZ() { return deltaZ; }
+
+	//Rotation;
+	float getTheta() { return theta; }
+	float getCenterX() { centerX; }
+	float getCenterY() { return centerY; }
+	float getCenterZ() { centerZ; }
+	//Scale
+	float getScaleX() { return scaleX; }
+	float getScaleY() { return scaleY; }
+	float getScaleZ() { return scaleZ; }
 
 	void addBlur();
 	void removeBlur();

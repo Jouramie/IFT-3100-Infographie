@@ -19,7 +19,10 @@ public:
 	void setSelected(bool val);
 
 	string getName() { return name; }
-	void setName(string n) { name = n; }
+	void setName(string n) { name = n; selected.setName(n); }
+
+	ofMatrix4x4 getTransfo() { return transfo; }
+	void setTransfo(ofMatrix4x4 matrix) { this->transfo = matrix; }
 
 	bool calcTriangleIntersection(ofRay ray, float *result) const;
 	bool inside(ofVec3f p, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) const;

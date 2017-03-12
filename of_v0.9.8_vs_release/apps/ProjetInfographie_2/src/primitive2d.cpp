@@ -52,7 +52,7 @@ void primitive2d::draw(bool wireframe)
 
 	ofPushMatrix();
 
-	ofScale(transfoMatrix.getScale());
+	ofTranslate(transfoMatrix.getTranslation());
 
 	ofQuaternion rotation = transfoMatrix.getRotate();
 	float rotationAmount;
@@ -61,7 +61,7 @@ void primitive2d::draw(bool wireframe)
 
 	ofRotate(rotationAmount, rotationAngle.x, rotationAngle.y, rotationAngle.z);
 
-	ofTranslate(transfoMatrix.getTranslation());
+	ofScale(transfoMatrix.getScale());
 
 	if (wireframe || selected.get())
 		prim->setFilled(false);

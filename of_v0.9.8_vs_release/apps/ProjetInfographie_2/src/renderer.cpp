@@ -159,6 +159,22 @@ void renderer::sceneScale(float sX, float sY, float sZ) {
 	scaleZ = sZ;
 }
 
+
+void renderer::applySelection(ofMatrix4x4 matrix)
+{
+	for (auto& p : *scn)
+	{
+		ofMatrix4x4 oldMat = p.getTransfo();
+		p.setTransfo(oldMat * matrix);
+	}
+	std::list<extModel>::iterator iterator4;
+	for (iterator4 = externalModels.begin(); iterator4 != externalModels.end(); ++iterator4)
+	{
+		ofMatrix4x4 oldMat = iterator4->getTransfo();
+		iterator4->setTransfo(oldMat * matrix);
+	}
+}
+
 //-------------------------------- 2D Primitives----------------
 /**
 * Render a square with given width, height and border width.
@@ -402,7 +418,7 @@ ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int 
 	return forme.selected;
 }
 
-bool renderer::importModel(string path, ofParameter<bool>* selectedHandler) {
+ofParameter<bool> renderer::importModel(string path) {
 	ofxAssimpModelLoader* model = new ofxAssimpModelLoader();
 	bool ret = model->loadModel(path, false);
 	if (ret)
@@ -411,12 +427,30 @@ bool renderer::importModel(string path, ofParameter<bool>* selectedHandler) {
 		ofTexture tex = ofTexture();
 		extModel mod = extModel(model);
 
-		mod.setName(path.substr(path.find_last_of("\\"), path.find_last_of(".")));
-		selectedHandler = &(mod.selected);
+		string fName(path);
+		size_t pos = fName.rfind(".");
+		if (pos != string::npos)
+		{
+			if (pos != 0)
+			{
+				fName = fName.substr(0, pos);
+			}
+		}
+		pos = fName.rfind("\\");
+		if (pos != string::npos)
+		{
+			if (pos != 0)
+			{
+				fName = fName.substr(pos + 1);
+			}
+		}
+
+		mod.setName(fName + " " + to_string(externalModels.size() + 1));
 		externalModels.push_back(mod);
+		return mod.selected;
 	}
 	draw();
-	return ret;
+	return ofParameter<bool>(true);
 }
 
 void renderer::clearPrimitives()
