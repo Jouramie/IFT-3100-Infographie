@@ -25,7 +25,7 @@ public:
 	void keyPressed(int key);
 	void keyReleased(int key);
 	void mouseMoved(int x, int y);
-	void mouseMovedGui(int x, int y);
+	//void mouseMovedGui(int x, int y);
 	void mouseDragged(int x, int y, int button);
 	void mousePressed(int x, int y, int button);
 	void mouseReleased(int x, int y, int button);
@@ -34,6 +34,7 @@ public:
 	void windowResized(int w, int h);
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
+	void selectionChanged();
 	bool cursorIsInControl(int x, int y);
 
 
@@ -49,6 +50,7 @@ private:
 	ofxPanel transformationMenu;
 	ofxPanel filterMenu;
 	ofxPanel optionMenu;
+	ofxPanel selectionMenu;
 	ofxButton btnSelect;
 	ofxButton btnDrawPrimitive;
 	ofxButton btnExit;
@@ -79,6 +81,10 @@ private:
 	ofParameter<float> bgHue;
 	ofParameter<float> bgSaturation;
 	ofParameter<float> bgBrightess;
+
+	ofParameterGroup groupSelection;
+	list<ofParameter<bool>> selObjets;
+	ofParameter<ofMatrix4x4> selTransfoMatrix;
 
 #pragma region "Primitives"
 
@@ -151,6 +157,9 @@ private:
 	void setupFilterMenu();
 
 	void setupOptionMenu();
+
+	void setupSelectionMenu();
+	void transfoChanged(ofMatrix4x4& value);
 
 	void updatePositionMenu();
 

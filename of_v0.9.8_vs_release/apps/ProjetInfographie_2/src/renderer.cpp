@@ -179,7 +179,9 @@ void renderer::createSquare(float x, float y, float w, float h, ofColor fillColo
 	rect->setColor(fillColor);
 	rect->setStrokeColor(strokeColor);
 	rect->setStrokeWidth(strokeThickness);
-	scn->addElement(primitive2d{ rect, fillColor, strokeColor,strokeThickness });
+	primitive2d prim = primitive2d{ rect, fillColor, strokeColor,strokeThickness };
+	prim.setName("Carre " + (scn->nbElements() + 1));
+	scn->addElement(prim);
 }
 
 /**
@@ -198,7 +200,9 @@ void renderer::createCircle(float x, float y, float r1, float r2, ofColor fillCo
 	circle->setColor(fillColor);
 	circle->setStrokeColor(strokeColor);
 	circle->setStrokeWidth(strokeThickness);
-	scn->addElement(primitive2d{ circle, fillColor, strokeColor, strokeThickness });
+	primitive2d prim = primitive2d{ circle, fillColor, strokeColor, strokeThickness };
+	prim.setName("Cercle " + (scn->nbElements() + 1));
+	scn->addElement(prim);
 }
 
 /**
@@ -217,7 +221,10 @@ void renderer::createLine(float x, float y, float xDelta, float yDelta, ofColor 
 	line->lineTo(x +  xDelta, y + yDelta);
 	line->setColor(fillColor);	
 	line->setStrokeWidth(strokeThickness);
-	scn->addElement(primitive2d{ line, fillColor, strokeThickness });
+
+	primitive2d prim = primitive2d{ line, fillColor, strokeThickness };
+	prim.setName("Ligne " + (scn->nbElements() + 1));
+	scn->addElement(prim);
 }
 
 /**
@@ -236,7 +243,10 @@ void renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, 
 	triangle->setColor(fillColor);
 	triangle->setStrokeColor(strokeColor);
 	triangle->setStrokeWidth(strokeThickness);
-	scn->addElement(primitive2d{ triangle, fillColor, strokeColor, strokeThickness });
+
+	primitive2d prim = primitive2d{ triangle, fillColor, strokeColor, strokeThickness };
+	prim.setName("Triangle " + (scn->nbElements() + 1));
+	scn->addElement(prim);
 }
 
 /**
@@ -255,7 +265,10 @@ void renderer::createPoint(float x, float y, float radius, ofColor fillColor, of
 	point->setColor(fillColor);
 	point->setStrokeColor(strokeColor);
 	point->setStrokeWidth(strokeThickness);
-	scn->addElement(primitive2d{ point, fillColor, strokeColor, strokeThickness });
+
+	primitive2d prim = primitive2d{ point, fillColor, strokeColor, strokeThickness };
+	prim.setName("Point " + (scn->nbElements() + 1));
+	scn->addElement(prim);
 }
 //-------------3D primitives-----------------------
 void renderer::createCube(int x, int y, int z, int w, int h, int d)
@@ -277,16 +290,20 @@ void renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fill
 	float newY = (float)h / smallest;
 	float newZ = (float)d / smallest;
 
-	ofVec3f scaleVec = ofVec3f(newX, newY, newZ);
-
-	box->setPosition(x, y, z);
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	matrix.scale(newX, newY, newZ);
+	matrix.setTranslation(x, y, z);
 
 	for (int i = 0; i < 6; i++)
 	{
 		box->setSideColor(i, fillCol);
 	}
- 	scn->addElement(primitive3d{ box, fillCol, scaleVec });
- 	cout << *scn;
+
+	primitive3d prim = primitive3d{ box, fillCol, matrix };
+	prim.setName("Cube " + (scn->nbElements() + 1));
+	scn->addElement(prim);
+
+ 	//cout << *scn;
 }
 
 void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
@@ -297,7 +314,7 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
 {
 	ofSpherePrimitive* ball = new ofSpherePrimitive();
-	ball->setPosition(x, y, z);
+	ball->setPosition(0, 0, 0);
 
 
 	float smallest = min(sizeX, min(sizeY, sizeZ));
@@ -308,10 +325,13 @@ void renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ
 	float newY = (float)sizeY / smallest;
 	float newZ = (float)sizeZ / smallest;
 
-	ofVec3f scaleVec = ofVec3f(newX, newY, newZ);
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	matrix.scale(newX, newY, newZ);
+	matrix.setTranslation(x, y, z);
 
-	scn->addElement(primitive3d{ ball, color, scaleVec });
-	cout << *scn;
+	primitive3d prim = primitive3d{ ball, color, matrix };
+	prim.setName("Sphere " + (scn->nbElements() + 1));
+	scn->addElement(prim);
 }
 
 bool renderer::importModel(string path) {
@@ -322,6 +342,9 @@ bool renderer::importModel(string path) {
 		model->enableTextures();
 		ofTexture tex = ofTexture();
 		extModel mod = extModel(model);
+
+		mod.setName(path.substr(path.find_last_of("\\"), path.find_last_of(".")));
+
 		externalModels.push_back(mod);
 	}
 	draw();
