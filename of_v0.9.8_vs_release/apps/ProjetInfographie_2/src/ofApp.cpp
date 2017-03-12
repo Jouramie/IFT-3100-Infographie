@@ -136,11 +136,11 @@ void ofApp::keyReleased(int key) {
 	{
 		//ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
 		//rend->createCube(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
-		rend->importModel("..\\..\\Models\\IronMan\\Iron_Man.obj");
+		//rend->importModel("..\\..\\Models\\IronMan\\Iron_Man.obj");
 	}
 	else if (key == 'n')
 	{
-		rend->importModel("..\\..\\Models\\IronMan\\Iron_Man.obj");
+		//rend->importModel("..\\..\\Models\\IronMan\\Iron_Man.obj");
 	}
 	else if (key == 'c') {
 		ofLog() << "<app::primitiveCleared>";
@@ -953,6 +953,7 @@ void ofApp::translateChanged(float& value) {
 }
 
 void ofApp::rotateChanged(float& value) {
+
 	rend->sceneRotate(45, rotateX, rotateY, rotateZ);
 }
 
@@ -1153,7 +1154,9 @@ void ofApp::btnImportClicked()
 						std::wstring path = wstring(pszFilePath);
 						std::string strPath(path.begin(), path.end());
 
-						if (rend->importModel(strPath))
+						ofParameter<bool>* param;
+
+						if (rend->importModel(strPath, param))
 						{
 							strPath = "Le modele " + strPath + " a ete importe avec succes!";
 							path = std::wstring(strPath.begin(), strPath.end());

@@ -85,7 +85,7 @@ void renderer::draw()
 	std::list<extModel>::iterator iterator4;
 	for (iterator4 = externalModels.begin(); iterator4 != externalModels.end(); ++iterator4)
 	{
-		iterator4->draw();
+		iterator4->draw(wireFrame);
 	}
 
 	ofDisableDepthTest();

@@ -46,7 +46,7 @@ void primitive3d::draw(bool wireframe) {
 	ofScale(transfoMatrix.getScale());
 
 
-	if (wireframe || selected)
+	if (wireframe || selected.get())
 		prim->drawWireframe();
 	else
 		prim->drawFaces();
