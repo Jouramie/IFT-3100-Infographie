@@ -9,7 +9,7 @@ class extModel
 {
 public:
 
-	extModel() { selected = ofParameter<bool>(false) };
+	extModel() : extModel(nullptr, ofMatrix4x4()) {}
 	extModel(ofxAssimpModelLoader* mod);
 	extModel(ofxAssimpModelLoader* mod, ofMatrix4x4 transfoMatrix);
 	ofxAssimpModelLoader* getModel();

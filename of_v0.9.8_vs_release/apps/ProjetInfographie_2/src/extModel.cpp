@@ -1,21 +1,15 @@
 #include "extModel.h"
 
-extModel::extModel()
+extModel::extModel(ofxAssimpModelLoader* mod) : extModel(mod, ofMatrix4x4())
 {
-	model = 0;
-	transfo = ofMatrix4x4();
-}
 
-extModel::extModel(ofxAssimpModelLoader* mod)
-{
-	model = mod;
-	transfo = ofMatrix4x4();
 }
 
 extModel::extModel(ofxAssimpModelLoader* mod, ofMatrix4x4 transfo)
 {
 	model = mod;
 	transfo = transfo;
+	selected = ofParameter<bool>(false);
 }
 
 ofxAssimpModelLoader* extModel::getModel() {

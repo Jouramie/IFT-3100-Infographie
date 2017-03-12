@@ -335,15 +335,15 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 	return prim.selected;
 }
 
-void renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
+ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
 {
-	createCone(x, y, z, sizeX, sizeY, sizeZ, fill);
+	return createCone(x, y, z, sizeX, sizeY, sizeZ, fill);
 }
 
-void renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
+ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
 {
 	ofConePrimitive* cone = new ofConePrimitive();
-	cone->setPosition(x, y, z);
+	cone->setPosition(0, 0, 0);
 
 	float smallest = min(sizeX, sizeZ);
 	cone->setRadius(smallest / 2);
@@ -353,18 +353,23 @@ void renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, 
 	float newY = 1.0f;
 	float newZ = (float)sizeZ / smallest;
 
-	ofVec3f scaleVec = ofVec3f(newX, newY, newZ);
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	matrix.scale(newX, newY, newZ);
+	matrix.setTranslation(x, y, z);
 
-	scn->addElement(primitive3d{ cone, color, scaleVec });
-	cout << *scn;
+	primitive3d prim = primitive3d{ cone, color, matrix };
+	prim.setName("Cone " + (scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+
 }
 
-void renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
+ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
 {
-	createIcecream(x, y, z, sizeX, sizeY, sizeZ, fill);
+	return createIcecream(x, y, z, sizeX, sizeY, sizeZ, fill);
 }
 
-void renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
+ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
 {
 	ofSpherePrimitive* ball = new ofSpherePrimitive();
 	ball->setPosition(x, y + sizeY / 3, z);
@@ -391,9 +396,11 @@ void renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int siz
 
 	scn->addElement(forme);
 	cout << *scn;
+
+	return NULL;
 }
 
-bool renderer::importModel(string path, ofParameter<bool>* selectedHandler) 
+bool renderer::importModel(string path, ofParameter<bool>* selectedHandler) {
 	ofxAssimpModelLoader* model = new ofxAssimpModelLoader();
 	bool ret = model->loadModel(path, false);
 	if (ret)

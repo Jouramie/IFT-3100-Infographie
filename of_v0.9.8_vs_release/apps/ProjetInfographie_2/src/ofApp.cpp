@@ -132,16 +132,6 @@ void ofApp::keyReleased(int key) {
 		ofLog() << "scale X:" << translateX << "Y:" << translateY;
 		rend->sceneScale(proportionX, proportionY, proportionZ);
 	}
-	else if (key == 'm')
-	{
-		//ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
-		//rend->createCube(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
-		rend->importModel("..\\..\\Models\\IronMan\\Iron_Man.obj");
-	}
-	else if (key == 'n')
-	{
-		rend->importModel("..\\..\\Models\\IronMan\\Iron_Man.obj");
-	}
 	else if (key == 'c') {
 		ofLog() << "<app::primitiveCleared>";
 		rend->clearPrimitives();
@@ -1169,8 +1159,9 @@ void ofApp::btnImportClicked()
 
 						std::wstring path = wstring(pszFilePath);
 						std::string strPath(path.begin(), path.end());
+						ofParameter<bool>* param = nullptr;
 
-						if (rend->importModel(strPath))
+						if (rend->importModel(strPath, param))
 						{
 							strPath = "Le modele " + strPath + " a ete importe avec succes!";
 							path = std::wstring(strPath.begin(), strPath.end());
