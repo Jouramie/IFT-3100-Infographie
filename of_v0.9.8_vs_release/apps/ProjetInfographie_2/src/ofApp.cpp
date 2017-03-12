@@ -701,16 +701,26 @@ void ofApp::btnApplySelectClicked() {
 void ofApp::applyAllChanged(bool& value) {
 	if (applyAll) {
 		btnApplySelect.removeListener(this, &ofApp::btnApplySelectClicked);
+		
+		float deltaX = rend->getDeltaX();
+		float deltaY = rend->getDeltaY();
+		float deltaZ = rend->getDeltaZ();
+		float centerX = rend->getCenterX();
+		float centerY = rend->getCenterY();
+		float centerZ = rend->getCenterZ();
+		float scaleX = rend->getScaleX();
+		float scaleY = rend->getScaleY();
+		float scaleZ = rend->getScaleZ();
 
-		translateX.set((MinX + MaxX) / 2);
-		translateY.set((MinY + MaxY) / 2);
-		translateZ.set((MinZ + MaxZ) / 2);
-		rotateX.set(0);
-		rotateY.set(0);
-		rotateZ.set(0);
-		proportionX.set(1);
-		proportionY.set(1);
-		proportionZ.set(1);
+		translateX.set(deltaX);
+		translateY.set(deltaY);
+		translateZ.set(deltaZ);
+		rotateX.set(centerX);
+		rotateY.set(centerY);
+		rotateZ.set(centerZ);
+		proportionX.set(scaleX);
+		proportionY.set(scaleY);
+		proportionZ.set(scaleZ);
 		
 	}
 	else {
