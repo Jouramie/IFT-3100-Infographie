@@ -161,6 +161,22 @@ void renderer::sceneScale(float sX, float sY, float sZ) {
 	scaleZ = sZ;
 }
 
+
+void renderer::applySelection(ofMatrix4x4 matrix)
+{
+	for (auto& p : *scn)
+	{
+		ofMatrix4x4 oldMat = p.getTransfo();
+		p.setTransfo(oldMat * matrix);
+	}
+	std::list<extModel>::iterator iterator4;
+	for (iterator4 = externalModels.begin(); iterator4 != externalModels.end(); ++iterator4)
+	{
+		ofMatrix4x4 oldMat = iterator4->getTransfo();
+		iterator4->setTransfo(oldMat * matrix);
+	}
+}
+
 //-------------------------------- 2D Primitives----------------
 /**
 * Render a square with given width, height and border width.

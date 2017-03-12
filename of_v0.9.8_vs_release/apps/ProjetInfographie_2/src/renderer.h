@@ -29,6 +29,7 @@ public:
 	void sceneTranslate(float x, float y, float z);
 	void sceneRotate(float angle, float centerX, float centerY, float centerZ);
 	void sceneScale(float scaleX, float scaleY, float scaleZ);
+	void applySelection(ofMatrix4x4 matrix);
 	//2D primitives
 	ofParameter<bool> createSquare(float x, float y, float width, float height);
 	ofParameter<bool> createSquare(float x, float y, float width, float height, ofColor fillColor, ofColor strokeColor);

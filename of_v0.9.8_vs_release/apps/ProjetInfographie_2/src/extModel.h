@@ -21,6 +21,9 @@ public:
 	string getName() { return name; }
 	void setName(string n) { name = n; }
 
+	ofMatrix4x4 getTransfo() { return transfo; }
+	void setTransfo(ofMatrix4x4 matrix) { this->transfo = matrix; }
+
 	bool calcTriangleIntersection(ofRay ray, float *result) const;
 	bool inside(ofVec3f p, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) const;
 	bool checkIntersectionPlaneAndLine(ofRay ray, float *result) const;

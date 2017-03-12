@@ -715,6 +715,14 @@ void ofApp::btnExportClicked()
 
 void ofApp::btnApplySelectClicked() {
 
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	matrix.scale(proportionX, proportionY, proportionZ);
+	ofQuaternion quat = ofQuaternion();
+	quat.set(rotateX, rotateY, rotateZ, 45);
+	matrix.rotate(quat);
+	matrix.setTranslation(translateX, translateY, translateZ);
+
+	rend->applySelection(matrix);
 }
 
 void ofApp::btnApplyAllClicked() {
