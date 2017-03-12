@@ -46,6 +46,10 @@ public:
 	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol);
 	ofParameter<bool> createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
 	ofParameter<bool> createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
+	ofParameter<bool> createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
+	ofParameter<bool> createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
+	ofParameter<bool> createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
+	ofParameter<bool> createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
 
 	bool importModel(string path, ofParameter<bool>* selectedHandler);
 

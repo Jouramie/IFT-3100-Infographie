@@ -2,7 +2,7 @@
 
 extModel::extModel()
 {
-	model = 0;
+	model = nullptr;
 	transfo = ofMatrix4x4();
 	selected = ofParameter<bool>(false);
 }

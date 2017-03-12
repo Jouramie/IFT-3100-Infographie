@@ -117,46 +117,9 @@ void ofApp::keyPressed(int key) {
 void ofApp::keyReleased(int key) {
 	if (key == ' ')
 		rend->imageExport("render", "png");
-	else if (key == 'r')
-	{
-		ofLog() << "rotate X:" << rotateX << "Y:" << rotateY << "Z:" << rotateZ;
-		rend->sceneRotate(45, rotateX, rotateY, rotateZ);
-	}
-	else if (key == 't')
-	{
-		ofLog() << "translate X:" << translateX << "Y:" << translateY << "Z:" << translateZ;
-		rend->sceneTranslate(translateX, translateY, translateZ);
-	}
-	else if (key == 's')
-	{
-		ofLog() << "scale X:" << translateX << "Y:" << translateY;
-		rend->sceneScale(proportionX, proportionY, proportionZ);
-	}
-	else if (key == 'm')
-	{
-		//ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
-		//rend->createCube(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
-		//rend->importModel("..\\..\\Models\\IronMan\\Iron_Man.obj");
-	}
-	else if (key == 'n')
-	{
-		//rend->importModel("..\\..\\Models\\IronMan\\Iron_Man.obj");
-	}
-	else if (key == 'c') {
-		ofLog() << "<app::primitiveCleared>";
-		rend->clearPrimitives();
-	}
 	else if (key == 'w') {
 		ofLog() << "<app::wireFrameModeChanged>";
 		rend->changeWireFrameMode();
-	}
-	else if (key == 'z') {
-		ofLog() << "<app::resetCamera>";
-		cam->resetPos();
-	}
-	else if (key == 'x') {
-		ofLog() << "<app::setTarget>";
-		cam->setTarget({ 200.0f, 0.0f, 0.0f });
 	}
 	else if (key == OF_KEY_LEFT)
 	{
@@ -336,6 +299,8 @@ void ofApp::initGroups()
 	groupPrimitiveType3D.add(primType3D);
 	groupPrimitiveType3D.add(primTypeCube);
 	groupPrimitiveType3D.add(primTypeSphere);
+	groupPrimitiveType3D.add(primTypeTriangle);
+	groupPrimitiveType3D.add(primTypeLine);
 
 	groupPrimitivePosition2D.setName("Position");
 	groupPrimitivePosition2D.add(primPosX.set(primPosX));
@@ -689,8 +654,14 @@ void ofApp::btnDrawPrimitiveClicked()
 		if (primTypeCube.get()) {
 			selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
-		else {
+		else if(primTypeSphere.get()) {
 			selectionMenu.add(rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+		}
+		else if (primTypeTriangle.get()) {
+			selectionMenu.add(rend->createCone(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+		}
+		else {
+			selectionMenu.add(rend->createIcecream(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
 	}
 
@@ -736,11 +707,15 @@ void ofApp::primDim2DChanged(bool& value) {
 		primType3D.set(false);
 		primTypeCube.setName("Carre");
 		primTypeSphere.setName("Cercle");
+		primTypeTriangle.setName("Triangle");
+		primTypeLine.setName("Ligne");
 	}
 	else {
 		primType3D.set(true);
 		primTypeCube.setName("Cube");
 		primTypeSphere.setName("Sphere");
+		primTypeTriangle.setName("Cone");
+		primTypeLine.setName("IceCream");
 	}
 
 }
@@ -750,11 +725,15 @@ void ofApp::primDim3DChanged(bool& value) {
 		primType2D.set(false);
 		primTypeCube.setName("Cube");
 		primTypeSphere.setName("Sphere");
+		primTypeTriangle.setName("Cone");
+		primTypeLine.setName("IceCream");
 	}
 	else {
 		primType2D.set(true);
 		primTypeCube.setName("Carre");
 		primTypeSphere.setName("Cercle");
+		primTypeTriangle.setName("Triangle");
+		primTypeLine.setName("Ligne");
 	}
 
 }
@@ -953,8 +932,6 @@ void ofApp::waterTextureChanged(bool& value) {
 		noTexture.set(true);
 	}
 
-
-
 	noTexture.enableEvents();
 	metalTexture.enableEvents();
 	waterTexture.enableEvents();
@@ -1135,6 +1112,7 @@ void ofApp::updatePositionMenu() {
 	optionMenu.setPosition(10, 10);
 }
 
+//Source : MsDN (la place où que tu vas quand tu veux savoir comment ça marche microsoft)
 void ofApp::btnImportClicked()
 {
 	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
@@ -1168,8 +1146,7 @@ void ofApp::btnImportClicked()
 
 						std::wstring path = wstring(pszFilePath);
 						std::string strPath(path.begin(), path.end());
-
-						ofParameter<bool>* param;
+						ofParameter<bool>* param = nullptr;
 
 						if (rend->importModel(strPath, param))
 						{

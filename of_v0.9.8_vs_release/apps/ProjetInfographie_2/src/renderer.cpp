@@ -1,5 +1,6 @@
 #include "renderer.h"
 #include "ofxCvImage.h"
+#include "forme3d.h"
 
 
 renderer::renderer()
@@ -56,25 +57,21 @@ void renderer::draw()
 	ofSetLineWidth(1.0);
 
 	if (translate) {
-		ofTranslate(deltaX, deltaY);
+		ofTranslate(deltaX, deltaY, deltaZ);
 	}
 	if (rotate) {
-		ofRotate(theta, centerX, centerY, centerZ);
+		ofRotate(centerX, 1, 0, 0);
+		ofRotate(centerY, 0, 1, 0);
+		ofRotate(centerZ, 0, 0, 1);
 	}
 	if (scale) {
-		ofScale(scaleX, scaleY);
+		ofScale(scaleX, scaleY, scaleZ);
 	}
 
 	for (auto& p : *scn)
 	{
 		p.draw(wireFrame);
 	}
-	
-// 	std::list<primitive>::iterator iterator;
-// 	for (iterator = primitives.begin(); iterator != primitives.end(); ++iterator)
-// 	{
-// 		iterator->draw(wireFrame);
-// 	}
 
 	std::list<ofRay>::iterator iterator2;
 	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
@@ -151,7 +148,6 @@ void renderer::sceneRotate(float angle, float cX, float cY, float cZ) {
 	centerX = cX;
 	centerY = cY;
 	centerZ = cZ;
-
 }
 
 void renderer::sceneScale(float sX, float sY, float sZ) {
@@ -337,10 +333,9 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 	ofSpherePrimitive* ball = new ofSpherePrimitive();
 	ball->setPosition(0, 0, 0);
 
-
 	float smallest = min(sizeX, min(sizeY, sizeZ));
 
-	ball->setRadius(smallest);
+	ball->setRadius(smallest/2);
 
 	float newX = (float)sizeX / smallest;
 	float newY = (float)sizeY / smallest;
@@ -354,6 +349,71 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 	prim.setName("Sphere " + to_string(scn->nbElements() + 1));
 	scn->addElement(prim);
 	return prim.selected;
+}
+
+ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
+{
+	return createCone(x, y, z, sizeX, sizeY, sizeZ, fill);
+}
+
+ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
+{
+	ofConePrimitive* cone = new ofConePrimitive();
+	cone->setPosition(0, 0, 0);
+
+	float smallest = min(sizeX, sizeZ);
+	cone->setRadius(smallest / 2);
+	cone->setHeight(sizeY);
+
+	float newX = (float)sizeX / smallest;
+	float newY = 1.0f;
+	float newZ = (float)sizeZ / smallest;
+
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	matrix.scale(newX, newY, newZ);
+	matrix.setTranslation(x, y, z);
+
+	primitive3d prim = primitive3d{ cone, color, matrix };
+	prim.setName("Cone " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+
+}
+
+ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
+{
+	return createIcecream(x, y, z, sizeX, sizeY, sizeZ, fill);
+}
+
+ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
+{
+	ofSpherePrimitive* ball = new ofSpherePrimitive();
+	ball->setPosition(x, y + sizeY / 3, z);
+
+	ofConePrimitive* cone = new ofConePrimitive();
+	cone->setPosition(x, y - sizeY / 3, z);
+
+	float smallestSphere = min(sizeX, min(sizeY, sizeZ));
+	ball->setRadius(smallestSphere / 2);
+
+	float smallestCone = min(sizeX, sizeZ);
+	cone->setRadius(smallestCone / 2);
+	cone->setHeight(sizeY);
+
+	float newX = (float)sizeX / smallestSphere;
+	float newY = (float)sizeY / smallestSphere;
+	float newZ = (float)sizeZ / smallestSphere;
+
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	//Corriger le scale
+	matrix.scale(newX, newY, newZ);
+	matrix.setTranslation(x, y, z);
+
+	forme3d forme{ ball, color, matrix };
+	forme.addPrimitive(cone);
+	forme.setName("IceCream " + to_string(scn->nbElements() + 1));
+	scn->addElement(forme);
+	return forme.selected;
 }
 
 bool renderer::importModel(string path, ofParameter<bool>* selectedHandler) {

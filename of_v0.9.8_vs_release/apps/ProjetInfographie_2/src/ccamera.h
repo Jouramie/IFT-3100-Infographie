@@ -34,8 +34,6 @@ public:
 
 	void changeMode();
 
-	void resetPos();
-
 	const ofEasyCam& operator*() const { return *cam; }
 
 private:

@@ -120,10 +120,3 @@ void ccamera::changeMode()
 		cam->enableOrtho();
 	}
 }
-
-void ccamera::resetPos()
-{
-	delete cam;
-	cam = new ofEasyCam();
-	setupCamera();
-}

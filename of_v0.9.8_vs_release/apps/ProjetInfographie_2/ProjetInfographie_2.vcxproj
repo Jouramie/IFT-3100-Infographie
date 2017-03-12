@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\extModel.cpp" />
+    <ClCompile Include="src\forme3d.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\ccamera.cpp" />
@@ -209,6 +210,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\extModel.h" />
+    <ClInclude Include="src\forme3d.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\ccamera.h" />
     <ClInclude Include="src\ofxCheckBox.h" />

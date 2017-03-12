@@ -5,7 +5,8 @@
 class primitive
 {
 public:
-	primitive() { selected = ofParameter<bool>(false); };
+	primitive() : primitive{ ofMatrix4x4() } {}
+	primitive(ofMatrix4x4 matrix) : transfoMatrix{ matrix } { selected = ofParameter<bool>(false); };
 
 	virtual void draw() { draw(false); }
 	virtual void draw(bool wireframe) = 0;
@@ -15,6 +16,7 @@ public:
 	void changeSelected() {	selected = !selected; }
 
 	string getName() { return name; }
+
 	void setName(string n) {
 		name = n;
 		selected.setName(n);
