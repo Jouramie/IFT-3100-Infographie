@@ -112,6 +112,9 @@
     <ClCompile Include="src\extModel.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\forme3d.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -945,6 +948,9 @@
       <Filter>addons\ofxRay\src</Filter>
     </ClInclude>
     <ClInclude Include="src\extModel.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\forme3d.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
