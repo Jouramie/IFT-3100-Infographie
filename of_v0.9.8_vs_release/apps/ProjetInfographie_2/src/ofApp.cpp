@@ -137,6 +137,10 @@ void ofApp::keyReleased(int key) {
 		ofLog() << "<app::wireFrameModeChanged>";
 		rend->changeWireFrameMode();
 	}
+	else if (key == 'r') {
+		ofLog() << "<app::resetCamera>";
+		cam->resetPos();
+	}
 	else if (key == OF_KEY_LEFT)
 	{
 		isKeyPressLeft = false;

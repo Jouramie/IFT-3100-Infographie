@@ -124,3 +124,15 @@ void ccamera::changeMode()
 		cam->enableOrtho();
 	}
 }
+
+void ccamera::resetPos()
+{
+	ofLog() << "asD";
+	cam = new ofCamera();
+	cam->setPosition({ (MinX + MaxX) / 2, (MinY + MaxY) / 2, MinZ });
+	cam->lookAt({ 0.0f, 0.0f, 0.0f });
+	posX.set(0);
+	posY.set(0);
+	posZ.set(-2000);
+	camInteractive.set(false);
+}

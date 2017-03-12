@@ -32,6 +32,8 @@ public:
 
 	void changeMode();
 
+	void resetPos();
+
 	const ofCamera& operator*() const { return *cam; }
 
 private:
