@@ -188,15 +188,11 @@ void ofApp::keyReleased(int key) {
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y) {
 	HCURSOR curs;
-	if (cursorIsInControl(x, y))
-	{
-		curs = LoadCursor(NULL, IDC_HAND);
-	}
-	else
+	if (!cursorIsInControl(x, y))
 	{
 		curs = LoadCursor(NULL, IDC_ARROW);
+		SetCursor(curs);
 	}
-	SetCursor(curs);
 }
 
 bool ofApp::cursorIsInControl(int x, int y) {

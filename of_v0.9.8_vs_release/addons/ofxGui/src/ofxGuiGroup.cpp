@@ -220,7 +220,7 @@ bool ofxGuiGroup::cursorIsInControl(int x, int y) {
 }
 
 bool ofxGuiGroup::mouseMoved(ofMouseEventArgs & args){
-	HCURSOR curs;
+	/*HCURSOR curs;
 	if (cursorIsInControl(args.x, args.y))
 	{
 		curs = LoadCursor(NULL, IDC_HAND);
@@ -229,7 +229,7 @@ bool ofxGuiGroup::mouseMoved(ofMouseEventArgs & args){
 	{
 		curs = LoadCursor(NULL, IDC_ARROW);
 	}
-	SetCursor(curs);
+	SetCursor(curs);*/
 
 	ofMouseEventArgs a = args;
 	for(std::size_t i = 0; i < collection.size(); i++){

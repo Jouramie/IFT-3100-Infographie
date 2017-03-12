@@ -23,7 +23,6 @@
   ofTexture.cpp
   ofVbo.cpp
   ofVboMesh.cpp
-  of3dGraphics.cpp
   ofBitmapFont.cpp
   ofCairoRenderer.cpp
   ofGraphics.cpp

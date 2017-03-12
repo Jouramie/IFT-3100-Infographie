@@ -64,6 +64,18 @@ Type ofxSlider<Type>::getMax(){
 template<typename Type>
 bool ofxSlider<Type>::mouseMoved(ofMouseEventArgs & args){
 	mouseInside = isGuiDrawing() && b.inside(ofPoint(args.x,args.y));
+
+	HCURSOR curs;
+	if (mouseInside)
+	{
+		curs = LoadCursor(NULL, IDC_SIZEWE);
+		SetCursor(curs);
+	}
+	/*else
+	{
+		curs = LoadCursor(NULL, IDC_ARROW);
+	}*/
+
 	return mouseInside;
 }
 

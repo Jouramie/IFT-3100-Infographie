@@ -13,6 +13,7 @@ public:
 
 	virtual bool mouseReleased(ofMouseEventArgs & args);
 	virtual bool mouseMoved(ofMouseEventArgs & args);
+	bool cursorIsInControl(int x, int y);
 	virtual bool mousePressed(ofMouseEventArgs & args);
 	virtual bool mouseDragged(ofMouseEventArgs & args);
 

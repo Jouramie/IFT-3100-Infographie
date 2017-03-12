@@ -37,7 +37,27 @@ bool ofxButton::mouseReleased(ofMouseEventArgs & args){
 }
 
 bool ofxButton::mouseMoved(ofMouseEventArgs & args){
+
+	HCURSOR curs;
+	if (cursorIsInControl(args.x, args.y))
+	{
+		curs = LoadCursor(NULL, IDC_HAND);
+		SetCursor(curs);
+	}
+	/*else
+	{
+		curs = LoadCursor(NULL, IDC_ARROW);
+	}*/
 	return ofxToggle::mouseMoved(args);
+}
+
+bool ofxButton::cursorIsInControl(int x, int y) {
+	ofPoint pos = getPosition();
+	float h = getHeight();
+	float w = getWidth();
+	if (x >= pos.x && x <= pos.x + w && y >= pos.y && y <= pos.y + h)
+		return true;
+	return false;
 }
 
 bool ofxButton::mousePressed(ofMouseEventArgs & args){
