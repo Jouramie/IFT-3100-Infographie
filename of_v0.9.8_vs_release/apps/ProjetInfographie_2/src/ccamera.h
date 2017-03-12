@@ -6,8 +6,8 @@ class ccamera
 {
 public:
 
-	const float MaxX = 2000.0f, MaxY = 2000.0f, MaxZ = 2000.0f;
-	const float MinX = -2000.0f, MinY = -2000.0f, MinZ = -2000.0f;
+	const float MaxX = 5000.0f, MaxY = 5000.0f, MaxZ = 5000.0f;
+	const float MinX = -5000.0f, MinY = -5000.0f, MinZ = -5000.0f;
 
 	ccamera() : ccamera{ nullptr } {}
 	ccamera(ofEasyCam* cam) : cam{ cam } { }
@@ -60,7 +60,5 @@ private:
 	ofParameter<float> farClip;
 
 	ofParameter<bool> ortho;
-	ofParameter<bool> camInteractive;
-
 };
 

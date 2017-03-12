@@ -4,7 +4,7 @@ void ccamera::setupCamera()
 {
 	speed = 500.0f;
 
-	cam->setPosition( { 0.0f, 0.0f, -2000 } );
+	cam->setPosition( { 0.0f, 0.0f, -2000.0f } );
 	cam->lookAt( { 0.0f, 0.0f, 0.0f } );
 }
 
@@ -50,9 +50,6 @@ void ccamera::setupParameters() {
 	ortho.setName("Projection orthogonal");
 	ortho.set(false);
 
-	camInteractive.setName("Camera interactive");
-	camInteractive.set(false);
-
 	parameterGroup.setName("Parametre de la camera");
 	parameterGroup.add(posX);
 	parameterGroup.add(posY);
@@ -63,7 +60,6 @@ void ccamera::setupParameters() {
 	parameterGroup.add(nearClip);
 	parameterGroup.add(farClip);
 	parameterGroup.add(ortho);
-	parameterGroup.add(camInteractive);
 }
 
 void ccamera::update(float dt)
@@ -79,7 +75,7 @@ void ccamera::update(float dt)
 	if (isCameraMoveRight)
 		dx -= dist;
 	cam->truck(-dx);
-	posX.set(-cam->getX());
+	posX.set(round(-cam->getX()));
 
 	dy = 0;
 	if (isCameraMoveUp)
@@ -87,7 +83,7 @@ void ccamera::update(float dt)
 	if (isCameraMoveDown)
 		dy += dist;
 	cam->boom(-dy);
-	posY.set(cam->getY());
+	posY.set(round(cam->getY()));
 
 	dz = 0;
 	if (isCameraMoveForward)
@@ -95,7 +91,7 @@ void ccamera::update(float dt)
 	if (isCameraMoveBackward)
 		dz += dist;
 	cam->dolly(dz);
-	posZ.set(cam->getZ());
+	posZ.set(round(cam->getZ()));
 
 	cam->setFov(fov.get());
 	if (autoRatio.get()) {
@@ -130,8 +126,4 @@ void ccamera::resetPos()
 	delete cam;
 	cam = new ofEasyCam();
 	setupCamera();
-	posX.set(0);
-	posY.set(0);
-	posZ.set(-2000);
-	camInteractive.set(false);
 }
