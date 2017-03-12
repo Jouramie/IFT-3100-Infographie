@@ -30,23 +30,23 @@ public:
 	void sceneRotate(float angle, float centerX, float centerY, float centerZ);
 	void sceneScale(float scaleX, float scaleY, float scaleZ);
 	//2D primitives
-	void createSquare(float x, float y, float width, float height);
-	void createSquare(float x, float y, float width, float height, ofColor fillColor, ofColor strokeColor);
-	void createCircle(float x, float y, float r1, float r2);
-	void createCircle(float x, float y, float r1, float r2, ofColor fillColor, ofColor strokeColor);
-	void createLine(float x, float y, float xDelta, float yDelta);
-	void createLine(float x, float y, float xDelta, float yDelta, ofColor fillColor);
-	void createTriangle(float x1, float y1, float x2, float y2, float x3, float y3);
-	void createTriangle(float x1, float y1, float x2, float y2, float x3, float y3, ofColor fillColor, ofColor strokeColor);
-	void createPoint(float x, float y, float radius);
-	void createPoint(float x, float y, float radius, ofColor fillColor, ofColor strokeColor);
+	ofParameter<bool> createSquare(float x, float y, float width, float height);
+	ofParameter<bool> createSquare(float x, float y, float width, float height, ofColor fillColor, ofColor strokeColor);
+	ofParameter<bool> createCircle(float x, float y, float r1, float r2);
+	ofParameter<bool> createCircle(float x, float y, float r1, float r2, ofColor fillColor, ofColor strokeColor);
+	ofParameter<bool> createLine(float x, float y, float xDelta, float yDelta);
+	ofParameter<bool> createLine(float x, float y, float xDelta, float yDelta, ofColor fillColor);
+	ofParameter<bool> createTriangle(float x1, float y1, float x2, float y2, float x3, float y3);
+	ofParameter<bool> createTriangle(float x1, float y1, float x2, float y2, float x3, float y3, ofColor fillColor, ofColor strokeColor);
+	ofParameter<bool> createPoint(float x, float y, float radius);
+	ofParameter<bool> createPoint(float x, float y, float radius, ofColor fillColor, ofColor strokeColor);
 
-	void createCube(int x, int y, int z, int w, int h, int d);
-	void createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol);
-	void createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
-	void createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
+	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d);
+	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol);
+	ofParameter<bool> createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
+	ofParameter<bool> createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
 
-	bool importModel(string path);
+	bool importModel(string path, ofParameter<bool>* selectedHandler);
 
 	void clearPrimitives();
 	void changeWireFrameMode();
