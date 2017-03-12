@@ -1078,14 +1078,11 @@ void ofApp::setupFilterMenu() {
 
 void ofApp::setupSelectionMenu() {
 
-	selectionMenu.setDefaultWidth(270);
+	selectionMenu.setDefaultWidth(200);
 
 	selectionMenu.setup();
-	//selectionMenu.add(groupSelection);
 
-	selectionMenu.setPosition(10, 540);
-
-	selectionMenu.minimizeAll();
+	selectionMenu.setPosition(ofGetWindowWidth() - 420, 10);
 
 	selectionMenu.registerMouseEvents();
 }
