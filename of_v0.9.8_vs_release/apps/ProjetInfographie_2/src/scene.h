@@ -31,6 +31,8 @@ public:
 
 	scene_iterator begin();
 	scene_iterator end();
+
+	int nbElements() { return root->getSize(); }
 	
 	friend std::ostream& operator<<(std::ostream& os, const scene& s);
 

@@ -36,16 +36,25 @@ void extModel::setSelected(bool val) {
 
 void extModel::draw(bool wireframe) {
 
-	ofVec3f scale = transfo.getScale();
-	ofScale(scale.x, scale.y, scale.z);
+	ofPushMatrix();
 
-	if (wireframe)// || selected)
+	ofScale(transfo.getScale());
+
+	ofQuaternion rotation = transfo.getRotate();
+	float rotationAmount;
+	ofVec3f rotationAngle;
+	rotation.getRotate(rotationAmount, rotationAngle);
+
+	ofRotate(rotationAmount, rotationAngle.x, rotationAngle.y, rotationAngle.z);
+
+	ofTranslate(transfo.getTranslation());
+
+	if (wireframe || selected)
 		model->drawWireframe();
-		//model->drawFaces();
 	else
 		model->drawFaces();
 
-	ofScale(1 / scale.x, 1 / scale.y, 1 / scale.z);
+	ofPopMatrix();
 }
 
 bool extModel::calcTriangleIntersection(ofRay ray, float *result) const {

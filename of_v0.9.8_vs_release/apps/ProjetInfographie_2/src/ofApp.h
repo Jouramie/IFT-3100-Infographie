@@ -49,6 +49,8 @@ private:
 	ofxPanel transformationMenu;
 	ofxPanel filterMenu;
 	ofxPanel optionMenu;
+	ofxPanel selectionMenu;
+
 	ofxButton btnSelect;
 	ofxButton btnDrawPrimitive;
 	ofxButton btnExit;
@@ -149,7 +151,7 @@ private:
 	void setupCameraMenu();
 	void setupTransformationMenu();
 	void setupFilterMenu();
-
+	void setupSelectionMenu();
 	void setupOptionMenu();
 
 	void updatePositionMenu();

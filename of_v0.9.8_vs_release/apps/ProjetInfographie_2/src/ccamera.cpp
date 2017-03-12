@@ -29,7 +29,7 @@ void ccamera::setupParameters() {
 	fov.setMax(180);
 	fov.set(cam->getFov());
 
-	autoRatio.setName("Ratio d'aspect automatique");
+	autoRatio.setName("Ratio d'aspect auto.");
 	autoRatio.set(true);
 
 	ratio.setName("Ratio d'aspect");
@@ -37,12 +37,12 @@ void ccamera::setupParameters() {
 	ratio.setMax(4);
 	ratio.set(cam->getAspectRatio());
 
-	nearClip.setName("Plan de clipping avant");
+	nearClip.setName("Clipping avant");
 	nearClip.setMin(0);
 	nearClip.setMax(2 * MaxZ);
 	nearClip.set(cam->getNearClip());
 
-	farClip.setName("Plan de cliping arriere");
+	farClip.setName("Cliping arriere");
 	farClip.setMin(0);
 	farClip.setMax(2 * MaxZ);
 	farClip.set(cam->getFarClip());
