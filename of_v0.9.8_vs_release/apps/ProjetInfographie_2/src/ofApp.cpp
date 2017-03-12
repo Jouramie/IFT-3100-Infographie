@@ -150,6 +150,14 @@ void ofApp::keyReleased(int key) {
 		ofLog() << "<app::wireFrameModeChanged>";
 		rend->changeWireFrameMode();
 	}
+	else if (key == 'z') {
+		ofLog() << "<app::resetCamera>";
+		cam->resetPos();
+	}
+	else if (key == 'x') {
+		ofLog() << "<app::setTarget>";
+		cam->setTarget({ 200.0f, 0.0f, 0.0f });
+	}
 	else if (key == OF_KEY_LEFT)
 	{
 		isKeyPressLeft = false;

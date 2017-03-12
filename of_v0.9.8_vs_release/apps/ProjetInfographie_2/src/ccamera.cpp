@@ -2,9 +2,9 @@
 
 void ccamera::setupCamera()
 {
-	speed = 250.0f;
+	speed = 500.0f;
 
-	cam->setPosition( { (MinX + MaxX) / 2, (MinY + MaxY) / 2, MinZ } );
+	cam->setPosition( { 0.0f, 0.0f, -2000 } );
 	cam->lookAt( { 0.0f, 0.0f, 0.0f } );
 }
 
@@ -73,7 +73,7 @@ void ccamera::update(float dt)
 	float dy = 0;
 	float dz = 0;
 
-	dx = -cam->getX() - posX.get();
+	dx = 0;
 	if (isCameraMoveLeft)
 		dx += dist;
 	if (isCameraMoveRight)
@@ -81,7 +81,7 @@ void ccamera::update(float dt)
 	cam->truck(-dx);
 	posX.set(-cam->getX());
 
-	dy = cam->getY() - posY.get();
+	dy = 0;
 	if (isCameraMoveUp)
 		dy -= dist;
 	if (isCameraMoveDown)
@@ -89,7 +89,7 @@ void ccamera::update(float dt)
 	cam->boom(-dy);
 	posY.set(cam->getY());
 
-	dz = cam->getZ() - posZ.get();
+	dz = 0;
 	if (isCameraMoveForward)
 		dz -= dist;
 	if (isCameraMoveBackward)
@@ -123,4 +123,15 @@ void ccamera::changeMode()
 	else {
 		cam->enableOrtho();
 	}
+}
+
+void ccamera::resetPos()
+{
+	delete cam;
+	cam = new ofEasyCam();
+	setupCamera();
+	posX.set(0);
+	posY.set(0);
+	posZ.set(-2000);
+	camInteractive.set(false);
 }

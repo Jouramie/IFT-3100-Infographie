@@ -10,12 +10,14 @@ public:
 	const float MinX = -2000.0f, MinY = -2000.0f, MinZ = -2000.0f;
 
 	ccamera() : ccamera{ nullptr } {}
-	ccamera(ofCamera* cam) : cam{ cam } { }
+	ccamera(ofEasyCam* cam) : cam{ cam } { }
 
 	ofParameterGroup getParameterGroup() { return parameterGroup; }
 	void setSpeed(float speed) { this->speed = speed; }
 	float getSpeed() const { return speed; }
-	void setCamera(ofCamera* cam) { this->cam = cam; }
+	void setCamera(ofEasyCam* cam) { this->cam = cam; }
+	void setTarget(const ofVec3f& vec) { cam->setTarget(vec); }
+	ofVec3f getTarget() { return cam->getTarget().getPosition(); }
 
 	void setup() { setupCamera(); setupParameters(); }
 	void update(float dt);
@@ -32,11 +34,13 @@ public:
 
 	void changeMode();
 
-	const ofCamera& operator*() const { return *cam; }
+	void resetPos();
+
+	const ofEasyCam& operator*() const { return *cam; }
 
 private:
 
-	ofCamera* cam;
+	ofEasyCam* cam;
 
 	float speed;
 
