@@ -14,8 +14,6 @@ void renderer::setup()
 	rotate = -1;
 	mainCam.begin();*/
 	
-	filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
-
 	setupCamera();
 	timeCurrent = timeLast = ofGetElapsedTimef();
 
@@ -29,6 +27,7 @@ void renderer::setup()
 	blur = false;
 	invert = false;
 	dilate = false;
+	transform = false;
 }
 
 void renderer::setupCamera()
@@ -44,6 +43,10 @@ void renderer::setupCamera()
 
 void renderer::update()
 {
+	int w = ofGetWidth();
+	int h = ofGetHeight();
+
+	if (w != 1024 || h != 768) ofSetWindowShape(1024, 768);
 	timeCurrent = ofGetElapsedTimef();
 	timeElapsed = timeCurrent - timeLast;
 	timeLast = timeCurrent;
@@ -101,6 +104,9 @@ void renderer::draw()
 	if (isFiltered) {
 		checkFilters();
 	}
+	if (transform) {
+		filter.draw(0 - filter.getWidth() / 2, 0 - filter.getHeight() / 2);
+	}
 	ofDisableDepthTest();
 
 	camera.end();
@@ -127,10 +133,12 @@ void renderer::imageExport(const string name, const string extension) const
 
 void renderer::checkFilters(){
 	//--------------Filters
+	sceneImg.clear();
 	sceneImg.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+	scenePixels.clear();
 	scenePixels = sceneImg.getPixels();
 	filter.clear();
-	filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
+	filter.allocate(scenePixels.getWidth(), scenePixels.getHeight());
 	filter.setFromPixels(scenePixels);
 	if (blur) {
 		filter.blur();
@@ -142,40 +150,53 @@ void renderer::checkFilters(){
 		filter.dilate();
 	}
 	filter.mirror(false, true);
-	filter.draw(-(ofGetWindowWidth()*.75), -(ofGetWindowHeight()*.75), ofGetWindowWidth()*1.5, ofGetWindowHeight()*1.5);
+	filter.resize(scenePixels.getWidth()*1.5625, scenePixels.getHeight()*1.5625);
+	filter.draw(0 - filter.getWidth()/2, 0 - filter.getHeight()/2);
 }
 
-void renderer::sceneTranslate(float x, float y) {
+void renderer::sceneTranslate(float x, float y) {	
+	transform = true;
+	draw();
+	sceneImg.clear();
 	sceneImg.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+	scenePixels.clear();
 	scenePixels = sceneImg.getPixels();
 	filter.clear();
 	filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
 	filter.setFromPixels(scenePixels);
 	filter.translate(x, y);
 	filter.mirror(false, true);
-	filter.draw(-(ofGetWindowWidth()*.75), -(ofGetWindowHeight()*.75), ofGetWindowWidth()*1.5, ofGetWindowHeight()*1.5);
+	filter.resize(scenePixels.getWidth()*1.5625, scenePixels.getHeight()*1.5625);
 }
 
 void renderer::sceneRotate(float angle, float centerX, float centerY) {
+	transform = true;
+	draw();
+	sceneImg.clear();
 	sceneImg.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+	scenePixels.clear();
 	scenePixels = sceneImg.getPixels();
 	filter.clear();
 	filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
 	filter.setFromPixels(scenePixels);
 	filter.rotate(angle, centerX, centerY);
 	filter.mirror(false, true);
-	filter.draw(-(ofGetWindowWidth()*.75), -(ofGetWindowHeight()*.75), ofGetWindowWidth()*1.5, ofGetWindowHeight()*1.5);
+	filter.resize(scenePixels.getWidth()*1.5625, scenePixels.getHeight()*1.5625);
 }
 
 void renderer::sceneScale(float scaleX, float scaleY) {
+	transform = true;
+	draw();
+	sceneImg.clear();
 	sceneImg.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+	scenePixels.clear();
 	scenePixels = sceneImg.getPixels();
 	filter.clear();
 	filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
 	filter.setFromPixels(scenePixels);
 	filter.scale(scaleX, scaleY);
 	filter.mirror(false, true);
-	filter.draw(-(ofGetWindowWidth()*.75), -(ofGetWindowHeight()*.75), ofGetWindowWidth()*1.5, ofGetWindowHeight()*1.5);
+	filter.resize(scenePixels.getWidth()*1.5625, scenePixels.getHeight()*1.5625);
 }
 
 //-------------------------------- 2D Primitives----------------

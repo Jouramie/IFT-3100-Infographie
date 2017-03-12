@@ -79,6 +79,7 @@ private:
 	bool blur;
 	bool invert;
 	bool dilate;
+	bool transform;
 	//int rotate;
 	
 	float cameraSpeed;
@@ -87,6 +88,9 @@ private:
 	float timeCurrent;
 	float timeElapsed;
 	float timeLast;
+
+	float transX;
+	float transY;
 
 	ofVec3f cameraPosition;
 	ofVec3f cameraTarget;

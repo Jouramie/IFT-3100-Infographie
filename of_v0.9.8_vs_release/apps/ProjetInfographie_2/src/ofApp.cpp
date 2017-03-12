@@ -123,6 +123,8 @@ void ofApp::keyReleased(int key) {
 		rend->imageExport("render", "png");
 	else if (key == 'r')
 	{
+		ofLog() << "r pressed";
+		rend->sceneTranslate(20, 0);
 		//ofColor c = ofColor(rand() % 256, rand() % 256, rand() % 256);
 		//rend->createCube(rand() % 1004 + 20, rand() % 748 + 20, rand() % 100, 100, c);
 	}
