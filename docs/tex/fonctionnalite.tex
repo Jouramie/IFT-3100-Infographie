@@ -3,13 +3,85 @@
 
 \section{Image}
 \subsection{Importation}
-Nom implémenté
+Non implémenté
 
 \subsection{Exportation}
-Implémenté
+L'exportation en image est implémentée grâce à la méthode imageExport de la classe renderer. Tout d’abord, on dessin la scène, sans l’interface graphique. Ensuite, on sauvegarde une capture de l’écran avec le nom, un time stamp, pour que le fichier soit unique, et l’extension reçu en paramètre.
+
+\begin{lstlisting}
+void renderer::imageExport(const string name, const string extension)
+{
+	draw();
+	
+	ofImage imageTemp;
+	
+	// extraire des données temporelles formatées
+	string timestamp = ofGetTimestampString("-%y%m%d-%H%M%S-%i");
+	
+	// générer un nom de fichier unique et ordonné
+	string fileName = name + timestamp + "." + extension;
+	
+	// capturer le contenu du framebuffer actif
+	imageTemp.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+	
+	// sauvegarder le fichier image
+	imageTemp.save(fileName);
+	
+	ofLog() << "<export image: " << fileName << ">";
+}
+\end{lstlisting}
+
 
 \subsection{Espace de couleur}
-Implémenté
+ L'espace de couleur utilisé par l'application est le HSB. Ainsi, pour chaque couleur à saisir, trois «sliders» sont disposer dans l'interface pour saisir la teinte (Hue), la saturation (Saturation) et la valeur (Brightess).
+ 
+ En soit, à chaque mise à jours de l'application, l'application met à jours les valeurs des attributs de couleur dans la classe renderer. Ainsi, à chaque instant, le renderer a les couleurs entrées par l'utilisateur.
+ 
+ Voici un exemple d'initiation des valeurs pour la couleur de remplissage:
+ \begin{lstlisting}
+ 	fillHue.setName("Teinte");
+ 	fillHue.setMin(0);
+ 	fillHue.setMax(255);
+ 	fillHue.set(0);
+ 
+ 	fillSaturation.setName("Saturation");
+ 	fillSaturation.setMin(0);
+ 	fillSaturation.setMax(255);
+ 	fillSaturation.set(100);
+ 
+ 	fillBrightess.setName("Valeur");
+ 	fillBrightess.setMin(0);
+	fillBrightess.setMax(255);
+	fillBrightess.set(255);
+ 
+ 	fillAlpha.setName("Transparence");
+ 	fillAlpha.setMin(0);
+ 	fillAlpha.setMax(255);
+ 	fillAlpha.set(255);
+ \end{lstlisting} 
+
+Voici la méthode qui génère les couleurs à partir de l'espace HSB:
+\begin{lstlisting}
+	void ofApp::setColors()
+	{
+		stroke = ofColor::fromHsb(strokeHue, strokeSaturation, strokeBrightess, strokeAlpha);
+		fill = ofColor::fromHsb(fillHue, fillSaturation, fillBrightess, fillAlpha);
+		background = ofColor::fromHsb(bgHue, bgSaturation, bgBrightess);
+	}
+\end{lstlisting} 
+
+Voici la méthode qui met à jours les couleurs du renderer (et l'épaisseur de lignes):
+\begin{lstlisting}
+	void ofApp::setRendererParameter() {
+		
+		rend->stroke = stroke;
+		rend->fill = fill;
+		rend->background = background;
+		
+		rend->strokeThickness = strokeThickness;
+	}
+\end{lstlisting}
+
 
 \subsection{Traitement d'image}
 Implémenté
@@ -28,10 +100,159 @@ Implémenté
 Implémenté
 
 \subsection{Outils de dessin}
-Implémenté
+L'outil de dessin a été implémenté en ajoutant des «sliders» dans l'interface afin de pouvoir modifier la couleur de remplissage, la couleur du contour, la couleur d'arrière plan et l'épaisseur des lignes de contour. Ainsi, il possible de modifier en tout temps la couleur d'arrière plan ou bien de modifier la couleur de remplissage, la couleur de contour et l'épaisseur des lignes de contour pour la création de primitive.
+
+En pratique, à chaque mise à jour de l'application, les valeurs des attributs de la classe renderer sont mises à jour. Ainsi, les valeurs de couleurs ou d'épaisseur des lignes sont à jour lors de la création d'une primitive, tout comme la couleur d'arrière plan est à jour lorsque l'arrière plan est redéssiné.  
+
+Voici la méthode qui met à jours les couleurs et l'épaisseur de lignes du renderer:
+\begin{lstlisting}
+	void ofApp::setRendererParameter() {
+		
+		rend->stroke = stroke;
+		rend->fill = fill;
+		rend->background = background;
+		
+		rend->strokeThickness = strokeThickness;
+	}
+\end{lstlisting}
+
+Voici la méthode qui affiche à l'écran le contenu du renderer. La première ligne consiste a déssiner l'arrière plan:
+\begin{lstlisting}
+	void renderer::draw()
+	{
+		ofClear(background);
+		
+		[...]
+	}
+\end{lstlisting}
+
+Voici une des méthodes qui ajoute une primitive à la scène. Les paramètres «fill» et «stroke» utilisé ici sont les attributs de couleurs de remplissage et de contour de la classe renderer:
+\begin{lstlisting}
+	ofParameter<bool> renderer::createSquare(float x, float y, float w, float h) {
+		return createSquare(x,y,w,h,fill, stroke);
+	}
+\end{lstlisting}
 
 \subsection{Interface}
-Implémenté
+L'application est dotée d'une interface utilisateur qui permet de modifier les paramètres d'une primitive à ajouter, ajouter une primitive à la scène, vider la scène, modifier les paramètres de la caméra, appliquer des transformations sur les primitives ou sur la scène, appliquer des effets de traitement d'image, sélectionner des primitives à l'aide d'une liste à cocher, importer un modèle 3D, exporter en image et quitter. 
+
+L'interface a été développé avec «l'addons» ofxGui. Ainsi, nous avons créé des «panels» (ofxPanel) dans lesquels les différents paramètres de l'application ont été ajouté et «l'addons» se chargeait de générer les «sliders» et les cases à cocher associées aux paramètres. Nous avons aussi pu ajouté des boutons (ofxButton).
+
+Comme l'essentiel du code de la classe qui gère l'interface représente plus de 1000 lignes, seulement quelques exemples seront montrés afin d'allégé ce document.
+
+Voici l'initialisation de paramètres:
+\begin{lstlisting}
+void ofApp::initOfParameters() 
+{
+	[...]
+	
+	primPosX.setName("X");
+	primPosX.setMin(MinX);
+	primPosX.setMax(MaxX);
+	primPosX.set((MinX + MaxX) / 2);
+	
+	primPosY.setName("Y");
+	primPosY.setMin(MinY);
+	primPosY.setMax(MaxY);
+	primPosY.set((MinY + MaxY) / 2);
+	
+	primPosZ.setName("Z");
+	primPosZ.setMin(MinZ);
+	primPosZ.setMax(MaxZ);
+	primPosZ.set((MinZ + MaxZ) / 2);
+	
+	[...]
+}
+\end{lstlisting}
+
+Voici l'initialisation de groupes de paramètres (ofParameterGroup):
+\begin{lstlisting}
+void ofApp::initGroups()
+{
+	[...]
+	
+	groupPrimitivePosition2D.setName("Position");
+	groupPrimitivePosition2D.add(primPosX.set(primPosX));
+	groupPrimitivePosition2D.add(primPosY.set(primPosY));
+	
+	groupPrimitivePosition3D.setName("Position");
+	groupPrimitivePosition3D.add(primPosX.set(primPosX));
+	groupPrimitivePosition3D.add(primPosY.set(primPosY));
+	groupPrimitivePosition3D.add(primPosZ.set(primPosZ));
+	
+	[...]
+}
+\end{lstlisting}
+
+Voici la configuration de menu:
+\begin{lstlisting}
+void ofApp::setupMenu2D() {
+
+	menu2D.setDefaultWidth(200);
+	
+	menu2D.setup();
+	
+	menu2D.add(groupPrimitiveType2D);
+	menu2D.add(groupPrimitivePosition2D);
+	menu2D.add(groupPrimitiveSize2D);
+	
+	menu2D.add(groupThick);
+	
+	menu2D.add(groupFill);
+	
+	menu2D.add(groupStroke);
+	
+	menu2D.add(groupTexture);
+	
+	menu2D.minimizeAll();
+	
+	menu2D.registerMouseEvents();
+}
+\end{lstlisting}
+
+Voici la configuration des écouteurs sur les différents boutons de l'application:
+\begin{lstlisting}
+void ofApp::initButtonListener() {
+	btnDrawPrimitive.addListener(this, &ofApp::btnDrawPrimitiveClicked);
+	btnClear.addListener(this, &ofApp::btnClearClicked);
+	btnExit.addListener(this, &ofApp::btnExitClicked);
+	
+	btnExport.addListener(this, &ofApp::btnExportClicked);
+	btnImport.addListener(this, &ofApp::btnImportClicked);
+	
+	btnApplySelect.addListener(this, &ofApp::btnApplySelectClicked);
+
+\end{lstlisting}
+
+Voici la méthode setup de la classe ofApp:
+\begin{lstlisting}
+void ofApp::setup()
+{
+	[...]
+	
+	initOfParameters();
+	initGroups();
+	
+	setupMenu2D();
+	setupMenu3D();
+	setupCameraMenu();
+	setupTransformationMenu();
+	setupOptionMenu();
+	setupSelectionMenu();
+	
+	initButtonListener();
+	
+	[...]
+}
+\end{lstlisting}
+
+Voici une capture d'écran pour montré l'interface:
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=15cm]{fig/InterfaceComplet.png}
+	\caption{Exemple d'interface}
+	\label{fig:interface}
+\end{figure}
 
 \section{Transformation}
 \subsection{Transformation interactive}
