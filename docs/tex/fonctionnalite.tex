@@ -8,7 +8,7 @@
 Non implémenté
 
 \subsection{Exportation}
-L'exportation en image est implémentée grâce à la méthode imageExport de la classe renderer. Tout d’abord, on dessin la scène, sans l’interface graphique. Ensuite, on sauvegarde une capture de l’écran avec le nom, un time stamp, pour que le fichier soit unique, et l’extension reçu en paramètre.
+L'exportation en image est implémentée grâce à la méthode imageExport de la classe renderer. Tout d’abord, on dessin la scène, sans l’interface graphique. Ensuite, on sauvegarde une capture de l’écran avec le nom, un time stamp, pour que le fichier soit unique, et l’extension reçu en paramètre.\\
 
 \begin{lstlisting}
 void renderer::imageExport(const string name, const string extension)
@@ -31,9 +31,9 @@ void renderer::imageExport(const string name, const string extension)
 
 
 \subsection{Espace de couleur}
- L'espace de couleur utilisé par l'application est le HSB. Ainsi, pour chaque couleur à saisir, trois «sliders» sont disposer dans l'interface pour saisir la teinte (Hue), la saturation (Saturation) et la valeur (Brightess).
+ L'espace de couleur utilisé par l'application est le HSB. Ainsi, pour chaque couleur à saisir, trois «sliders» sont disposer dans l'interface pour saisir la teinte (Hue), la saturation (Saturation) et la valeur (Brightess).\\
  
- En soit, à chaque mise à jours de l'application, l'application met à jours les valeurs des attributs de couleur dans la classe renderer. Ainsi, à chaque instant, le renderer a les couleurs entrées par l'utilisateur.
+ En soit, à chaque mise à jours de l'application, l'application met à jours les valeurs des attributs de couleur dans la classe renderer. Ainsi, à chaque instant, le renderer a les couleurs entrées par l'utilisateur.\\
  
  Voici un exemple d'initiation des valeurs pour la couleur de remplissage:
  \begin{lstlisting}
@@ -235,9 +235,9 @@ ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int 
 On aurait bien voulu le faire avec des primitives 2D, mais on s'est dit qu'en 3D ça amenait un peu plus de défi!
 
 \subsection{Outils de dessin}
-L'outil de dessin a été implémenté en ajoutant des «sliders» dans l'interface afin de pouvoir modifier la couleur de remplissage, la couleur du contour, la couleur d'arrière plan et l'épaisseur des lignes de contour. Ainsi, il possible de modifier en tout temps la couleur d'arrière plan ou bien de modifier la couleur de remplissage, la couleur de contour et l'épaisseur des lignes de contour pour la création de primitive.
+L'outil de dessin a été implémenté en ajoutant des «sliders» dans l'interface afin de pouvoir modifier la couleur de remplissage, la couleur du contour, la couleur d'arrière plan et l'épaisseur des lignes de contour. Ainsi, il possible de modifier en tout temps la couleur d'arrière plan ou bien de modifier la couleur de remplissage, la couleur de contour et l'épaisseur des lignes de contour pour la création de primitive.\\
 
-En pratique, à chaque mise à jour de l'application, les valeurs des attributs de la classe renderer sont mises à jour. Ainsi, les valeurs de couleurs ou d'épaisseur des lignes sont à jour lors de la création d'une primitive, tout comme la couleur d'arrière plan est à jour lorsque l'arrière plan est redéssiné.  
+En pratique, à chaque mise à jour de l'application, les valeurs des attributs de la classe renderer sont mises à jour. Ainsi, les valeurs de couleurs ou d'épaisseur des lignes sont à jour lors de la création d'une primitive, tout comme la couleur d'arrière plan est à jour lorsque l'arrière plan est redéssiné. \\ 
 
 Voici la méthode qui met à jours les couleurs et l'épaisseur de lignes du renderer:
 \begin{lstlisting}
@@ -269,11 +269,11 @@ Voici une des méthodes qui ajoute une primitive à la scène. Les paramètres �
 \end{lstlisting}
 
 \subsection{Interface}
-L'application est dotée d'une interface utilisateur qui permet de modifier les paramètres d'une primitive à ajouter, ajouter une primitive à la scène, vider la scène, modifier les paramètres de la caméra, appliquer des transformations sur les primitives ou sur la scène, appliquer des effets de traitement d'image, sélectionner des primitives à l'aide d'une liste à cocher, importer un modèle 3D, exporter en image et quitter. 
+L'application est dotée d'une interface utilisateur qui permet de modifier les paramètres d'une primitive à ajouter, ajouter une primitive à la scène, vider la scène, modifier les paramètres de la caméra, appliquer des transformations sur les primitives ou sur la scène, appliquer des effets de traitement d'image, sélectionner des primitives à l'aide d'une liste à cocher, importer un modèle 3D, exporter en image et quitter. \\
 
-L'interface a été développé avec «l'addons» ofxGui. Ainsi, nous avons créé des «panels» (ofxPanel) dans lesquels les différents paramètres de l'application ont été ajouté et «l'addons» se chargeait de générer les «sliders» et les cases à cocher associées aux paramètres. Nous avons aussi pu ajouté des boutons (ofxButton).
+L'interface a été développé avec «l'addons» ofxGui. Ainsi, nous avons créé des «panels» (ofxPanel) dans lesquels les différents paramètres de l'application ont été ajouté et «l'addons» se chargeait de générer les «sliders» et les cases à cocher associées aux paramètres. Nous avons aussi pu ajouté des boutons (ofxButton).\\
 
-Comme l'essentiel du code de la classe qui gère l'interface représente plus de 1000 lignes, seulement quelques exemples seront montrés afin d'allégé ce document.
+Comme l'essentiel du code de la classe qui gère l'interface représente plus de 1000 lignes, seulement quelques exemples seront montrés afin d'allégé ce document.\\
 
 Voici l'initialisation de paramètres:
 \begin{lstlisting}
