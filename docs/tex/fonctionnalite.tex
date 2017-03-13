@@ -69,6 +69,46 @@ Et le curseur de type "slider", qui est présent quand la souris est au dessus d
 	\label{fig:test}
 \end{figure}
 
+\begin{lstlisting}
+void ofApp::mouseMoved(int x, int y) {
+	HCURSOR curs;
+	if (!cursorIsInControl(x, y))
+	{
+		curs = LoadCursor(NULL, IDC_ARROW);
+		SetCursor(curs);
+	}
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+bool ofxButton::mouseMoved(ofMouseEventArgs & args){
+
+	HCURSOR curs;
+	if (cursorIsInControl(args.x, args.y))
+	{
+		curs = LoadCursor(NULL, IDC_HAND);
+		SetCursor(curs);
+	}
+	return ofxToggle::mouseMoved(args);
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+template<typename Type>
+bool ofxSlider<Type>::mouseMoved(ofMouseEventArgs & args){
+	mouseInside = isGuiDrawing() && b.inside(ofPoint(args.x,args.y));
+	
+	HCURSOR curs;
+	if (mouseInside)
+	{
+		curs = LoadCursor(NULL, IDC_SIZEWE);
+		SetCursor(curs);
+	}
+	
+	return mouseInside;
+}
+\end{lstlisting}
+
 \subsection{Primitives vectorielles}
 
 Dans les types de primitives disponibles, on trouve la catégorie 2D. En sélectionnant cette catégorie, on peut ainsi dessiner des carrés, des cercles (ellipses), des triangles, des lignes et des points. Toutes ces primitives sont affectés par la position, la taille, l’épaisseur de traits, la couleur de remplissage et de bordure ainsi que la texture passée par l’utilisateur.\\
@@ -275,6 +315,58 @@ Les transformation géométriques peuvent être appliquées en même temps à to
 	\label{fig:test}
 \end{figure}
 
+\begin{lstlisting}
+
+void renderer::applySelection(ofMatrix4x4 matrix)
+{
+	for (auto& p : *scn)
+	{
+		if (p.selected.get())
+		{
+			ofMatrix4x4 oldMat = p.getTransfo();
+			p.setTransfo(oldMat * matrix);
+		}
+	}
+	std::list<extModel>::iterator iterator4;
+	for (iterator4 = externalModels.begin(); iterator4 != externalModels.end(); ++iterator4)
+	{
+		if (iterator4->selected.get())
+		{
+			ofMatrix4x4 oldMat = iterator4->getTransfo();
+			iterator4->setTransfo(oldMat * matrix);
+		}
+	}
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+
+void primitive3d::draw(bool wireframe) {
+
+	ofPushMatrix();
+	ofTranslate(transfoMatrix.getTranslation());
+	
+	ofSetColor(fillCol);
+	
+	ofQuaternion rotation = transfoMatrix.getRotate();
+	float rotationAmount;
+	ofVec3f rotationAngle;
+	rotation.getRotate(rotationAmount, rotationAngle);
+	
+	ofRotate(rotationAmount, rotationAngle.x, rotationAngle.y, rotationAngle.z);
+	
+	ofScale(transfoMatrix.getScale());
+	
+	if (wireframe || selected.get())
+	prim->drawWireframe();
+	else
+	prim->drawFaces();
+	
+	ofPopMatrix();
+}
+
+\end{lstlisting}
+
 \subsection{Coordonnées non-cartésiennes}
 Non-implémenté
 
@@ -285,6 +377,8 @@ Non-implémenté
 \section{Géométrie}
 \subsection{Particules}
 Non-implémenté
+
+\newpage
 
 \subsection{Primitives}
 
@@ -300,6 +394,145 @@ On peut aussi choisir une couleur par primitive, dans l'espace de couleur HSB.
 	\caption{Options de création d'une primitive}
 	\label{fig:test}
 \end{figure}
+
+\newpage
+
+\begin{lstlisting}
+void ofApp::btnDrawPrimitiveClicked()
+{
+	ofLog() << "<app::btnDrawPrimitiveClicked>";
+	
+	if (primType2D.get()) {
+		if (primTypeCube.get()) {
+			selectionMenu.add(rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight));
+		}
+		else if (primTypeSphere.get()) {
+			selectionMenu.add(rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight));
+		}
+		else if (primTypeTriangle.get()) {
+			selectionMenu.add(rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight));
+		}
+		else if (primTypeLine.get()) {
+			selectionMenu.add(rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight));
+		}
+		else if (primTypePoint.get()) {
+			selectionMenu.add(rend->createPoint(primPosX, primPosY, strokeThickness));
+		}
+	}
+	else {
+		if (primTypeCube.get()) {
+			selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+		}
+		else if (primTypeSphere.get()) {
+			selectionMenu.add(rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+		}
+		else if (primTypeTriangle.get()) {
+			selectionMenu.add(rend->createCone(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+		}
+		else {
+			selectionMenu.add(rend->createIcecream(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+		}
+	}
+}
+\end{lstlisting}
+
+\newpage
+
+\begin{lstlisting}
+//-------------3D primitives-----------------------
+ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d)
+{
+	return createCube(x, y, z, w, h, d, fill);
+}
+
+ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol)
+{
+	ofBoxPrimitive* box = new ofBoxPrimitive();
+	
+	float smallest = min(w, min(h, d));
+	
+	box->setWidth(smallest);
+	box->setHeight(smallest);
+	box->setDepth(smallest);
+	
+	float newX = (float)w / smallest;
+	float newY = (float)h / smallest;
+	float newZ = (float)d / smallest;
+	
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	matrix.scale(newX, newY, newZ);
+	matrix.setTranslation(x, y, z);
+	
+	for (int i = 0; i < 6; i++)
+	{
+		box->setSideColor(i, fillCol);
+	}
+	
+	primitive3d prim = primitive3d{ box, fillCol, matrix };
+	prim.setName("Cube " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+	
+	//cout << *scn;
+}
+
+ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
+{
+	return createSphere(x, y, z, sizeX, sizeY, sizeZ, fill);
+}
+
+ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
+{
+	ofSpherePrimitive* ball = new ofSpherePrimitive();
+	ball->setPosition(0, 0, 0);
+	
+	float smallest = min(sizeX, min(sizeY, sizeZ));
+	
+	ball->setRadius(smallest/2);
+	
+	float newX = (float)sizeX / smallest;
+	float newY = (float)sizeY / smallest;
+	float newZ = (float)sizeZ / smallest;
+	
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	matrix.scale(newX, newY, newZ);
+	matrix.setTranslation(x, y, z);
+	
+	primitive3d prim = primitive3d{ ball, color, matrix };
+	prim.setName("Sphere " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+}
+
+ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
+{
+	return createCone(x, y, z, sizeX, sizeY, sizeZ, fill);
+}
+
+ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
+{
+	ofConePrimitive* cone = new ofConePrimitive();
+	cone->setPosition(0, 0, 0);
+	
+	float smallest = min(sizeX, sizeZ);
+	cone->setRadius(smallest / 2);
+	cone->setHeight(sizeY);
+	
+	float newX = (float)sizeX / smallest;
+	float newY = 1.0f;
+	float newZ = (float)sizeZ / smallest;
+	
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	matrix.scale(newX, newY, newZ);
+	matrix.setTranslation(x, y, z);
+	
+	primitive3d prim = primitive3d{ cone, color, matrix };
+	prim.setName("Cone " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+	
+}
+\end{lstlisting}
 
 \subsection{Modèle}
 
@@ -322,6 +555,108 @@ Il est possible pour un utilisateur d'importer un modèle choisit sur son ordina
 Si le modèle est dans un répertoire avec ses textures dans le bon chemin relatif, celles-ci seront automatiquement chargées et appliquées. De plus, si l'importation du modèle échoue pour une quelconque raison, un message sera affiché à l'utilisateur pour l'informer.
 
 Un modèle peut être sélectionné comme une primitive, sera affecté par le mode "Wireframe", et sera modifié si on applique une matrice de transformation pendant qu'il est sélectionné.
+
+Une partie du code qui suit vient de MSDN (Microsoft), dont le lien peut-être trouvé dans la section Références. Nous avons modifié le code pour qu'il convienne à nos besoins.
+
+\begin{lstlisting}
+void ofApp::btnImportClicked()
+{
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+	COINIT_DISABLE_OLE1DDE);
+	if (SUCCEEDED(hr))
+	{
+		IFileOpenDialog *pFileOpen;
+		
+		// Create the FileOpenDialog object.
+		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+		IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+		
+		if (SUCCEEDED(hr))
+		{
+			// Show the Open dialog box.
+			hr = pFileOpen->Show(NULL);
+			
+			// Get the file name from the dialog box.
+			if (SUCCEEDED(hr))
+			{
+				IShellItem *pItem;
+				hr = pFileOpen->GetResult(&pItem);
+				if (SUCCEEDED(hr))
+				{
+					LPWSTR pszFilePath;
+					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+					
+					// Display the file name to the user.
+					if (SUCCEEDED(hr))
+					{
+						
+						std::wstring path = wstring(pszFilePath);
+						std::string strPath(path.begin(), path.end());
+						ofParameter<bool> param = rend->importModel(strPath);
+						
+						if (param.get() == false)
+						{
+							selectionMenu.add(param);
+							strPath = "Le modele " + strPath + " a ete importe avec succes!";
+							path = std::wstring(strPath.begin(), strPath.end());
+							LPCWSTR title = (LPCWSTR)path.c_str();
+							MessageBox(NULL, title, L"Succes", MB_OK);
+						}
+						else
+						{
+							strPath = "Le modele n'a pas pu etre importe.";
+							path = std::wstring(strPath.begin(), strPath.end());
+							LPCWSTR title = (LPCWSTR)path.c_str();
+							MessageBox(NULL, title, L"Echec", MB_OK);
+						}
+						
+						CoTaskMemFree(pszFilePath);
+					}
+					pItem->Release();
+				}
+			}
+			pFileOpen->Release();
+		}
+		CoUninitialize();
+	}
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+ofParameter<bool> renderer::importModel(string path) {
+	ofxAssimpModelLoader* model = new ofxAssimpModelLoader();
+	bool ret = model->loadModel(path, false);
+	if (ret)
+	{
+		model->enableTextures();
+		ofTexture tex = ofTexture();
+		extModel mod = extModel(model);
+		
+		string fName(path);
+		size_t pos = fName.rfind(".");
+		if (pos != string::npos)
+		{
+			if (pos != 0)
+			{
+				fName = fName.substr(0, pos);
+			}
+		}
+		pos = fName.rfind("\\");
+		if (pos != string::npos)
+		{
+			if (pos != 0)
+			{
+				fName = fName.substr(pos + 1);
+			}
+		}
+		
+		mod.setName(fName + " " + to_string(externalModels.size() + 1));
+		scn->addElement(mod);
+		return mod.selected;
+	}
+	return ofParameter<bool>(true);
+}
+\end{lstlisting}
 
 \subsection{Texture}
 Implémenté
