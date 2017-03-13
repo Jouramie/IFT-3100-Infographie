@@ -17,16 +17,12 @@ void renderer::imageExport(const string name, const string extension)
 	
 	ofImage imageTemp;
 	
-	// extraire des données temporelles formatées
 	string timestamp = ofGetTimestampString("-%y%m%d-%H%M%S-%i");
 	
-	// générer un nom de fichier unique et ordonné
 	string fileName = name + timestamp + "." + extension;
 	
-	// capturer le contenu du framebuffer actif
 	imageTemp.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
 	
-	// sauvegarder le fichier image
 	imageTemp.save(fileName);
 	
 	ofLog() << "<export image: " << fileName << ">";
