@@ -176,7 +176,6 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\ccamera.cpp" />
-    <ClCompile Include="src\ofxCheckBox.cpp" />
     <ClCompile Include="src\primitive.cpp" />
     <ClCompile Include="src\primitive2d.cpp" />
     <ClCompile Include="src\primitive3d.cpp" />
@@ -213,7 +212,6 @@
     <ClInclude Include="src\forme3d.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\ccamera.h" />
-    <ClInclude Include="src\ofxCheckBox.h" />
     <ClInclude Include="src\primitive.h" />
     <ClInclude Include="src\primitive2d.h" />
     <ClInclude Include="src\primitive3d.h" />

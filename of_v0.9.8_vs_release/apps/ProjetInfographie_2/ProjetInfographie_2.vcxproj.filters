@@ -112,9 +112,6 @@
     <ClCompile Include="src\forme3d.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\ofxCheckBox.cpp">
-      <Filter>addons\ofxGui\src</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -949,9 +946,6 @@
     </ClInclude>
     <ClInclude Include="src\forme3d.h">
       <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ofxCheckBox.h">
-      <Filter>addons\ofxGui\src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
