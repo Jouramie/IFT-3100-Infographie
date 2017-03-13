@@ -4,8 +4,9 @@
 #include "ofxRay.h"
 #include <algorithm>
 #include "ofxAssimpModelLoader.h"
+#include "primitive.h"
 
-class extModel
+class extModel : public primitive
 {
 public:
 
@@ -13,26 +14,13 @@ public:
 	extModel(ofxAssimpModelLoader* mod);
 	extModel(ofxAssimpModelLoader* mod, ofMatrix4x4 transfoMatrix);
 	ofxAssimpModelLoader* getModel();
-	void draw(bool wireframe = false);
-	void changeSelected();
-	bool getSelected();
-	void setSelected(bool val);
-
-	string getName() { return name; }
-	void setName(string n) { name = n; selected.setName(n); }
-
-	ofMatrix4x4 getTransfo() { return transfo; }
-	void setTransfo(ofMatrix4x4 matrix) { this->transfo = matrix; }
+	void draw(bool wireframe = false) override;
 
 	bool calcTriangleIntersection(ofRay ray, float *result) const;
 	bool inside(ofVec3f p, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) const;
 	bool checkIntersectionPlaneAndLine(ofRay ray, float *result) const;
 	bool checkIntersectionTriangleRay(ofRay ray, ofPoint* inter);
-	ofParameter<bool> selected;
 
 private:
-
 	ofxAssimpModelLoader* model;
-	ofMatrix4x4 transfo;
-	string name;
 };

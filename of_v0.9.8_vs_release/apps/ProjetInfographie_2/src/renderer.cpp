@@ -452,10 +452,9 @@ ofParameter<bool> renderer::importModel(string path) {
 		}
 
 		mod.setName(fName + " " + to_string(externalModels.size() + 1));
-		externalModels.push_back(mod);
+		scn->addElement(mod);
 		return mod.selected;
 	}
-	draw();
 	return ofParameter<bool>(true);
 }
 
@@ -524,7 +523,8 @@ void renderer::addBlur() {
 
 void renderer::removeBlur() {
 	blur = false;
-	isFiltered = false;
+	if (!invert && !dilate) 
+		isFiltered = false;
 }
 
 void renderer::addInvert() {
@@ -534,7 +534,8 @@ void renderer::addInvert() {
 
 void renderer::removeInvert() {
 	invert = false;
-	isFiltered = false;
+	if (!blur && !dilate)
+		isFiltered = false;
 }
 
 void renderer::addDilate() {
@@ -544,7 +545,8 @@ void renderer::addDilate() {
 
 void renderer::removeDilate() {
 	dilate = false;
-	isFiltered = false;
+	if (!blur && !invert)
+		isFiltered = false;
 }
 
 renderer::~renderer()

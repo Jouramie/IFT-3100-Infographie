@@ -1,56 +1,29 @@
 #include "extModel.h"
 
-extModel::extModel()
-{
-	model = nullptr;
-	transfo = ofMatrix4x4();
-	selected = ofParameter<bool>(false);
-}
+extModel::extModel() : extModel{ nullptr } { }
 
-extModel::extModel(ofxAssimpModelLoader* mod)
-{
-	model = mod;
-	transfo = ofMatrix4x4();
-	selected = ofParameter<bool>(false);
-}
+extModel::extModel(ofxAssimpModelLoader* mod) : extModel{ mod, ofMatrix4x4() } { }
 
-extModel::extModel(ofxAssimpModelLoader* mod, ofMatrix4x4 transfo)
-{
-	model = mod;
-	transfo = transfo;
-	selected = ofParameter<bool>(false);
-}
+extModel::extModel(ofxAssimpModelLoader* mod, ofMatrix4x4 transfo) : primitive{ transfo }, model{ mod } { }
 
 ofxAssimpModelLoader* extModel::getModel() {
 	return model;
-}
-
-bool extModel::getSelected() {
-	return selected;
-}
-
-void extModel::changeSelected() {
-	selected = !selected;
-}
-
-void extModel::setSelected(bool val) {
-	selected = val;
 }
 
 void extModel::draw(bool wireframe) {
 
 	ofPushMatrix();
 
-	ofTranslate(transfo.getTranslation());
+	ofTranslate(transfoMatrix.getTranslation());
 
-	ofQuaternion rotation = transfo.getRotate();
+	ofQuaternion rotation = transfoMatrix.getRotate();
 	float rotationAmount;
 	ofVec3f rotationAngle;
 	rotation.getRotate(rotationAmount, rotationAngle);
 
 	ofRotate(rotationAmount, rotationAngle.x, rotationAngle.y, rotationAngle.z);
 
-	ofScale(transfo.getScale());
+	ofScale(transfoMatrix.getScale());
 
 	if (wireframe || selected.get())
 		model->drawWireframe();
