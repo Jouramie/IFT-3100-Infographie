@@ -12,7 +12,18 @@ Implémenté
 Implémenté
 
 \subsection{Traitement d'image}
-Implémenté
+Une catégorie situé au coin droit de l’écran permet l’utilisation de plusieurs filtres s’affichant sur l’entièreté de la scène. Elle regroupe trois type de filtres: le brouillage (Blur), l’inversement des couleurs et la dilatation. Les trois filtres peuvent être appliqués tous en même temps ou un à la fois.\\
+
+Un objet ofxCvColorImage est utilisé pour la réalisation des filtres. On capture les pixels de la scène et on l’ajoute dans cet objet, pour ensuite lui faire subir les filtres sélectionnés par l’utilisateur. Les fonctions blur(), invert() et dilate() on été utilisées pour construire le filtre. Ces fonctions utilisent différentes opérations sur chaque pixel de l’image pour les modifier.\\
+
+Voici une image d’une scène avec des filtres d’inversement de couleurs et de brouillage:\\
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=5cm]{fig/filters.png}
+	\caption{Une scène avec filtres.}
+	\label{fig:filtres}
+\end{figure}
+
 
 \subsection{Image procédurale}
 Non implémenté
@@ -43,7 +54,17 @@ Implémenté
 \pagebreak
 \section{Transformation}
 \subsection{Transformation interactive}
-Implémenté
+Une catégorie à droite de l’application permet de transformer le systèmes de coordonnées des entités géométriques de la scène. On peut exercer des transformations tel que la translation en X, Y et Z, la rotation en X, Y et Z ainsi que la proportion en X, Y et Z. Elle peut se faire autant en temps réel qu’en différé. \\
+
+Les matrices de transformation d’openframeworks sont utilisés pour la réalisation des transformations. On utilise les méthodes ofPushMatrix() et ofPopMatrix(). Une fois la matrice empilé, on ajoute les transformation à l’aide des méthodes ofTranslate(), ofRotate() et ofScale() selon les paramètres inscrit par l’utilisateur. Enfin, on dépile la matrice pour permettre la transformation.\\
+
+Voici le menu des transformations et ces différentes options:\\
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=5cm]{fig/transformations.png}
+	\caption{Menu des transformations.}
+	\label{fig:transformations}
+\end{figure}
 
 \subsection{Structure de scène}
 La structure de scène a été implémenté sous la forme d'un arbre ordoné, dans lequel les feuilles sont les éléments de la scène. La classe scène comprend 4 classes interne, soit element, group, node et scene\_iterator. Les classes group et node héritent d'element et  servent à stocker tout ce qui se trouve dans la scène. La classe scene\_iterator permet, quant-à elle, de parcourir les éléments pour les dessiner. 
@@ -178,7 +199,19 @@ Non-implémenté
 Non-implémenté
 
 \subsection{Primitives}
-Implémenté
+
+\large{Primitives 2D:}\\
+Dans les types de primitives disponibles, on trouve la catégorie 2D. En sélectionnant cette catégorie, on peut ainsi dessiner des carrés, des cercles (ellipses), des triangles, des lignes et des points. Toutes ces primitives sont affectés par la position, la taille, l’épaisseur de traits, la couleur de remplissage et de bordure ainsi que la texture passé par l’utilisateur.\\
+
+Des objets ofPath sont utilisés pour toute les types de primitives 2d créer. Afin d’avoir une meilleure intégration à la scène, une casse générique de primitives 2d a été créer. Pour les différents types, différentes méthodes ont été conçu pour créer les primitives. Ces méthodes utilisent les méthodes ellipse(), circle(), rect(), triangle() et line(). Elles appliquent chaque propriétés spécifiés par l’utilisateur. Après chaque ajout, on ajoute ensuite les primitives dans la scène.\\
+
+Voici à quoi ressemble les différentes primitives 2D:\\
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=5cm]{fig/primitives2d.png}
+	\caption{Une scène avec primitives 2d.}
+	\label{fig:prim2d}
+\end{figure}
 
 \subsection{Modèle}
 Implémenté
