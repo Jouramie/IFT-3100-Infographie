@@ -42,6 +42,18 @@ void renderer::update()
 	lastTime = time;
 
 	cam->update(dt);
+
+	ofVec3f sum = ofVec3f();
+	int count = 0;
+	for (auto& p : *scn)
+	{
+		if (p.getSelected()) {
+			sum += p.getGlobalPosition();
+			count++;
+		}
+	}
+	sum /= count;
+	cam->setTarget(sum);
 }
 
 
@@ -77,12 +89,6 @@ void renderer::draw()
 	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
 	{
 		iterator2->draw();
-	}
-
-	std::list<extModel>::iterator iterator4;
-	for (iterator4 = externalModels.begin(); iterator4 != externalModels.end(); ++iterator4)
-	{
-		iterator4->draw(wireFrame);
 	}
 
 	ofDisableDepthTest();
@@ -146,7 +152,6 @@ void renderer::sceneTranslate(float x, float y, float z) {
 
 void renderer::sceneRotate(float angle, float cX, float cY, float cZ) {
 	rotate = true;
-	theta = angle;
 	centerX = cX;
 	centerY = cY;
 	centerZ = cZ;
@@ -168,15 +173,6 @@ void renderer::applySelection(ofMatrix4x4 matrix)
 		{
 			ofMatrix4x4 oldMat = p.getTransfo();
 			p.setTransfo(oldMat * matrix);
-		}
-	}
-	std::list<extModel>::iterator iterator4;
-	for (iterator4 = externalModels.begin(); iterator4 != externalModels.end(); ++iterator4)
-	{
-		if (iterator4->selected.get())
-		{
-			ofMatrix4x4 oldMat = iterator4->getTransfo();
-			iterator4->setTransfo(oldMat * matrix);
 		}
 	}
 }
@@ -413,7 +409,6 @@ ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int 
 	float newZ = (float)sizeZ / smallestSphere;
 
 	ofMatrix4x4 matrix = ofMatrix4x4();
-	//Corriger le scale
 	matrix.scale(newX, newY, newZ);
 	matrix.setTranslation(x, y, z);
 
@@ -451,7 +446,7 @@ ofParameter<bool> renderer::importModel(string path) {
 			}
 		}
 
-		mod.setName(fName + " " + to_string(externalModels.size() + 1));
+		mod.setName(fName + " " + to_string(scn->nbElements() + 1));
 		scn->addElement(mod);
 		return mod.selected;
 	}
@@ -461,7 +456,6 @@ ofParameter<bool> renderer::importModel(string path) {
 void renderer::clearPrimitives()
 {
 	scn->clearElements();
-	externalModels.clear();
 }
 
 void renderer::changeWireFrameMode()

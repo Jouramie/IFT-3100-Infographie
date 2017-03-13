@@ -32,6 +32,8 @@ public:
 	void removeElement(size_t index);
 	void clearElements();
 
+	size_t getSize() const { return root->getSize(); }
+
 	scene_iterator begin();
 	scene_iterator end();
 

@@ -16,9 +16,6 @@
     <ClCompile Include="src\ofApp.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\ofxCheckBox.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\primitive.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -114,6 +111,9 @@
     </ClCompile>
     <ClCompile Include="src\forme3d.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ofxCheckBox.cpp">
+      <Filter>addons\ofxGui\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -252,9 +252,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\ofApp.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ofxCheckBox.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\primitive.h">
@@ -952,6 +949,9 @@
     </ClInclude>
     <ClInclude Include="src\forme3d.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ofxCheckBox.h">
+      <Filter>addons\ofxGui\src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

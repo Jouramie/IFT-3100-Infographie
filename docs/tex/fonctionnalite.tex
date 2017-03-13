@@ -124,6 +124,38 @@ Voici à quoi ressemble les différentes primitives 2D:\\
 \end{figure}
 
 \subsection{Formes vectorielles}
+La forme qui a été implémenté est un cornet de crème glacé, formé d'un cône et d'une sphère. Le code se trouve dans «renderer::createIceCream()» 
+
+\begin{lstlisting}
+ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color) {
+	ofSpherePrimitive* ball = new ofSpherePrimitive();
+	ball->setPosition(x, y + sizeY / 3, z);
+	
+	ofConePrimitive* cone = new ofConePrimitive();
+	cone->setPosition(x, y - sizeY / 3, z);
+	
+	float smallestSphere = min(sizeX, min(sizeY, sizeZ));
+	ball->setRadius(smallestSphere / 2);
+	
+	float smallestCone = min(sizeX, sizeZ);
+	cone->setRadius(smallestCone / 2);
+	cone->setHeight(sizeY);
+	
+	float newX = (float)sizeX / smallestSphere;
+	float newY = (float)sizeY / smallestSphere;
+	float newZ = (float)sizeZ / smallestSphere;
+	
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	matrix.scale(newX, newY, newZ);
+	matrix.setTranslation(x, y, z);
+	
+	forme3d forme{ ball, color, matrix };
+	forme.addPrimitive(cone);
+	forme.setName("IceCream " + to_string(scn->nbElements() + 1));
+	scn->addElement(forme);
+	return forme.selected;
+}
+\end{lstlisting}
 
 \begin{figure}[h]
 	\centering
@@ -131,6 +163,8 @@ Voici à quoi ressemble les différentes primitives 2D:\\
 	\caption{Cornet de crème glacé!}
 	\label{fig:iceCream}
 \end{figure}
+
+On aurait bien voulu le faire avec des primitives 2D, mais on s'est dit qu'en 3D ça amenait un peu plus de défi!
 
 \subsection{Outils de dessin}
 Implémenté

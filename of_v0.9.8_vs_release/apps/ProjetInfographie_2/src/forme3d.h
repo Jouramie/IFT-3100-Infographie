@@ -15,6 +15,8 @@ public:
 	ofColor getFillColor() { return fillCol; }
 	void draw(bool wireframe) override;
 
+protected:
+	const ofVec3f getLocalPosition() const override;
 private:
 	std::vector<of3dPrimitive*> prims;
 	ofColor fillCol;

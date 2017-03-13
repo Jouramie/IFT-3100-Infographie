@@ -67,7 +67,6 @@ public:
 	float getDeltaZ() { return deltaZ; }
 
 	//Rotation;
-	float getTheta() { return theta; }
 	float getCenterX() { return centerX; }
 	float getCenterY() { return centerY; }
 	float getCenterZ() { return centerZ; }
@@ -101,7 +100,7 @@ private:
 	//Translations
 	float deltaX, deltaY, deltaZ; 
 	//Rotation;
-	float theta, centerX, centerY, centerZ;
+	float centerX, centerY, centerZ;
 	//Scale
 	float scaleX, scaleY, scaleZ;
 
@@ -115,7 +114,6 @@ private:
 	ccamera * cam;
 
 	std::list<ofRay> rays;
-	std::list<extModel> externalModels;
 
 	ofxCvColorImage filter;
 	ofImage sceneImg;
