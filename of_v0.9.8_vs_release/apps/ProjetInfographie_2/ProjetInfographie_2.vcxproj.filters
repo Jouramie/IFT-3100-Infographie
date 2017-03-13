@@ -16,9 +16,6 @@
     <ClCompile Include="src\ofApp.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\ofxCheckBox.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\primitive.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -252,9 +249,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\ofApp.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ofxCheckBox.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\primitive.h">

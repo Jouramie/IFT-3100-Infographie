@@ -47,3 +47,12 @@ void forme3d::draw(bool wireframe) {
 
 	ofPopMatrix();
 }
+
+const ofVec3f forme3d::getLocalPosition() const
+{
+	ofVec3f sum = ofVec3f();
+	for (auto& i : prims) {
+		sum += i->getPosition();
+	}
+	return sum / prims.size();
+}

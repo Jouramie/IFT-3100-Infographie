@@ -42,6 +42,18 @@ void renderer::update()
 	lastTime = time;
 
 	cam->update(dt);
+
+	ofVec3f sum = ofVec3f();
+	int count = 0;
+	for (auto& p : *scn)
+	{
+		if (p.getSelected()) {
+			sum += p.getGlobalPosition();
+			count++;
+		}
+	}
+	sum /= count;
+	cam->setTarget(sum);
 }
 
 
@@ -77,12 +89,6 @@ void renderer::draw()
 	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
 	{
 		iterator2->draw();
-	}
-
-	std::list<extModel>::iterator iterator4;
-	for (iterator4 = externalModels.begin(); iterator4 != externalModels.end(); ++iterator4)
-	{
-		iterator4->draw(wireFrame);
 	}
 
 	ofDisableDepthTest();
@@ -146,7 +152,6 @@ void renderer::sceneTranslate(float x, float y, float z) {
 
 void renderer::sceneRotate(float angle, float cX, float cY, float cZ) {
 	rotate = true;
-	theta = angle;
 	centerX = cX;
 	centerY = cY;
 	centerZ = cZ;
@@ -168,15 +173,6 @@ void renderer::applySelection(ofMatrix4x4 matrix)
 		{
 			ofMatrix4x4 oldMat = p.getTransfo();
 			p.setTransfo(oldMat * matrix);
-		}
-	}
-	std::list<extModel>::iterator iterator4;
-	for (iterator4 = externalModels.begin(); iterator4 != externalModels.end(); ++iterator4)
-	{
-		if (iterator4->selected.get())
-		{
-			ofMatrix4x4 oldMat = iterator4->getTransfo();
-			iterator4->setTransfo(oldMat * matrix);
 		}
 	}
 }
@@ -413,7 +409,6 @@ ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int 
 	float newZ = (float)sizeZ / smallestSphere;
 
 	ofMatrix4x4 matrix = ofMatrix4x4();
-	//Corriger le scale
 	matrix.scale(newX, newY, newZ);
 	matrix.setTranslation(x, y, z);
 
@@ -451,18 +446,16 @@ ofParameter<bool> renderer::importModel(string path) {
 			}
 		}
 
-		mod.setName(fName + " " + to_string(externalModels.size() + 1));
-		externalModels.push_back(mod);
+		mod.setName(fName + " " + to_string(scn->nbElements() + 1));
+		scn->addElement(mod);
 		return mod.selected;
 	}
-	draw();
 	return ofParameter<bool>(true);
 }
 
 void renderer::clearPrimitives()
 {
 	scn->clearElements();
-	externalModels.clear();
 }
 
 void renderer::changeWireFrameMode()
@@ -489,32 +482,32 @@ void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 	// Pour dessiner le rayon (à des fins de débogage)
 	// rays.push_back(ray);
 
-	for (primitive& p : *scn)
-	{
-		if (!shiftHeld)
-		{
-			p.setSelected(false);
-		}
+	//for (primitive& p : *scn)
+	//{
+	//	if (!shiftHeld)
+	//	{
+	//		p.setSelected(false);
+	//	}
 
-		float* distance = new float(0);
+	//	float* distance = new float(0);
 
-		bool found = p.checkIntersectionPlaneAndLine(ray, distance);
-		if (found)// && *distance >= 0 && *distance < distanceClosest)
-		{
-			intersectPrim = &p;
-			//distanceClosest = *distance;
-		}
-	}
+	//	bool found = p.checkIntersectionPlaneAndLine(ray, distance);
+	//	if (found)// && *distance >= 0 && *distance < distanceClosest)
+	//	{
+	//		intersectPrim = &p;
+	//		//distanceClosest = *distance;
+	//	}
+	//}
 
-	if (distanceClosest < (std::numeric_limits<int>::max() - 1))
-	{
-		intersectPrim->setSelected(!intersectPrim->getSelected());
-		std::cout << "Selected Primitive" << std::endl;
-	}
-	else
-	{
-		std::cout << "Selected Nothing" << std::endl;
-	}
+	//if (distanceClosest < (std::numeric_limits<int>::max() - 1))
+	//{
+	//	intersectPrim->setSelected(!intersectPrim->getSelected());
+	//	std::cout << "Selected Primitive" << std::endl;
+	//}
+	//else
+	//{
+	//	std::cout << "Selected Nothing" << std::endl;
+	//}
 }
 
 void renderer::addBlur() {
@@ -524,7 +517,8 @@ void renderer::addBlur() {
 
 void renderer::removeBlur() {
 	blur = false;
-	isFiltered = false;
+	if (!invert && !dilate) 
+		isFiltered = false;
 }
 
 void renderer::addInvert() {
@@ -534,7 +528,8 @@ void renderer::addInvert() {
 
 void renderer::removeInvert() {
 	invert = false;
-	isFiltered = false;
+	if (!blur && !dilate)
+		isFiltered = false;
 }
 
 void renderer::addDilate() {
@@ -544,7 +539,8 @@ void renderer::addDilate() {
 
 void renderer::removeDilate() {
 	dilate = false;
-	isFiltered = false;
+	if (!blur && !invert)
+		isFiltered = false;
 }
 
 renderer::~renderer()
