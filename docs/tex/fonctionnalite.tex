@@ -8,7 +8,7 @@
 Non implémenté
 
 \subsection{Exportation}
-L'exportation en image est implémentée grâce à la méthode imageExport de la classe renderer. Tout d’abord, on dessin la scène, sans l’interface graphique. Ensuite, on sauvegarde une capture de l’écran avec le nom, un time stamp, pour que le fichier soit unique, et l’extension reçu en paramètre.\\
+L'exportation en image est implémentée grâce à la méthode imageExport de la classe renderer. Tout d’abord, on dessine la scène, sans l’interface graphique. Ensuite, on sauvegarde une capture de l’écran avec le nom, un «time stamp», pour que le fichier soit unique, et l’extension reçue en paramètre.\\
 
 \begin{lstlisting}
 void renderer::imageExport(const string name, const string extension)
@@ -31,9 +31,9 @@ void renderer::imageExport(const string name, const string extension)
 
 
 \subsection{Espace de couleur}
- L'espace de couleur utilisé par l'application est le HSB. Ainsi, pour chaque couleur à saisir, trois «sliders» sont disposer dans l'interface pour saisir la teinte (Hue), la saturation (Saturation) et la valeur (Brightess).\\
+ L'espace de couleur utilisé par l'application est le HSB. Ainsi, pour chaque couleur à saisir, trois «sliders» sont disposés dans l'interface pour saisir la teinte (Hue), la saturation (Saturation) et la valeur (Brightess).\\
  
- En soit, à chaque mise à jours de l'application, l'application met à jours les valeurs des attributs de couleur dans la classe renderer. Ainsi, à chaque instant, le renderer a les couleurs entrées par l'utilisateur.\\
+ En soi, à chaque mise à jour de l'application, l'application met à jour les valeurs des attributs de couleur dans la classe renderer. Ainsi, à chaque instant, le renderer a les couleurs entrées par l'utilisateur.\\
  
  Voici un exemple d'initiation des valeurs pour la couleur de remplissage:
  \begin{lstlisting}
@@ -68,7 +68,7 @@ Voici la méthode qui génère les couleurs à partir de l'espace HSB:
 	}
 \end{lstlisting} 
 
-Voici la méthode qui met à jours les couleurs du renderer (et l'épaisseur de lignes):
+Voici la méthode qui met à jour les couleurs du renderer (et l'épaisseur de lignes):
 \begin{lstlisting}
 	void ofApp::setRendererParameter() {
 		
@@ -82,9 +82,9 @@ Voici la méthode qui met à jours les couleurs du renderer (et l'épaisseur de 
 
 
 \subsection{Traitement d'image}
-Une catégorie situé au coin droit de l’écran permet l’utilisation de plusieurs filtres s’affichant sur l’entièreté de la scène. Elle regroupe trois type de filtres: le brouillage (Blur), l’inversement des couleurs et la dilatation. Les trois filtres peuvent être appliqués tous en même temps ou un à la fois.\\
+Une catégorie située au coin droit de l’écran permet l’utilisation de plusieurs filtres s’affichant sur l’entièreté de la scène. Elle regroupe trois types de filtres: le brouillage, l’inversion des couleurs et la dilatation. Les trois filtres peuvent être appliqués tous en même temps ou un à la fois.\\
 
-Un objet ofxCvColorImage est utilisé pour la réalisation des filtres. On capture les pixels de la scène et on l’ajoute dans cet objet, pour ensuite lui faire subir les filtres sélectionnés par l’utilisateur. Les fonctions blur(), invert() et dilate() on été utilisées pour construire le filtre. Ces fonctions utilisent différentes opérations sur chaque pixel de l’image pour les modifier.\\
+Un objet ofxCvColorImage est utilisé pour la réalisation des filtres. On capture les pixels de la scène et on l’ajoute dans cet objet, pour ensuite lui faire subir les filtres sélectionnés par l’utilisateur. Les fonctions blur(), invert() et dilate() ont été utilisées pour construire le filtre. Ces fonctions utilisent différentes opérations sur chaque pixel de l’image pour les modifier.\\
 
 Voici une image d’une scène avec des filtres d’inversement de couleurs et de brouillage:\\
 \begin{figure}[h]
@@ -106,7 +106,7 @@ Non implémenté
 
 Dans notre application il y a une interface graphique créée avec ofxGui. Cette technologie, malgré le fait qu'elle soit très pratique pour nos besoins, contient des boutons, des cases à cocher, des "sliders", des groupes, mais le curseur était toujours identique (en forme de flèche), ce qui ne rendait pas évident avec quoi on peut ou ne peut pas interagir.
 
-Nous avons donc ajouté, en utilisant les événements mouseMoved() de notre fenêtre et des différents contrôles, une modification dynamique du curseur selon au dessus de quoi il se trouve.
+Nous avons donc ajouté, en utilisant les événements mouseMoved() de notre fenêtre et des différents contrôles, une modification dynamique du curseur selon au-dessus de quoi il se trouve.
 
 Au a donc trois curseurs différents.
 
@@ -116,25 +116,25 @@ Le curseur normal, qui est présent quand la souris est dans l'espace de dessin
 	\centering
 	\includegraphics[width=5cm]{fig/curseurNormal.png}
 	\caption{Curseur normal de type "flèche"}
-	\label{fig:test}
+	\label{fig:curseurNormal}
 \end{figure}
 
-Le curseur de type "main", qui est présent quand la souris est au dessus d'un bouton ou d'une case à cocher
+Le curseur de type "main", qui est présent quand la souris est au-dessus d'un bouton ou d'une case à cocher
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=5cm]{fig/curseurBouton.png}
 	\caption{Curseur pour bouton de type "main"}
-	\label{fig:test}
+	\label{fig:curseurBouton}
 \end{figure}
 
-Et le curseur de type "slider", qui est présent quand la souris est au dessus d'un contrôle du même nom.
+Et le curseur de type "slider", qui est présent quand la souris est au-dessus d'un contrôle du même nom.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=5cm]{fig/curseurSlider.png}
 	\caption{Curseur slider de type "slider"}
-	\label{fig:test}
+	\label{fig:curseurSlider}
 \end{figure}
 
 \begin{lstlisting}
@@ -179,20 +179,20 @@ bool ofxSlider<Type>::mouseMoved(ofMouseEventArgs & args){
 
 \subsection{Primitives vectorielles}
 
-Dans les types de primitives disponibles, on trouve la catégorie 2D. En sélectionnant cette catégorie, on peut ainsi dessiner des carrés, des cercles (ellipses), des triangles, des lignes et des points. Toutes ces primitives sont affectés par la position, la taille, l’épaisseur de traits, la couleur de remplissage et de bordure ainsi que la texture passée par l’utilisateur.\\
+Dans les types de primitives disponibles, on trouve la catégorie 2D. En sélectionnant cette catégorie, on peut ainsi dessiner des carrés, des cercles (ellipses), des triangles, des lignes et des points. Toutes ces primitives sont affectées par la position, la taille, l’épaisseur de traits, la couleur de remplissage et de bordure ainsi que la texture passée par l’utilisateur.\\
 
-Des objets ofPath sont utilisés pour tous les types de primitives 2d créés. Afin d’avoir une meilleure intégration à la scène, une casse générique de primitives 2d a été créer. Pour les différents types, différentes méthodes ont été conçues pour créer les primitives. Ces méthodes utilisent les méthodes ellipse(), circle(), rect(), triangle() et line(). Elles appliquent chaque propriété spécifiée par l’utilisateur. Après chaque ajout, on ajoute ensuite les primitives dans la scène.\\
+Des objets ofPath sont utilisés pour tous les types de primitives 2D créés. Afin d’avoir une meilleure intégration à la scène, une casse générique de primitives 2D a été créée. Pour les différents types, différentes méthodes ont été conçues pour créer les primitives. Ces méthodes utilisent les méthodes ellipse(), circle(), rect(), triangle() et line(). Elles appliquent chaque propriété spécifiée par l’utilisateur. Après chaque ajout, on ajoute ensuite les primitives dans la scène.\\
 
-Voici à quoi ressemble les différentes primitives 2D:\\
+Voici à quoi ressemblent les différentes primitives 2D:\\
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=5cm]{fig/primitives2d.png}
-	\caption{Une scène avec primitives 2d.}
-	\label{fig:prim2d}
+	\caption{Une scène avec primitives 2D.}
+	\label{fig:prim2D}
 \end{figure}
 
 \subsection{Formes vectorielles}
-La forme qui a été implémenté est un cornet de crème glacé, formé d'un cône et d'une sphère. Le code se trouve dans «renderer::createIceCream()» 
+La forme qui a été implémentée est un cornet de crème glacée, formé d'un cône et d'une sphère. Le code se trouve dans «renderer::createIceCream()» 
 
 \begin{lstlisting}
 ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color) {
@@ -228,18 +228,18 @@ ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=5cm]{fig/iceCream.png}
-	\caption{Cornet de crème glacé!}
+	\caption{Cornet de crème glacée!}
 	\label{fig:iceCream}
 \end{figure}
 
 On aurait bien voulu le faire avec des primitives 2D, mais on s'est dit qu'en 3D ça amenait un peu plus de défi!
 
 \subsection{Outils de dessin}
-L'outil de dessin a été implémenté en ajoutant des «sliders» dans l'interface afin de pouvoir modifier la couleur de remplissage, la couleur du contour, la couleur d'arrière plan et l'épaisseur des lignes de contour. Ainsi, il possible de modifier en tout temps la couleur d'arrière plan ou bien de modifier la couleur de remplissage, la couleur de contour et l'épaisseur des lignes de contour pour la création de primitive.\\
+L'outil de dessin a été implémenté en ajoutant des «sliders» dans l'interface afin de pouvoir modifier la couleur de remplissage, la couleur du contour, la couleur d'arrière-plan et l'épaisseur des lignes de contour. Ainsi, il possible de modifier en tout temps la couleur d'arrière-plan ou bien de modifier la couleur de remplissage, la couleur de contour et l'épaisseur des lignes de contour pour la création de primitive.\\
 
-En pratique, à chaque mise à jour de l'application, les valeurs des attributs de la classe renderer sont mises à jour. Ainsi, les valeurs de couleurs ou d'épaisseur des lignes sont à jour lors de la création d'une primitive, tout comme la couleur d'arrière plan est à jour lorsque l'arrière plan est redéssiné. \\ 
+En pratique, à chaque mise à jour de l'application, les valeurs des attributs de la classe renderer sont mises à jour. Ainsi, les valeurs de couleurs ou d'épaisseur des lignes sont à jour lors de la création d'une primitive, tout comme la couleur d'arrière-plan est à jour lorsque l'arrière-plan est redessiné. \\ 
 
-Voici la méthode qui met à jours les couleurs et l'épaisseur de lignes du renderer:
+Voici la méthode qui met à jour les couleurs et l'épaisseur de lignes du renderer:
 \begin{lstlisting}
 	void ofApp::setRendererParameter() {
 		
@@ -251,7 +251,7 @@ Voici la méthode qui met à jours les couleurs et l'épaisseur de lignes du ren
 	}
 \end{lstlisting}
 
-Voici la méthode qui affiche à l'écran le contenu du renderer. La première ligne consiste a déssiner l'arrière plan:
+Voici la méthode qui affiche à l'écran le contenu du renderer. La première ligne consiste à dessiner l'arrière-plan:
 \begin{lstlisting}
 	void renderer::draw()
 	{
@@ -261,7 +261,7 @@ Voici la méthode qui affiche à l'écran le contenu du renderer. La première l
 	}
 \end{lstlisting}
 
-Voici une des méthodes qui ajoute une primitive à la scène. Les paramètres «fill» et «stroke» utilisé ici sont les attributs de couleurs de remplissage et de contour de la classe renderer:
+Voici une des méthodes qui ajoute une primitives à la scène. Les paramètres «fill» et «stroke» utilisés ici sont les attributs de couleurs de remplissage et de contour de la classe renderer:
 \begin{lstlisting}
 	ofParameter<bool> renderer::createSquare(float x, float y, float w, float h) {
 		return createSquare(x,y,w,h,fill, stroke);
@@ -271,9 +271,9 @@ Voici une des méthodes qui ajoute une primitive à la scène. Les paramètres �
 \subsection{Interface}
 L'application est dotée d'une interface utilisateur qui permet de modifier les paramètres d'une primitive à ajouter, ajouter une primitive à la scène, vider la scène, modifier les paramètres de la caméra, appliquer des transformations sur les primitives ou sur la scène, appliquer des effets de traitement d'image, sélectionner des primitives à l'aide d'une liste à cocher, importer un modèle 3D, exporter en image et quitter. \\
 
-L'interface a été développé avec «l'addons» ofxGui. Ainsi, nous avons créé des «panels» (ofxPanel) dans lesquels les différents paramètres de l'application ont été ajouté et «l'addons» se chargeait de générer les «sliders» et les cases à cocher associées aux paramètres. Nous avons aussi pu ajouté des boutons (ofxButton).\\
+L'interface a été développée avec l'extension ofxGui. Ainsi, nous avons créé des «panels» (ofxPanel) dans lesquels les différents paramètres de l'application ont été ajoutés et l'extension se charge de générer les «sliders» et les cases à cocher associées aux paramètres. Nous avons aussi pu ajouter des boutons (ofxButton).\\
 
-Comme l'essentiel du code de la classe qui gère l'interface représente plus de 1000 lignes, seulement quelques exemples seront montrés afin d'allégé ce document.\\
+Comme l'essentiel du code de la classe qui gère l'interface représente plus de 1000 lignes, seulement quelques exemples seront montrés afin d'alléger ce document.\\
 
 Voici l'initialisation de paramètres:
 \begin{lstlisting}
@@ -381,7 +381,7 @@ void ofApp::setup()
 }
 \end{lstlisting}
 
-Voici une capture d'écran pour montré l'interface:
+Voici une capture d'écran pour montrer l'interface:
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=15cm]{fig/InterfaceComplet.png}
@@ -392,9 +392,9 @@ Voici une capture d'écran pour montré l'interface:
 \pagebreak
 \section{Transformation}
 \subsection{Transformation interactive}
-Une catégorie à droite de l’application permet de transformer le systèmes de coordonnées des entités géométriques de la scène. On peut exercer des transformations tel que la translation en X, Y et Z, la rotation en X, Y et Z ainsi que la proportion en X, Y et Z. Elle peut se faire autant en temps réel qu’en différé. \\
+Une catégorie à droite de l’application permet de transformer le système de coordonnées des entités géométriques de la scène. On peut exercer des transformations telles que la translation en X, Y et Z, la rotation en X, Y et Z ainsi que la proportion en X, Y et Z. Elle peut se faire autant en temps réel qu’en différé. \\
 
-Les matrices de transformation d’openframeworks sont utilisés pour la réalisation des transformations. On utilise les méthodes ofPushMatrix() et ofPopMatrix(). Une fois la matrice empilé, on ajoute les transformation à l’aide des méthodes ofTranslate(), ofRotate() et ofScale() selon les paramètres inscrit par l’utilisateur. Enfin, on dépile la matrice pour permettre la transformation.\\
+Les matrices de transformation d’openframeworks sont utilisées pour la réalisation des transformations. On utilise les méthodes ofPushMatrix() et ofPopMatrix(). Une fois la matrice empilée, on ajoute les transformations à l’aide des méthodes ofTranslate(), ofRotate() et ofScale() selon les paramètres inscrits par l’utilisateur. Enfin, on dépile la matrice pour permettre la transformation.\\
 
 Voici le menu des transformations et ces différentes options:\\
 \begin{figure}[h]
@@ -405,11 +405,11 @@ Voici le menu des transformations et ces différentes options:\\
 \end{figure}
 
 \subsection{Structure de scène}
-La structure de scène a été implémenté sous la forme d'un arbre ordoné, dans lequel les feuilles sont les éléments de la scène. La classe scène comprend 4 classes interne, soit element, group, node et scene\_iterator. Les classes group et node héritent d'element et  servent à stocker tout ce qui se trouve dans la scène. La classe scene\_iterator permet, quant-à elle, de parcourir les éléments pour les dessiner. \\
+La structure de scène a été implémentée sous la forme d'un arbre ordonné, dans lequel les feuilles sont les éléments de la scène. La classe scène comprend 4 classes interne, soit «element», «group», «node» et «scene\_iterator». Les classes «group» et «node» héritent d'«element» et  servent à stocker tout ce qui se trouve dans la scène. La classe «scene\_iterator» permet, quant à elle, de parcourir les éléments pour les dessiner. \\
 
-On utilise les shared\_ptr au lieux des simples pointeurs pour conserver les éléments qui sont ajouté à la scène pour ne pas avoir à trop gérer la mémoire.\\
+On utilise les «shared\_ptr» au lieu des pointeurs normaux pour conserver les éléments qui sont ajoutés à la scène pour ne pas avoir à trop gérer la mémoire.\\
 
-L'essentiel du code de la scène se trouve dans les méthodes addElement de la scène, des sous-clases de stockage et l'operator++ de l'itérateur.\\
+L'essentiel du code de la scène se trouve dans les méthodes addElement de la scène, des sous-classes de stockage et l'operator++ de l'itérateur.\\
 
 \begin{lstlisting}
 void scene::addElement(size_t index, primitive_ptr& p, bool insertFirstChild) {
@@ -516,9 +516,9 @@ void scene::scene_iterator::operator++() {
 	}
 }
 \end{lstlisting}
-Comme vous avez sans-doute remarqué, l'ajout d'élément à la scène se fait récursivement, à l'index en paramètre. Le paramètre «insertFirstChild» indique s'il faut insérer l'élément comme le premier enfant de l'élément à l'index en paramètre. S'il est faux, on insère simplement le nouvel élément après l'index. Dans group::addElement, on utilise un algorithme de recherche binaire pour trouver dans ou après quel élément il faut ajouter le nouvel élément. L'operator++, quant à lui, parcours la scène en s'arrêtant seulement sur les classes node. \\
+Comme vous avez sans doute remarqué, l'ajout d'élément à la scène se fait récursivement, à l'index en paramètre. Le paramètre «insertFirstChild» indique s'il faut insérer l'élément comme le premier enfant de l'élément à l'index en paramètre. S'il est faux, on insère simplement le nouvel élément après l'index. Dans group::addElement, on utilise un algorithme de recherche binaire pour trouver dans ou après quel élément il faut ajouter le nouvel élément. L'operator++, quant à lui, parcours la scène en s'arrêtant seulement sur les classes node. \\
 
-Malheureusement, par manque de temps la structure de scène n'est pas utilisé à sont plein potentiel et tous les éléments sont stocké dans le groupe à la racine de la scène. Il est tout de même possible de voir le résultat en changeant la ligne «\#define test 0» pour «\#define test 1» dans le fichier «main.cpp». Vous verrez alors le résultat de l'exécution des tests de la classe scene (principalement de l'ajout et de la supression d'élément), se trouvant à la fin de «scene.cpp». \\
+Malheureusement, par manque de temps la structure de scène n'est pas utilisée à son plein potentiel et tous les éléments sont stockés dans le groupe à la racine de la scène. Il est tout de même possible de voir le résultat en changeant la ligne «\#define test 0» pour «\#define test 1» dans le fichier «main.cpp». Vous verrez alors le résultat de l'exécution des tests de la classe «scene» (principalement de l'ajout et de la suppression d'élément), se trouvant à la fin de «scene.cpp». \\
 
 \newpage
 
@@ -529,8 +529,8 @@ Dans notre application, toutes les entités géométriques, soit les primitives 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=5cm]{fig/menuSelection.png}
-	\caption{Menu de selection}
-	\label{fig:test}
+	\caption{Menu de sélection}
+	\label{fig:menuSelection}
 \end{figure}
 
 À partir de là, il est possible d'en sélectionner un ou plusieurs.
@@ -539,29 +539,29 @@ Dans notre application, toutes les entités géométriques, soit les primitives 
 	\centering
 	\includegraphics[width=5cm]{fig/menuSelectionPlusieurs.png}
 	\caption{Plusieurs entités sélectionnées}
-	\label{fig:test}
+	\label{fig:selectionMultiple}
 \end{figure}
 
 \newpage
 
-Lorsqu'on est pas en mode "Wireframe", les entités sélectionnées seront affichées en wireframe quand même, de façon à les identifier. Comme le mode wireframe existe surtout à des fins de débogage et pour des opérations précises, on n'est pas censé l'utiliser en permanence, c'est pourquoi ce n'est pas grave si dans ce mode on ne peut pas voir aussi bien quelles entités sont sélectionnées.
+Lorsqu'on n'est pas en mode «wireframe», les entités sélectionnées seront affichées en «wireframe» quand même, de façon à les identifier. Comme le mode «wireframe» existe surtout à des fins de débogage et pour des opérations précises, on n'est pas censé l'utiliser en permanence, c'est pourquoi ce n'est pas grave si dans ce mode on ne peut pas voir aussi bien quelles entités sont sélectionnées.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=12cm]{fig/WireframeSelection.png}
-	\caption{La selection est en wireframe}
-	\label{fig:test}
+	\caption{La sélection est en «wireframe»}
+	\label{fig:avantTransformation}
 \end{figure}
 
 \newpage
 
-Les transformation géométriques peuvent être appliquées en même temps à toutes les entités sélectionnées, en appliquant une matrice de transformation à chacun d'entre eux en même temps. Cette matrice est créée à partir de "sliders", de translation, de rotation et de taille.
+Les transformations géométriques peuvent être appliquées en même temps à toutes les entités sélectionnées, en appliquant une matrice de transformation à chacun d'entre eux en même temps. Cette matrice est créée à partir de "sliders", de translation, de rotation et de taille.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=18cm]{fig/transformationSelection.png}
-	\caption{Chaque entité de la selection reçoit la transformation}
-	\label{fig:test}
+	\caption{Chaque entité de la sélection reçoit la transformation}
+	\label{fig:apresTransformation}
 \end{figure}
 
 \begin{lstlisting}
@@ -616,7 +616,7 @@ void primitive3d::draw(bool wireframe) {
 
 \end{lstlisting}
 
-\subsection{Coordonnées non-cartésiennes}
+\subsection{Coordonnées non cartésiennes}
 Non-implémenté
 
 \subsection{Historique}
@@ -631,9 +631,9 @@ Non-implémenté
 
 \subsection{Primitives}
 
-Dans notre application, il est possible de créer à partir d'algorithmes seulement plusieurs primitives en 3D. Ces primitives sont le cube, la sphère et le cône. Chaque primitive peut être créée directement avec une position et taille choisie par l'utilisateur, mais ces attributs pourront bien évidemment être modifiées par la suite (voir la section 4.3.3 sur la sélection multiple.).\\
+Dans notre application, il est possible de créer à partir d'algorithmes seulement plusieurs primitives en 3D. Ces primitives sont le cube, la sphère et le cône. Chaque primitive peut être créée directement avec une position et taille choisie par l'utilisateur, mais ces attributs pourront bien évidemment être modifiés par la suite (voir la section 4.3.3 sur la sélection multiple.).\\
 
-On ne peut pas créer les primitives avec une rotation dès le départ, car ce n'est pas pertinent de donner une rotation à un objet comme un cône, quand il n'y aucun moyen de savoir quel est son orientation "sans rotation" avant d'en avoir créé un de toute façon. Il faut leur donner la rotation voulue après les avoir créées.\\
+On ne peut pas créer les primitives avec une rotation dès le départ, car ce n'est pas pertinent de donner une rotation à un objet comme un cône, quand il n'y a aucun moyen de savoir quelle est son orientation "sans rotation" avant d'en avoir créé un de toute façon. Il faut leur donner la rotation voulue après les avoir créées.\\
 
 On peut aussi choisir une couleur par primitive, dans l'espace de couleur HSB.
 
@@ -641,7 +641,7 @@ On peut aussi choisir une couleur par primitive, dans l'espace de couleur HSB.
 	\centering
 	\includegraphics[width=6cm]{fig/creationPrimitive.png}
 	\caption{Options de création d'une primitive}
-	\label{fig:test}
+	\label{fig:creationPrimitive}
 \end{figure}
 
 \newpage
@@ -649,39 +649,39 @@ On peut aussi choisir une couleur par primitive, dans l'espace de couleur HSB.
 \begin{lstlisting}
 void ofApp::btnDrawPrimitiveClicked()
 {
-	ofLog() << "<app::btnDrawPrimitiveClicked>";
-	
-	if (primType2D.get()) {
-		if (primTypeCube.get()) {
-			selectionMenu.add(rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight));
-		}
-		else if (primTypeSphere.get()) {
-			selectionMenu.add(rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight));
-		}
-		else if (primTypeTriangle.get()) {
-			selectionMenu.add(rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight));
-		}
-		else if (primTypeLine.get()) {
-			selectionMenu.add(rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight));
-		}
-		else if (primTypePoint.get()) {
-			selectionMenu.add(rend->createPoint(primPosX, primPosY, strokeThickness));
-		}
-	}
-	else {
-		if (primTypeCube.get()) {
-			selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
-		}
-		else if (primTypeSphere.get()) {
-			selectionMenu.add(rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
-		}
-		else if (primTypeTriangle.get()) {
-			selectionMenu.add(rend->createCone(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
-		}
-		else {
-			selectionMenu.add(rend->createIcecream(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
-		}
-	}
+ofLog() << "<app::btnDrawPrimitiveClicked>";
+
+if (primType2D.get()) {
+if (primTypeCube.get()) {
+selectionMenu.add(rend->createSquare(primPosX, primPosY, primSizeWidth, primSizeHeight));
+}
+else if (primTypeSphere.get()) {
+selectionMenu.add(rend->createCircle(primPosX, primPosY, primSizeWidth, primSizeHeight));
+}
+else if (primTypeTriangle.get()) {
+selectionMenu.add(rend->createTriangle(primPosX, primPosY, primPosX + primSizeWidth, primPosY, (primPosX + primSizeWidth) / 2, primPosY + primSizeHeight));
+}
+else if (primTypeLine.get()) {
+selectionMenu.add(rend->createLine(primPosX, primPosY, primSizeWidth, primSizeHeight));
+}
+else if (primTypePoint.get()) {
+selectionMenu.add(rend->createPoint(primPosX, primPosY, strokeThickness));
+}
+}
+else {
+if (primTypeCube.get()) {
+selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+}
+else if (primTypeSphere.get()) {
+selectionMenu.add(rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+}
+else if (primTypeTriangle.get()) {
+selectionMenu.add(rend->createCone(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+}
+else {
+selectionMenu.add(rend->createIcecream(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+}
+}
 }
 \end{lstlisting}
 
@@ -691,101 +691,99 @@ void ofApp::btnDrawPrimitiveClicked()
 //-------------3D primitives-----------------------
 ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d)
 {
-	return createCube(x, y, z, w, h, d, fill);
+return createCube(x, y, z, w, h, d, fill);
 }
 
 ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol)
 {
-	ofBoxPrimitive* box = new ofBoxPrimitive();
-	
-	float smallest = min(w, min(h, d));
-	
-	box->setWidth(smallest);
-	box->setHeight(smallest);
-	box->setDepth(smallest);
-	
-	float newX = (float)w / smallest;
-	float newY = (float)h / smallest;
-	float newZ = (float)d / smallest;
-	
-	ofMatrix4x4 matrix = ofMatrix4x4();
-	matrix.scale(newX, newY, newZ);
-	matrix.setTranslation(x, y, z);
-	
-	for (int i = 0; i < 6; i++)
-	{
-		box->setSideColor(i, fillCol);
-	}
-	
-	primitive3d prim = primitive3d{ box, fillCol, matrix };
-	prim.setName("Cube " + to_string(scn->nbElements() + 1));
-	scn->addElement(prim);
-	return prim.selected;
-	
-	//cout << *scn;
+ofBoxPrimitive* box = new ofBoxPrimitive();
+
+float smallest = min(w, min(h, d));
+
+box->setWidth(smallest);
+box->setHeight(smallest);
+box->setDepth(smallest);
+
+float newX = (float)w / smallest;
+float newY = (float)h / smallest;
+float newZ = (float)d / smallest;
+
+ofMatrix4x4 matrix = ofMatrix4x4();
+matrix.scale(newX, newY, newZ);
+matrix.setTranslation(x, y, z);
+
+for (int i = 0; i < 6; i++)
+{
+box->setSideColor(i, fillCol);
+}
+
+primitive3d prim = primitive3d{ box, fillCol, matrix };
+prim.setName("Cube " + to_string(scn->nbElements() + 1));
+scn->addElement(prim);
+return prim.selected;
 }
 
 ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
 {
-	return createSphere(x, y, z, sizeX, sizeY, sizeZ, fill);
+return createSphere(x, y, z, sizeX, sizeY, sizeZ, fill);
 }
 
 ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
 {
-	ofSpherePrimitive* ball = new ofSpherePrimitive();
-	ball->setPosition(0, 0, 0);
-	
-	float smallest = min(sizeX, min(sizeY, sizeZ));
-	
-	ball->setRadius(smallest/2);
-	
-	float newX = (float)sizeX / smallest;
-	float newY = (float)sizeY / smallest;
-	float newZ = (float)sizeZ / smallest;
-	
-	ofMatrix4x4 matrix = ofMatrix4x4();
-	matrix.scale(newX, newY, newZ);
-	matrix.setTranslation(x, y, z);
-	
-	primitive3d prim = primitive3d{ ball, color, matrix };
-	prim.setName("Sphere " + to_string(scn->nbElements() + 1));
-	scn->addElement(prim);
-	return prim.selected;
+ofSpherePrimitive* ball = new ofSpherePrimitive();
+ball->setPosition(0, 0, 0);
+
+float smallest = min(sizeX, min(sizeY, sizeZ));
+
+ball->setRadius(smallest/2);
+
+float newX = (float)sizeX / smallest;
+float newY = (float)sizeY / smallest;
+float newZ = (float)sizeZ / smallest;
+
+ofMatrix4x4 matrix = ofMatrix4x4();
+matrix.scale(newX, newY, newZ);
+matrix.setTranslation(x, y, z);
+
+primitive3d prim = primitive3d{ ball, color, matrix };
+prim.setName("Sphere " + to_string(scn->nbElements() + 1));
+scn->addElement(prim);
+return prim.selected;
 }
 
 ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
 {
-	return createCone(x, y, z, sizeX, sizeY, sizeZ, fill);
+return createCone(x, y, z, sizeX, sizeY, sizeZ, fill);
 }
 
 ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
 {
-	ofConePrimitive* cone = new ofConePrimitive();
-	cone->setPosition(0, 0, 0);
-	
-	float smallest = min(sizeX, sizeZ);
-	cone->setRadius(smallest / 2);
-	cone->setHeight(sizeY);
-	
-	float newX = (float)sizeX / smallest;
-	float newY = 1.0f;
-	float newZ = (float)sizeZ / smallest;
-	
-	ofMatrix4x4 matrix = ofMatrix4x4();
-	matrix.scale(newX, newY, newZ);
-	matrix.setTranslation(x, y, z);
-	
-	primitive3d prim = primitive3d{ cone, color, matrix };
-	prim.setName("Cone " + to_string(scn->nbElements() + 1));
-	scn->addElement(prim);
-	return prim.selected;
-	
+ofConePrimitive* cone = new ofConePrimitive();
+cone->setPosition(0, 0, 0);
+
+float smallest = min(sizeX, sizeZ);
+cone->setRadius(smallest / 2);
+cone->setHeight(sizeY);
+
+float newX = (float)sizeX / smallest;
+float newY = 1.0f;
+float newZ = (float)sizeZ / smallest;
+
+ofMatrix4x4 matrix = ofMatrix4x4();
+matrix.scale(newX, newY, newZ);
+matrix.setTranslation(x, y, z);
+
+primitive3d prim = primitive3d{ cone, color, matrix };
+prim.setName("Cone " + to_string(scn->nbElements() + 1));
+scn->addElement(prim);
+return prim.selected;
+
 }
 \end{lstlisting}
 
 \subsection{Modèle}
 
-Il est possible pour un utilisateur d'importer un modèle choisit sur son ordinateur. Les modèles supportés sont ceux qui ont un des formats suivants:
+Il est possible pour un utilisateur d'importer un modèle choisi sur son ordinateur. Les modèles supportés sont ceux qui ont un des formats suivants:
 
 \begin{list}{}{}
 	\item 3DS \tab ASE \tab DXF \tab HMP \tab MD2 \tab MD3
@@ -798,7 +796,7 @@ Il est possible pour un utilisateur d'importer un modèle choisit sur son ordina
 	\centering
 	\includegraphics[width=6cm]{fig/importerModele.png}
 	\caption{Bouton pour importer un modèle}
-	\label{fig:test}
+	\label{fig:importModel}
 \end{figure}
 
 Si le modèle est dans un répertoire avec ses textures dans le bon chemin relatif, celles-ci seront automatiquement chargées et appliquées. De plus, si l'importation du modèle échoue pour une quelconque raison, un message sera affiché à l'utilisateur pour l'informer.\\
@@ -810,105 +808,105 @@ Une partie du code qui suit vient de MSDN (Microsoft), dont le lien peut-être t
 \begin{lstlisting}
 void ofApp::btnImportClicked()
 {
-	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
-	COINIT_DISABLE_OLE1DDE);
-	if (SUCCEEDED(hr))
-	{
-		IFileOpenDialog *pFileOpen;
-		
-		// Create the FileOpenDialog object.
-		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
-		IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
-		
-		if (SUCCEEDED(hr))
-		{
-			// Show the Open dialog box.
-			hr = pFileOpen->Show(NULL);
-			
-			// Get the file name from the dialog box.
-			if (SUCCEEDED(hr))
-			{
-				IShellItem *pItem;
-				hr = pFileOpen->GetResult(&pItem);
-				if (SUCCEEDED(hr))
-				{
-					LPWSTR pszFilePath;
-					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
-					
-					// Display the file name to the user.
-					if (SUCCEEDED(hr))
-					{
-						
-						std::wstring path = wstring(pszFilePath);
-						std::string strPath(path.begin(), path.end());
-						ofParameter<bool> param = rend->importModel(strPath);
-						
-						if (param.get() == false)
-						{
-							selectionMenu.add(param);
-							strPath = "Le modele " + strPath + " a ete importe avec succes!";
-							path = std::wstring(strPath.begin(), strPath.end());
-							LPCWSTR title = (LPCWSTR)path.c_str();
-							MessageBox(NULL, title, L"Succes", MB_OK);
-						}
-						else
-						{
-							strPath = "Le modele n'a pas pu etre importe.";
-							path = std::wstring(strPath.begin(), strPath.end());
-							LPCWSTR title = (LPCWSTR)path.c_str();
-							MessageBox(NULL, title, L"Echec", MB_OK);
-						}
-						
-						CoTaskMemFree(pszFilePath);
-					}
-					pItem->Release();
-				}
-			}
-			pFileOpen->Release();
-		}
-		CoUninitialize();
-	}
+HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+COINIT_DISABLE_OLE1DDE);
+if (SUCCEEDED(hr))
+{
+IFileOpenDialog *pFileOpen;
+
+// Create the FileOpenDialog object.
+hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+if (SUCCEEDED(hr))
+{
+// Show the Open dialog box.
+hr = pFileOpen->Show(NULL);
+
+// Get the file name from the dialog box.
+if (SUCCEEDED(hr))
+{
+IShellItem *pItem;
+hr = pFileOpen->GetResult(&pItem);
+if (SUCCEEDED(hr))
+{
+LPWSTR pszFilePath;
+hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
+// Display the file name to the user.
+if (SUCCEEDED(hr))
+{
+
+std::wstring path = wstring(pszFilePath);
+std::string strPath(path.begin(), path.end());
+ofParameter<bool> param = rend->importModel(strPath);
+
+if (param.get() == false)
+{
+selectionMenu.add(param);
+strPath = "Le modele " + strPath + " a ete importe avec succes!";
+path = std::wstring(strPath.begin(), strPath.end());
+LPCWSTR title = (LPCWSTR)path.c_str();
+MessageBox(NULL, title, L"Succes", MB_OK);
+}
+else
+{
+strPath = "Le modele n'a pas pu etre importe.";
+path = std::wstring(strPath.begin(), strPath.end());
+LPCWSTR title = (LPCWSTR)path.c_str();
+MessageBox(NULL, title, L"Echec", MB_OK);
+}
+
+CoTaskMemFree(pszFilePath);
+}
+pItem->Release();
+}
+}
+pFileOpen->Release();
+}
+CoUninitialize();
+}
 }
 \end{lstlisting}
 
 \begin{lstlisting}
 ofParameter<bool> renderer::importModel(string path) {
-	ofxAssimpModelLoader* model = new ofxAssimpModelLoader();
-	bool ret = model->loadModel(path, false);
-	if (ret)
-	{
-		model->enableTextures();
-		ofTexture tex = ofTexture();
-		extModel mod = extModel(model);
-		
-		string fName(path);
-		size_t pos = fName.rfind(".");
-		if (pos != string::npos)
-		{
-			if (pos != 0)
-			{
-				fName = fName.substr(0, pos);
-			}
-		}
-		pos = fName.rfind("\\");
-		if (pos != string::npos)
-		{
-			if (pos != 0)
-			{
-				fName = fName.substr(pos + 1);
-			}
-		}
-		
-		mod.setName(fName + " " + to_string(externalModels.size() + 1));
-		scn->addElement(mod);
-		return mod.selected;
-	}
-	return ofParameter<bool>(true);
+ofxAssimpModelLoader* model = new ofxAssimpModelLoader();
+bool ret = model->loadModel(path, false);
+if (ret)
+{
+model->enableTextures();
+ofTexture tex = ofTexture();
+extModel mod = extModel(model);
+
+string fName(path);
+size_t pos = fName.rfind(".");
+if (pos != string::npos)
+{
+if (pos != 0)
+{
+fName = fName.substr(0, pos);
+}
+}
+pos = fName.rfind("\\");
+if (pos != string::npos)
+{
+if (pos != 0)
+{
+fName = fName.substr(pos + 1);
+}
+}
+
+mod.setName(fName + " " + to_string(externalModels.size() + 1));
+scn->addElement(mod);
+return mod.selected;
+}
+return ofParameter<bool>(true);
 }
 \end{lstlisting}
 
 \subsection{Texture}
-Implémenté
+Non-implémenté
 
 \subsection{Géométrie procédurale}
 Non-implémenté
@@ -916,18 +914,18 @@ Non-implémenté
 \pagebreak
 \section{Caméra}
 \subsection{Propriétés de caméra}
-Les propriétés de la caméra tel que le champ de vision, le ratio d'aspect ainsi que la distance du plan de clipping avant et arrière. Ils peuvent être modifier dans l'interface graphique à l'aide de slider. L'essentiel du code se trouve dans «ccamera::update()».
+Les propriétés de la caméra telle que le champ de vision, le ratio d'aspect ainsi que la distance du plan de clipping avant et arrière. Ils peuvent être modifiés dans l'interface graphique à l'aide de «slider». L'essentiel du code se trouve dans «ccamera::update()».
 
 
 \begin{lstlisting}
-	cam->setFov(fov.get());
-	if (autoRatio.get()) {
-		cam->setForceAspectRatio(false);
-	} else {
-		cam->setAspectRatio(ratio.get());
-	}
-	cam->setNearClip(nearClip.get());
-	cam->setFarClip(farClip.get());
+cam->setFov(fov.get());
+if (autoRatio.get()) {
+cam->setForceAspectRatio(false);
+} else {
+cam->setAspectRatio(ratio.get());
+}
+cam->setNearClip(nearClip.get());
+cam->setFarClip(farClip.get());
 \end{lstlisting}
 
 \begin{figure}[h]
@@ -938,48 +936,48 @@ Les propriétés de la caméra tel que le champ de vision, le ratio d'aspect ain
 \end{figure}
 
 \subsection{Mode de projection}
-Le changement de mode de projection de perspective à orthogonale a été implémenté dans l'application. L'essentiel du travail se fait dans la méthode «ccamera::changeMode()». Elle est appelé lorsqu'on appuit sur le bouton à cet effet dans l'interface graphique.
+Le changement de mode de projection de perspective à orthogonale a été implémenté dans l'application. L'essentiel du travail se fait dans la méthode «ccamera::changeMode()». Elle est appelée lorsqu'on appuie sur le bouton à cet effet dans l'interface graphique.
 
 \begin{lstlisting}
-	if (ortho.get()) {
-		cam->enableOrtho();
-	} else {
-		cam->disableOrtho();
-	}
+if (ortho.get()) {
+cam->enableOrtho();
+} else {
+cam->disableOrtho();
+}
 \end{lstlisting}
 
 \subsection{Caméra interactive}
-La caméra interactive est implémenter dans l'application principalement à l'aide de la classe ofEasyCam de openFrameworks. Nous avons tout de même ajouter la possibilité de déplacer à l'aide des flèches du clavier, pour permettre de repositionner facilement la caméra. Il est aussi possible d'avancer à caméra à l'aide de pageUp/Down. L'essentiel du code se trouve au début de «ccamera::update()».
+La caméra interactive est implémentée dans l'application principalement à l'aide de la classe ofEasyCam de openFrameworks. Nous avons tout de même ajouté la possibilité de déplacer à l'aide des flèches du clavier, pour permettre de repositionner facilement la caméra. Il est aussi possible d'avancer à caméra à l'aide de pageUp/Down. L'essentiel du code se trouve au début de «ccamera::update()».
 
 \begin{lstlisting}
-	float dist = speed * dt;
-	float dx = 0;
-	float dy = 0;
-	float dz = 0;
-	
-	dx = 0;
-	if (isCameraMoveLeft)
-		dx += dist;
-	if (isCameraMoveRight)
-		dx -= dist;
-	cam->truck(-dx);
-	posX.set(round(-cam->getX()));
-	
-	dy = 0;
-	if (isCameraMoveUp)
-		dy -= dist;
-	if (isCameraMoveDown)
-		dy += dist;
-	cam->boom(-dy);
-	posY.set(round(cam->getY()));
-	
-	dz = 0;
-	if (isCameraMoveForward)
-		dz -= dist;
-	if (isCameraMoveBackward)
-		dz += dist;
-	cam->dolly(dz);
-	posZ.set(round(cam->getZ()));
+float dist = speed * dt;
+float dx = 0;
+float dy = 0;
+float dz = 0;
+
+dx = 0;
+if (isCameraMoveLeft)
+dx += dist;
+if (isCameraMoveRight)
+dx -= dist;
+cam->truck(-dx);
+posX.set(round(-cam->getX()));
+
+dy = 0;
+if (isCameraMoveUp)
+dy -= dist;
+if (isCameraMoveDown)
+dy += dist;
+cam->boom(-dy);
+posY.set(round(cam->getY()));
+
+dz = 0;
+if (isCameraMoveForward)
+dz -= dist;
+if (isCameraMoveBackward)
+dz += dist;
+cam->dolly(dz);
+posZ.set(round(cam->getZ()));
 \end{lstlisting}
 
 \subsection{Caméra multiple}
