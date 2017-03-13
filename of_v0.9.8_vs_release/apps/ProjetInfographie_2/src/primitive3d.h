@@ -19,6 +19,8 @@ public:
 	bool checkIntersectionPlaneAndLine(ofRay ray, float *result) const override;
 	bool checkIntersectionTriangleRay(ofRay ray, ofPoint* inter);
 
+protected:
+	const ofVec3f getLocalPosition() const override { return prim->getPosition(); }
 private:
 
 	of3dPrimitive* prim;

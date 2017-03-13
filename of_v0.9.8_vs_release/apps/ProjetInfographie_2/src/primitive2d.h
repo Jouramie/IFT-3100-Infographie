@@ -18,8 +18,10 @@ public:
 
 	void draw(bool wireframe) override;
 
-private:
+protected:
+	const ofVec3f getLocalPosition() const override { return ofVec3f(); } //Fix later
 
+private:
 	ofPath* prim;
 	ofColor fillCol;
 	ofColor strokeCol;

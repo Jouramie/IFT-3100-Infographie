@@ -21,6 +21,8 @@ public:
 	bool checkIntersectionPlaneAndLine(ofRay ray, float *result) const;
 	bool checkIntersectionTriangleRay(ofRay ray, ofPoint* inter);
 
+protected:
+	const ofVec3f getLocalPosition() const override { return model->getPosition(); }
 private:
 	ofxAssimpModelLoader* model;
 };
