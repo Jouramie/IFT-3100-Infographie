@@ -1,4 +1,5 @@
 ofxAssimpModelLoader
 ofxGui
+ofxHSpline
 ofxOpenCv
 ofxRay
