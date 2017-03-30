@@ -26,6 +26,7 @@ void ofApp::setup()
 
 	setupMenu2D();
 	setupMenu3D();
+	setupMenuTopo();
 	setupCameraMenu();
 	setupTransformationMenu();
 	setupOptionMenu();
@@ -288,6 +289,7 @@ void ofApp::initGroups()
 	groupPrimitiveType2D.setName("Type");
 	groupPrimitiveType2D.add(primType2D);
 	groupPrimitiveType2D.add(primType3D);
+	groupPrimitiveType2D.add(primTypeTopo);
 	groupPrimitiveType2D.add(primTypeCube);
 	groupPrimitiveType2D.add(primTypeSphere);
 	groupPrimitiveType2D.add(primTypeTriangle);
@@ -297,10 +299,17 @@ void ofApp::initGroups()
 	groupPrimitiveType3D.setName("Type");
 	groupPrimitiveType3D.add(primType2D);
 	groupPrimitiveType3D.add(primType3D);
+	groupPrimitiveType3D.add(primTypeTopo);
 	groupPrimitiveType3D.add(primTypeCube);
 	groupPrimitiveType3D.add(primTypeSphere);
 	groupPrimitiveType3D.add(primTypeTriangle);
 	groupPrimitiveType3D.add(primTypeLine);
+
+	groupPrimitiveTypeTopo.setName("Type");
+	groupPrimitiveTypeTopo.add(primType2D);
+	groupPrimitiveTypeTopo.add(primType3D);
+	groupPrimitiveTypeTopo.add(primTypeTopo);
+	groupPrimitiveTypeTopo.add(primTypeBezier);
 
 	groupPrimitivePosition2D.setName("Position");
 	groupPrimitivePosition2D.add(primPosX.set(primPosX));
@@ -310,6 +319,17 @@ void ofApp::initGroups()
 	groupPrimitivePosition3D.add(primPosX.set(primPosX));
 	groupPrimitivePosition3D.add(primPosY.set(primPosY));
 	groupPrimitivePosition3D.add(primPosZ.set(primPosZ));
+
+	groupPrimitivePositionTopo.setName("Position");
+	groupPrimitivePositionTopo.add(primPosX.set(primPosX));
+	groupPrimitivePositionTopo.add(primPosY.set(primPosY));
+	groupPrimitivePositionTopo.add(primPosZ.set(primPosZ));
+	groupPrimitivePositionTopo.add(primPosX2.set(primPosX2));
+	groupPrimitivePositionTopo.add(primPosY2.set(primPosY2));
+	groupPrimitivePositionTopo.add(primPosZ2.set(primPosZ2));
+	groupPrimitivePositionTopo.add(primPosX3.set(primPosX3));
+	groupPrimitivePositionTopo.add(primPosY3.set(primPosY3));
+	groupPrimitivePositionTopo.add(primPosZ3.set(primPosZ3));
 
 	groupPrimitiveSize2D.setName("Taille");
 	groupPrimitiveSize2D.add(primSizeWidth.set(primSizeWidth));
@@ -402,6 +422,10 @@ void ofApp::initOfParameters() {
 	primType3D.set(false);
 	primType3D.addListener(this, &ofApp::primDim3DChanged);
 
+	primTypeTopo.setName("Topologie");
+	primTypeTopo.set(false);
+	primTypeTopo.addListener(this, &ofApp::primTopoChanged);
+
 	primTypeCube.setName("Carre");
 	primTypeCube.set(true);
 	primTypeCube.addListener(this, &ofApp::primTypeCubeChanged);
@@ -422,6 +446,9 @@ void ofApp::initOfParameters() {
 	primTypePoint.set(false);
 	primTypePoint.addListener(this, &ofApp::primTypePointChanged);
 
+	primTypeBezier.setName("Bezier");
+	primTypeBezier.set(false);
+	primTypeBezier.addListener(this, &ofApp::primTypeBezierChanged);
 
 	primPosX.setName("X");
 	primPosX.setMin(MinX);
@@ -438,6 +465,35 @@ void ofApp::initOfParameters() {
 	primPosZ.setMax(MaxZ);
 	primPosZ.set((MinZ + MaxZ) / 2);
 
+	primPosX2.setName("X_controle_1");
+	primPosX2.setMin(MinX);
+	primPosX2.setMax(MaxX);
+	primPosX2.set((MinX + MaxX) / 2);
+
+	primPosY2.setName("Y_controle_1");
+	primPosY2.setMin(MinY);
+	primPosY2.setMax(MaxY);
+	primPosY2.set((MinY + MaxY) / 2);
+
+	primPosZ2.setName("Z_controle_1");
+	primPosZ2.setMin(MinZ);
+	primPosZ2.setMax(MaxZ);
+	primPosZ2.set((MinZ + MaxZ) / 2);
+
+	primPosX3.setName("X_ccontrole_2");
+	primPosX3.setMin(MinX);
+	primPosX3.setMax(MaxX);
+	primPosX3.set((MinX + MaxX) / 2);
+
+	primPosY3.setName("Y_controle_2");
+	primPosY3.setMin(MinY);
+	primPosY3.setMax(MaxY);
+	primPosY3.set((MinY + MaxY) / 2);
+
+	primPosZ3.setName("Z_controle_2");
+	primPosZ3.setMin(MinZ);
+	primPosZ3.setMax(MaxZ);
+	primPosZ3.set((MinZ + MaxZ) / 2);
 
 	primSizeHeight.setName("Hauteur");
 	primSizeHeight.setMin(0);
@@ -643,7 +699,7 @@ void ofApp::btnDrawPrimitiveClicked()
 			selectionMenu.add(rend->createPoint(primPosX, primPosY, strokeThickness));
 		}
 	}
-	else {
+	else if (primType3D.get()) {
 		if (primTypeCube.get()) {
 			selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
@@ -655,6 +711,11 @@ void ofApp::btnDrawPrimitiveClicked()
 		}
 		else {
 			selectionMenu.add(rend->createIcecream(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+		}
+	}
+	else {
+		if (primTypeBezier.get()) {
+			selectionMenu.add(rend->createBezier(primPosX2, primPosY2, primPosZ2, primPosX3, primPosY3, primPosZ3, primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
 	}
 
@@ -742,6 +803,54 @@ void ofApp::applyAllChanged(bool& value) {
 void ofApp::primDim2DChanged(bool& value) {
 	if (primType2D.get()) {
 		primType3D.set(false);
+		primTypeTopo.set(false);
+		primTypeCube.setName("Carre");
+		primTypeSphere.setName("Cercle");
+		primTypeTriangle.setName("Triangle");
+		primTypeLine.setName("Ligne");
+	}
+	else if (primType3D.get()) {
+		primType3D.set(true);
+		primTypeCube.setName("Cube");
+		primTypeSphere.setName("Sphere");
+		primTypeTriangle.setName("Cone");
+		primTypeLine.setName("IceCream");
+	}
+	else {
+		primTypeTopo.set(true);
+	}
+
+}
+
+void ofApp::primDim3DChanged(bool& value) {
+	if (primType3D.get()) {
+		primType2D.set(false);
+		primTypeTopo.set(false);
+		primTypeCube.setName("Cube");
+		primTypeSphere.setName("Sphere");
+		primTypeTriangle.setName("Cone");
+		primTypeLine.setName("IceCream");
+	}
+	else if (primType2D.get()) {
+		primType2D.set(true);
+		primTypeCube.setName("Carre");
+		primTypeSphere.setName("Cercle");
+		primTypeTriangle.setName("Triangle");
+		primTypeLine.setName("Ligne");
+	}
+	else {
+		primTypeTopo.set(true);
+	}
+
+}
+
+void ofApp::primTopoChanged(bool& value) {
+	if (primTypeTopo.get()) {
+		primType2D.set(false);
+		primType3D.set(false);
+	}
+	else if (primType2D.get()) {
+		primType2D.set(true);
 		primTypeCube.setName("Carre");
 		primTypeSphere.setName("Cercle");
 		primTypeTriangle.setName("Triangle");
@@ -757,24 +866,6 @@ void ofApp::primDim2DChanged(bool& value) {
 
 }
 
-void ofApp::primDim3DChanged(bool& value) {
-	if (primType3D.get()) {
-		primType2D.set(false);
-		primTypeCube.setName("Cube");
-		primTypeSphere.setName("Sphere");
-		primTypeTriangle.setName("Cone");
-		primTypeLine.setName("IceCream");
-	}
-	else {
-		primType2D.set(true);
-		primTypeCube.setName("Carre");
-		primTypeSphere.setName("Cercle");
-		primTypeTriangle.setName("Triangle");
-		primTypeLine.setName("Ligne");
-	}
-
-}
-
 void ofApp::primTypeCubeChanged(bool& value) {
 
 	primTypeSphere.disableEvents();
@@ -782,12 +873,14 @@ void ofApp::primTypeCubeChanged(bool& value) {
 	primTypeTriangle.disableEvents();
 	primTypeLine.disableEvents();
 	primTypePoint.disableEvents();
+	primTypeBezier.disableEvents();
 
 	if (primTypeCube.get()) {
 		primTypeSphere.set(false);
 		primTypeTriangle.set(false);
 		primTypeLine.set(false);
 		primTypePoint.set(false);
+		primTypeBezier.set(false);
 	}
 	else
 		primTypeCube.set(true);
@@ -798,6 +891,7 @@ void ofApp::primTypeCubeChanged(bool& value) {
 	primTypeTriangle.enableEvents();
 	primTypeLine.enableEvents();
 	primTypePoint.enableEvents();
+	primTypeBezier.enableEvents();
 }
 
 void ofApp::primTypeSphereChanged(bool& value) {
@@ -807,12 +901,14 @@ void ofApp::primTypeSphereChanged(bool& value) {
 	primTypeTriangle.disableEvents();
 	primTypeLine.disableEvents();
 	primTypePoint.disableEvents();
+	primTypeBezier.disableEvents();
 
 	if (primTypeSphere.get()) {
 		primTypeCube.set(false);
 		primTypeTriangle.set(false);
 		primTypeLine.set(false);
 		primTypePoint.set(false);
+		primTypeBezier.set(false);
 	}
 	else
 		primTypeSphere.set(true);
@@ -823,6 +919,7 @@ void ofApp::primTypeSphereChanged(bool& value) {
 	primTypeTriangle.enableEvents();
 	primTypeLine.enableEvents();
 	primTypePoint.enableEvents();
+	primTypeBezier.enableEvents();
 }
 
 void ofApp::primTypeTriangleChanged(bool& value) {
@@ -832,6 +929,7 @@ void ofApp::primTypeTriangleChanged(bool& value) {
 	primTypeTriangle.disableEvents();
 	primTypeLine.disableEvents();
 	primTypePoint.disableEvents();
+	primTypeBezier.disableEvents();
 
 	if (primTypeTriangle.get())
 	{
@@ -839,6 +937,7 @@ void ofApp::primTypeTriangleChanged(bool& value) {
 		primTypeSphere.set(false);
 		primTypeLine.set(false);
 		primTypePoint.set(false);
+		primTypeBezier.set(false);
 	}
 	else
 		primTypeTriangle.set(true);
@@ -849,6 +948,7 @@ void ofApp::primTypeTriangleChanged(bool& value) {
 	primTypeTriangle.enableEvents();
 	primTypeLine.enableEvents();
 	primTypePoint.enableEvents();
+	primTypeBezier.enableEvents();
 }
 
 void ofApp::primTypeLineChanged(bool& value) {
@@ -858,6 +958,7 @@ void ofApp::primTypeLineChanged(bool& value) {
 	primTypeTriangle.disableEvents();
 	primTypeLine.disableEvents();
 	primTypePoint.disableEvents();
+	primTypeBezier.disableEvents();
 
 	if (primTypeLine.get())
 	{
@@ -865,6 +966,7 @@ void ofApp::primTypeLineChanged(bool& value) {
 		primTypeSphere.set(false);
 		primTypeTriangle.set(false);
 		primTypePoint.set(false);
+		primTypeBezier.set(false);
 	}
 	else
 		primTypeLine.set(true);
@@ -875,6 +977,7 @@ void ofApp::primTypeLineChanged(bool& value) {
 	primTypeTriangle.enableEvents();
 	primTypeLine.enableEvents();
 	primTypePoint.enableEvents();
+	primTypeBezier.enableEvents();
 }
 
 void ofApp::primTypePointChanged(bool& value) {
@@ -884,6 +987,7 @@ void ofApp::primTypePointChanged(bool& value) {
 	primTypeTriangle.disableEvents();
 	primTypeLine.disableEvents();
 	primTypePoint.disableEvents();
+	primTypeBezier.disableEvents();
 
 	if (primTypePoint.get())
 	{
@@ -891,6 +995,7 @@ void ofApp::primTypePointChanged(bool& value) {
 		primTypeSphere.set(false);
 		primTypeLine.set(false);
 		primTypeTriangle.set(false);
+		primTypeBezier.set(false);
 	}
 	else
 		primTypePoint.set(true);
@@ -901,6 +1006,22 @@ void ofApp::primTypePointChanged(bool& value) {
 	primTypeTriangle.enableEvents();
 	primTypeLine.enableEvents();
 	primTypePoint.enableEvents();
+	primTypeBezier.enableEvents();
+}
+
+void ofApp::primTypeBezierChanged(bool& value) {
+
+	primTypeBezier.disableEvents();
+
+	if (primTypeBezier.get())
+	{
+
+	}
+	else
+		primTypeBezier.set(true);
+
+
+	primTypeBezier.enableEvents();
 }
 
 void ofApp::wireFrameChanged(bool& value) {
@@ -1017,8 +1138,10 @@ void ofApp::drawMenus() {
 
 	if (primType2D)
 		menu2D.draw();
-	else
+	else if (primType3D)
 		menu3D.draw();
+	else
+		menuTopo.draw();
 
 	cameraMenu.draw();
 	transformationMenu.draw();
@@ -1066,6 +1189,25 @@ void ofApp::setupMenu3D() {
 	menu3D.minimizeAll();
 
 	menu3D.registerMouseEvents();
+}
+
+void ofApp::setupMenuTopo() {
+
+	menuTopo.setDefaultWidth(200);
+
+	menuTopo.setup();
+
+	menuTopo.add(groupPrimitiveTypeTopo);
+	menuTopo.add(groupPrimitivePositionTopo);
+	menuTopo.add(groupPrimitiveSize3D);
+
+	menuTopo.add(groupFill);
+
+	menuTopo.add(groupTexture);
+
+	menuTopo.minimizeAll();
+
+	menuTopo.registerMouseEvents();
 }
 
 void ofApp::setupCameraMenu()

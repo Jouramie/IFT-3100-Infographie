@@ -290,6 +290,30 @@ ofParameter<bool> renderer::createPoint(float x, float y, float radius, ofColor 
 	scn->addElement(prim);
 	return prim.selected;
 }
+
+/**
+* Render a Bezier curve with given x,y,z and deltas.
+*/
+ofParameter<bool> renderer::createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf) {
+	return createBezier(cx1, cy1, cz1, cx2, cy2, cz2, xi, yi, zi, xf, yf, zf, fill, stroke);
+}
+
+/**
+* Render a Bezier curve with given x,y,z and deltas.
+*/
+ofParameter<bool> renderer::createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, ofColor fillColor, ofColor strokeColor) {
+	ofPath* bezier = new ofPath();
+	bezier->moveTo(xi, yi, zi);
+	bezier->bezierTo(cx1, cy1, cz1, cx2, cy2, cz2, xf, yf, zf);
+	bezier->setColor(fillColor);
+	bezier->setStrokeColor(strokeColor);
+	bezier->setStrokeWidth(strokeThickness);
+
+	primitive2d prim = primitive2d{ bezier, fillColor, strokeColor, strokeThickness };
+	prim.setName("Bezier " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+}
 //-------------3D primitives-----------------------
 ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d)
 {

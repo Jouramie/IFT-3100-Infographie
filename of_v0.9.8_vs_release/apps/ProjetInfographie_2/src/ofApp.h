@@ -45,6 +45,7 @@ private:
 	
 	ofxPanel menu2D;
 	ofxPanel menu3D;
+	ofxPanel menuTopo;
 	ofxPanel cameraMenu;
 	ofxPanel transformationMenu;
 	ofxPanel filterMenu;
@@ -89,19 +90,29 @@ private:
 
 	ofParameterGroup groupPrimitiveType2D;
 	ofParameterGroup groupPrimitiveType3D;
+	ofParameterGroup groupPrimitiveTypeTopo;
 	ofParameter<bool> primType2D;
 	ofParameter<bool> primType3D;
+	ofParameter<bool> primTypeTopo;
 	ofParameter<bool> primTypeSphere;
 	ofParameter<bool> primTypeCube;
 	ofParameter<bool> primTypeTriangle;
 	ofParameter<bool> primTypeLine;
 	ofParameter<bool> primTypePoint;
+	ofParameter<bool> primTypeBezier;
 
 	ofParameterGroup groupPrimitivePosition3D;
 	ofParameterGroup groupPrimitivePosition2D;
+	ofParameterGroup groupPrimitivePositionTopo;
 	ofParameter<float> primPosX;
 	ofParameter<float> primPosY;
 	ofParameter<float> primPosZ;
+	ofParameter<float> primPosX2;
+	ofParameter<float> primPosY2;
+	ofParameter<float> primPosZ2;
+	ofParameter<float> primPosX3;
+	ofParameter<float> primPosY3;
+	ofParameter<float> primPosZ3;
 
 	ofParameterGroup groupPrimitiveSize2D;
 	ofParameterGroup groupPrimitiveSize3D;
@@ -151,6 +162,7 @@ private:
 		
 	void setupMenu2D();
 	void setupMenu3D(); 
+	void setupMenuTopo();
 	void setupCameraMenu();
 	void setupTransformationMenu();
 	void setupFilterMenu();
@@ -169,11 +181,13 @@ private:
 	
 	void primDim2DChanged(bool& value);
 	void primDim3DChanged(bool& value);
+	void primTopoChanged(bool& value);
 	void primTypeCubeChanged(bool& value);
 	void primTypeSphereChanged(bool& value);
 	void primTypeTriangleChanged(bool & value);
 	void primTypeLineChanged(bool & value);
 	void primTypePointChanged(bool & value);
+	void primTypeBezierChanged(bool & value);
 
 	void wireFrameChanged(bool& value);
 
