@@ -100,6 +100,7 @@ private:
 	ofParameter<bool> primTypeLine;
 	ofParameter<bool> primTypePoint;
 	ofParameter<bool> primTypeBezier;
+	ofParameter<bool> primTypeHermite;
 
 	ofParameterGroup groupPrimitivePosition3D;
 	ofParameterGroup groupPrimitivePosition2D;
@@ -116,6 +117,7 @@ private:
 
 	ofParameterGroup groupPrimitiveSize2D;
 	ofParameterGroup groupPrimitiveSize3D;
+	ofParameterGroup groupPrimitiveSizeTopo;
 	ofParameter<float> primSizeHeight;
 	ofParameter<float> primSizeWidth;
 	ofParameter<float> primSizeDepth;
@@ -188,6 +190,7 @@ private:
 	void primTypeLineChanged(bool & value);
 	void primTypePointChanged(bool & value);
 	void primTypeBezierChanged(bool & value);
+	void ofApp::primTypeHermiteChanged(bool& value);
 
 	void wireFrameChanged(bool& value);
 

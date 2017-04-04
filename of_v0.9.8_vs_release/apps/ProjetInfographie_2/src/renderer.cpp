@@ -314,6 +314,56 @@ ofParameter<bool> renderer::createBezier(float cx1, float cy1, float cz1, float 
 	scn->addElement(prim);
 	return prim.selected;
 }
+
+ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes) { 
+
+	return createHermite(cx1, cy1, cz1, cx2, cy2, cz2, xi, yi, zi, xf, yf, zf, lineRes, fill, stroke); 
+}
+ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes, ofColor fillColor, ofColor strokeColor) { 
+	ofPath* herm = new ofPath();
+	ofVec3f position;
+	ofVec3f cp1;
+	cp1.x = xi;
+	cp1.y = yi;
+	cp1.z = zi;
+	ofVec3f cp2;
+	cp2.x = cx1;
+	cp2.y = cy1;
+	cp2.z = cz1;
+	ofVec3f cp3;
+	cp3.x = cx2;
+	cp3.y = cy2;
+	cp3.z = cz2;
+	ofVec3f cp4;
+	cp4.x = xf;
+	cp4.y = yf;
+	cp4.z = zf;
+	herm->setMode(ofPath::POLYLINES);
+	herm->moveTo(xi, yi, zi);
+
+	ofVec3f tangent1 = cp2 - position;
+	ofVec3f tangent2 = cp3 - cp4;
+	for (int i = 0; i <= lineRes; ++i) {
+		hermite(
+			i / (float)lineRes,
+			cp1.x, cp1.y, cp1.z,
+			tangent1.x, tangent1.y, tangent1.z,
+			tangent2.x, tangent2.y, tangent2.z,
+			cp4.x, cp4.y, cp4.z,
+			position.x, position.y, position.z);
+		herm->curveTo(position);
+	}
+	herm->setColor(fillColor);
+	herm->setStrokeColor(strokeColor);
+	herm->setStrokeWidth(strokeThickness);
+	
+	primitive2d prim = primitive2d{ herm, fillColor, strokeColor, strokeThickness };
+	prim.setName("Hermite " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+}
+
+
 //-------------3D primitives-----------------------
 ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d)
 {

@@ -9,6 +9,25 @@
 #include "ccamera.h"
 #include "extModel.h"
 
+// fonction d'évaluation d'une courbe de hermite (4 points de contrôle)
+inline void hermite(
+	float t,
+	float p1x, float p1y, float p1z,
+	float p2x, float p2y, float p2z,
+	float p3x, float p3y, float p3z,
+	float p4x, float p4y, float p4z,
+	float&  x, float& y, float&  z)
+{
+	float u = 1 - t;
+	float uu = u * u;
+	float uuu = uu * u;
+	float tt = t * t;
+	float ttt = tt * t;
+
+	x = (2 * ttt - 3 * tt + 1) * p1x + (ttt - 2 * tt + t) * p2x + (ttt - tt) * p3x + (-2 * ttt + 3 * tt) * p4x;
+	y = (2 * ttt - 3 * tt + 1) * p1y + (ttt - 2 * tt + t) * p2y + (ttt - tt) * p3y + (-2 * ttt + 3 * tt) * p4y;
+	z = (2 * ttt - 3 * tt + 1) * p1z + (ttt - 2 * tt + t) * p2z + (ttt - tt) * p3z + (-2 * ttt + 3 * tt) * p4z;
+}
 
 class renderer
 {
@@ -43,6 +62,8 @@ public:
 	ofParameter<bool> createPoint(float x, float y, float radius, ofColor fillColor, ofColor strokeColor);
 	ofParameter<bool> createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf);
 	ofParameter<bool> createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, ofColor fillColor, ofColor strokeColor);
+	ofParameter<bool> createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes);
+	ofParameter<bool> createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes, ofColor fillColor, ofColor strokeColor);
 
 	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d);
 	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol);
