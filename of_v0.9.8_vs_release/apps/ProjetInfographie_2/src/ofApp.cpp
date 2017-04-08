@@ -311,6 +311,7 @@ void ofApp::initGroups()
 	groupPrimitiveTypeTopo.add(primTypeTopo);
 	groupPrimitiveTypeTopo.add(primTypeBezier);
 	groupPrimitiveTypeTopo.add(primTypeHermite);
+	groupPrimitiveTypeTopo.add(primTypeCatmullRom);
 
 	groupPrimitivePosition2D.setName("Position");
 	groupPrimitivePosition2D.add(primPosX.set(primPosX));
@@ -459,6 +460,10 @@ void ofApp::initOfParameters() {
 	primTypeHermite.setName("Hermite");
 	primTypeHermite.set(false);
 	primTypeHermite.addListener(this, &ofApp::primTypeHermiteChanged);
+
+	primTypeCatmullRom.setName("CatmullRom");
+	primTypeCatmullRom.set(false);
+	primTypeCatmullRom.addListener(this, &ofApp::primTypeCatmullRomChanged);
 
 	primPosX.setName("X");
 	primPosX.setMin(MinX);
@@ -729,6 +734,9 @@ void ofApp::btnDrawPrimitiveClicked()
 		}
 		else if (primTypeHermite.get()) {
 			selectionMenu.add(rend->createHermite(primPosX2, primPosY2, primPosZ2, primPosX3, primPosY3, primPosZ3, primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, 100));
+		}
+		else if (primTypeCatmullRom.get()) {
+			selectionMenu.add(rend->createCatmullRom(ofPoint(primPosX2, primPosY2, primPosZ2), ofPoint(primPosX, primPosY, primPosZ), ofPoint(primSizeWidth, primSizeHeight, primSizeDepth), ofPoint(primPosX3, primPosY3, primPosZ3), 100));
 		}
 	}
 
@@ -1053,32 +1061,57 @@ void ofApp::primTypeBezierChanged(bool& value) {
 
 	primTypeBezier.disableEvents();
 	primTypeHermite.disableEvents();
+	primTypeCatmullRom.disableEvents();
 
 	if (primTypeBezier.get())
 	{
 		primTypeHermite.set(false);
+		primTypeCatmullRom.set(false);
 	}
 	else
 		primTypeBezier.set(true);
 
 	primTypeHermite.enableEvents();
 	primTypeBezier.enableEvents();
+	primTypeCatmullRom.enableEvents();
 }
 
 void ofApp::primTypeHermiteChanged(bool& value) {
 
 	primTypeBezier.disableEvents();
 	primTypeHermite.disableEvents();
+	primTypeCatmullRom.disableEvents();
 
 	if (primTypeHermite.get())
 	{
 		primTypeBezier.set(false);
+		primTypeCatmullRom.set(false);
 	}
 	else
 		primTypeHermite.set(true);
 
 	primTypeHermite.enableEvents();
 	primTypeBezier.enableEvents();
+	primTypeCatmullRom.enableEvents();
+}
+
+void ofApp::primTypeCatmullRomChanged(bool& value) {
+
+	primTypeBezier.disableEvents();
+	primTypeHermite.disableEvents();
+	primTypeCatmullRom.disableEvents();
+
+	if (primTypeHermite.get())
+	{
+		primTypeBezier.set(false);
+		primTypeHermite.set(false);
+	}
+	else
+		primTypeCatmullRom.set(true);
+
+	primTypeHermite.enableEvents();
+	primTypeBezier.enableEvents();
+	primTypeCatmullRom.enableEvents();
 }
 
 void ofApp::wireFrameChanged(bool& value) {

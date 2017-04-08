@@ -314,7 +314,9 @@ ofParameter<bool> renderer::createBezier(float cx1, float cy1, float cz1, float 
 	scn->addElement(prim);
 	return prim.selected;
 }
-
+/**
+* Creates a Hermite spline with given control points ans line Resolution.
+*/
 ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes) { 
 
 	return createHermite(cx1, cy1, cz1, cx2, cy2, cz2, xi, yi, zi, xf, yf, zf, lineRes, fill, stroke); 
@@ -340,7 +342,9 @@ ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float
 	cp4.z = zf;
 	herm->setMode(ofPath::POLYLINES);
 	herm->moveTo(xi, yi, zi);
-
+	herm->setColor(fillColor);
+	herm->setStrokeColor(strokeColor);
+	herm->setStrokeWidth(strokeThickness);
 	ofVec3f tangent1 = cp2 - position;
 	ofVec3f tangent2 = cp3 - cp4;
 	for (int i = 0; i <= lineRes; ++i) {
@@ -353,12 +357,31 @@ ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float
 			position.x, position.y, position.z);
 		herm->curveTo(position);
 	}
-	herm->setColor(fillColor);
-	herm->setStrokeColor(strokeColor);
-	herm->setStrokeWidth(strokeThickness);
 	
 	primitive2d prim = primitive2d{ herm, fillColor, strokeColor, strokeThickness };
 	prim.setName("Hermite " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+}
+/**
+* Creates CatmullRom spline with given control points and line resolution.
+*/
+ofParameter<bool> renderer::createCatmullRom(const ofPoint cp1, const ofPoint cp2, const ofPoint to, const ofPoint cp4, int lineRes) {
+	return createCatmullRom(cp1, cp2, to, cp4, lineRes, fill, stroke);
+}
+
+ofParameter<bool> renderer::createCatmullRom(const ofPoint cp1, const ofPoint cp2, const ofPoint to, const ofPoint cp4, int lineRes, ofColor fillColor, ofColor strokeColor) {
+	ofPath* catmullRom = new ofPath();
+	catmullRom->moveTo(cp1);
+	catmullRom->curveTo(cp1);
+	catmullRom->curveTo(cp2);
+	catmullRom->curveTo(to);
+	catmullRom->curveTo(cp4);
+	catmullRom->setColor(fillColor);
+	catmullRom->setStrokeColor(strokeColor);
+	catmullRom->setStrokeWidth(strokeThickness);
+	primitive2d prim = primitive2d{ catmullRom, fillColor, strokeColor, strokeThickness };
+	prim.setName("Catmull Rom " + to_string(scn->nbElements() + 1));
 	scn->addElement(prim);
 	return prim.selected;
 }

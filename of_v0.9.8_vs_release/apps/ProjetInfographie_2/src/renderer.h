@@ -60,11 +60,14 @@ public:
 	ofParameter<bool> createTriangle(float x1, float y1, float x2, float y2, float x3, float y3, ofColor fillColor, ofColor strokeColor);
 	ofParameter<bool> createPoint(float x, float y, float radius);
 	ofParameter<bool> createPoint(float x, float y, float radius, ofColor fillColor, ofColor strokeColor);
+	//Topologie
 	ofParameter<bool> createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf);
 	ofParameter<bool> createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, ofColor fillColor, ofColor strokeColor);
 	ofParameter<bool> createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes);
 	ofParameter<bool> createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes, ofColor fillColor, ofColor strokeColor);
-
+	ofParameter<bool> createCatmullRom(const ofPoint cp1, const ofPoint cp2, const ofPoint to, const ofPoint cp4, int lineRes);
+	ofParameter<bool> createCatmullRom(const ofPoint cp1, const ofPoint cp2, const ofPoint to, const ofPoint cp4, int lineRes, ofColor fillColor, ofColor strokeColor);
+	//3D primitives
 	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d);
 	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol);
 	ofParameter<bool> createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ);

@@ -101,6 +101,7 @@ private:
 	ofParameter<bool> primTypePoint;
 	ofParameter<bool> primTypeBezier;
 	ofParameter<bool> primTypeHermite;
+	ofParameter<bool> primTypeCatmullRom;
 
 	ofParameterGroup groupPrimitivePosition3D;
 	ofParameterGroup groupPrimitivePosition2D;
@@ -190,7 +191,8 @@ private:
 	void primTypeLineChanged(bool & value);
 	void primTypePointChanged(bool & value);
 	void primTypeBezierChanged(bool & value);
-	void ofApp::primTypeHermiteChanged(bool& value);
+	void primTypeHermiteChanged(bool& value);
+	void primTypeCatmullRomChanged(bool& value);
 
 	void wireFrameChanged(bool& value);
 
