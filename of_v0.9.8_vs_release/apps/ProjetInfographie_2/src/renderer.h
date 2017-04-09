@@ -8,6 +8,7 @@
 #include "primitive2d.h"
 #include "ccamera.h"
 #include "extModel.h"
+#include <typeinfo>
 
 
 class renderer

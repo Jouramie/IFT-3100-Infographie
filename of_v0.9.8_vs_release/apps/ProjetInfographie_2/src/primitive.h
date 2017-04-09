@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofxRay.h"
+#include "ccamera.h"
 
 class primitive
 {
@@ -25,9 +26,12 @@ public:
 
 	ofMatrix4x4 getTransfo() { return transfoMatrix; }
 	void setTransfo(ofMatrix4x4 matrix) { this->transfoMatrix = matrix; }
-
-	virtual bool checkIntersectionPlaneAndLine(ofRay ray, float *result) const { return false; };
 	ofParameter<bool> selected;
+
+	bool intersectsMesh(const ofVec2f &screenCoordinates, const ofMesh &mesh, const ofCamera &cam, const ofMatrix4x4 &toWorldSpace);
+	virtual bool intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) { return false; };
+	bool calcTriangleIntersection(const ofVec3f &vert0, const ofVec3f &vert1, const ofVec3f &vert2, ofRay ray, float *result) const;
+	bool calcPlaneIntersection(const ofVec3f &planeOrigin, const ofVec3f &planeNormal, ofRay ray, float *result) const;
 
 protected:
 	virtual const ofVec3f getLocalPosition() const = 0;

@@ -94,7 +94,9 @@ void renderer::draw()
 	ofDisableDepthTest();
 
 	ofPopMatrix();
+
 	cam->end();
+
 	if (isFiltered) {
 		checkFilters();
 	}
@@ -316,7 +318,7 @@ ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d,
 
 	for (int i = 0; i < 6; i++)
 	{
-		box->setSideColor(i, fillCol);
+		//box->setSideColor(i, fillCol);
 	}
 
 	primitive3d prim = primitive3d{ box, fillCol, matrix };
@@ -470,44 +472,67 @@ void renderer::setWireFrameMode(bool wf)
 
 void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 {
-	ofVec3f screenToWorld = (**cam).screenToWorld(ofVec3f(x, y, 0.0));
 
-	primitive* intersectPrim = nullptr;
-	int distanceClosest = std::numeric_limits<int>::max();
+	for (primitive& p : *scn)
+	{
+		if (p.intersectsMeshInstance(ofVec2f(x, y), (**cam))) {
+			p.changeSelected();
+		}
+	}
 
-	ofVec3f vectNow = (screenToWorld - (**cam).getPosition());
-	vectNow.scale(25);
+	//ofVec3f screenToWorld = (**cam).screenToWorld(ofVec3f(x, y, 0.0));
+	//ofRay ray((**cam).getPosition(), screenToWorld - (**cam).getPosition());
+	//bool intersection = false;
+	//float t = 0;
 
-	ofRay ray((**cam).getPosition(), vectNow, true);
-	// Pour dessiner le rayon (à des fins de débogage)
-	// rays.push_back(ray);
+	//// Pour dessiner le rayon (à des fins de débogage)
+	//rays.push_back(ray);
+
+	//bool found = false;
 
 	//for (primitive& p : *scn)
 	//{
-	//	if (!shiftHeld)
+	//	intersection = p.calcTriangleIntersection(one, two, three, &t);
+	//	if (intersection) {
+	//		break;
+	//	}
+
+	//	const vector<ofMeshFace>& faces = sphere.getMesh().getUniqueFaces();
+	//	/*if (!shiftHeld)
 	//	{
 	//		p.setSelected(false);
-	//	}
+	//	}*/
 
-	//	float* distance = new float(0);
-
-	//	bool found = p.checkIntersectionPlaneAndLine(ray, distance);
-	//	if (found)// && *distance >= 0 && *distance < distanceClosest)
+	//	if (p.getName().find("Car") == string::npos)
 	//	{
-	//		intersectPrim = &p;
-	//		//distanceClosest = *distance;
+
+	//		float* distance = new float(0);
+
+	//		found = p.checkIntersectionPlaneAndLine(ray, distance, *cam);
+
+	//		if (found)// && *distance >= 0 && *distance < distanceClosest)
+	//		{
+	//			intersectPrim = &p;
+	//			intersectPrim->changeSelected();
+	//			//ofSetColor(0, 255, 0);
+	//			//distanceClosest = *distance;
+	//		}
+	//		else
+	//		{
+	//			//ofSetColor(255, 0, 0);
+	//		}
 	//	}
 	//}
 
-	//if (distanceClosest < (std::numeric_limits<int>::max() - 1))
-	//{
-	//	intersectPrim->setSelected(!intersectPrim->getSelected());
-	//	std::cout << "Selected Primitive" << std::endl;
-	//}
-	//else
-	//{
-	//	std::cout << "Selected Nothing" << std::endl;
-	//}
+	////if (distanceClosest < (std::numeric_limits<int>::max() - 1))
+	////{
+	////	intersectPrim->setSelected(!intersectPrim->getSelected());
+	////	std::cout << "Selected Primitive" << std::endl;
+	////}
+	////else
+	////{
+	////	std::cout << "Selected Nothing" << std::endl;
+	////}
 }
 
 void renderer::addBlur() {

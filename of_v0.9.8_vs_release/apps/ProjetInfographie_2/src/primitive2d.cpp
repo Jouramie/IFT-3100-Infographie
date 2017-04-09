@@ -71,3 +71,11 @@ void primitive2d::draw(bool wireframe)
 
 	ofPopMatrix();
 }
+
+bool primitive2d::intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) {
+
+	//ofMatrix4x4 toWorldSpace = transfoMatrix;
+	//ofMesh mesh = prim->();
+
+	return false;// primitive::intersectsMesh(screenCoordinates, mesh, cam, toWorldSpace);
+}
