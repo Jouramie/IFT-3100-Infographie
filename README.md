@@ -11,3 +11,7 @@
 ## Pour configurer ofxRay ##
 
 Faire la même chose que ci-dessus mais avec ofxRay
+
+## Pour configurer ofxReflectionRefraction ##
+
+Faire la même chose que ci-dessus mais avec ofxReflectionRefraction. Je crois que tu commences à voir le principe
