@@ -22,6 +22,10 @@ public:
 	void setup() { setupCamera(); setupParameters(); }
 	void update(float dt);
 
+	float getPosX() { return posX.get(); };
+	float getPosY() { return posY.get(); };
+	float getPosZ() { return posZ.get(); };
+
 	void begin() { cam->begin(); }
 	void end() { cam->end(); }
 	

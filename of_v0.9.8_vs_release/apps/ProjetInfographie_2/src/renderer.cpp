@@ -56,6 +56,17 @@ void renderer::update()
 	cam->setTarget(sum);
 }
 
+void renderer::drawGlass(char axis)
+{
+	ofPushMatrix();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//ofSetColor(0.7, 0.7, 0.7, 0.20);
+	glColor4f(0.7, 0.7, 0.7, 0.20);
+	ofDrawRectangle(-4000, -4000, 8000, 8000);
+	glDisable(GL_BLEND);
+	ofPopMatrix();
+}
 
 void renderer::draw()
 {
@@ -78,6 +89,78 @@ void renderer::draw()
 	}
 	if (scale) {
 		ofScale(scaleX, scaleY, scaleZ);
+	}
+
+	hasRef = "lz";
+
+	bool mustReflect = false;
+	bool mustRefract = false;
+	char axis = 'x';
+
+	if (hasRef.length() != 2)
+	{
+		hasRef = "";
+	}
+	else
+	{
+		if (hasRef[0] == 'l')
+			mustReflect = true;
+		else if (hasRef[0] == 'r')
+			mustRefract = true;
+
+		axis = hasRef[1];
+	}
+
+	if (mustReflect || mustRefract)
+	{
+		ofDisableDepthTest();
+
+		for (auto& p : *scn)
+		{
+			if (mustReflect)
+			{
+				glPushMatrix();
+
+				float x = 1.0;
+				float y = 1.0;
+				float z = 1.0;
+				bool mustDraw = false;
+
+				if (axis == 'x')
+				{
+					x = -x;
+					if ((*cam).getPosX() > 0)
+						mustDraw = true;
+				}
+				else if (axis == 'y')
+				{
+					y = -y;
+					if ((*cam).getPosY() > 0)
+						mustDraw = true;
+				}
+				else if (axis == 'z')
+				{
+					z = -z;
+					if ((*cam).getPosZ() > 0)
+						mustDraw = true;
+				}
+
+				if (mustDraw)
+				{
+					glScalef(x, y, z);
+					//setLightSourcePositions();
+					p.draw(wireFrame);
+					glPopMatrix();
+				}
+			}
+		}
+		drawGlass(axis);
+		ofEnableDepthTest();
+	}
+	else
+	{
+		refPosition = 0;
+		hasRef = "";
 	}
 
 	for (auto& p : *scn)
@@ -320,6 +403,8 @@ ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d,
 	{
 		//box->setSideColor(i, fillCol);
 	}
+
+	ofMesh boxMesh = box->getMesh();
 
 	primitive3d prim = primitive3d{ box, fillCol, matrix };
 	prim.setName("Cube " + to_string(scn->nbElements() + 1));

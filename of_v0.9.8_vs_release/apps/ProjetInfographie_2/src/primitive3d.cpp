@@ -41,7 +41,7 @@ void primitive3d::draw(bool wireframe) {
 	ofPushMatrix();
 	ofTranslate(transfoMatrix.getTranslation());
 
-	//ofSetColor(fillCol);
+	ofSetColor(fillCol);
 
 	ofQuaternion rotation = transfoMatrix.getRotate();
 	float rotationAmount;
