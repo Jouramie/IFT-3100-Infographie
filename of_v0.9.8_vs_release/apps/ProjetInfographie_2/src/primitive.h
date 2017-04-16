@@ -28,8 +28,9 @@ public:
 	void setTransfo(ofMatrix4x4 matrix) { this->transfoMatrix = matrix; }
 	ofParameter<bool> selected;
 
-	bool intersectsMesh(const ofVec2f &screenCoordinates, const ofMesh &mesh, const ofCamera &cam, const ofMatrix4x4 &toWorldSpace);
+	bool intersectsMesh(ofRay ray, const ofMesh &mesh, const ofMatrix4x4 &toWorldSpace, vector<int> *meshHit);
 	virtual bool intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) { return false; };
+	virtual bool getColorOfRay(ofRay ray, ofColor * hit) { return false; };
 	bool calcTriangleIntersection(const ofVec3f &vert0, const ofVec3f &vert1, const ofVec3f &vert2, ofRay ray, float *result) const;
 	bool calcPlaneIntersection(const ofVec3f &planeOrigin, const ofVec3f &planeNormal, ofRay ray, float *result) const;
 

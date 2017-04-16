@@ -91,7 +91,7 @@ void renderer::draw()
 		ofScale(scaleX, scaleY, scaleZ);
 	}
 
-	hasRef = "lz";
+	hasRef = "";
 
 	bool mustReflect = false;
 	bool mustRefract = false;
@@ -408,6 +408,7 @@ ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d,
 
 	primitive3d prim = primitive3d{ box, fillCol, matrix };
 	prim.setName("Cube " + to_string(scn->nbElements() + 1));
+	prim.setMirror(true);
 	scn->addElement(prim);
 	return prim.selected;
 

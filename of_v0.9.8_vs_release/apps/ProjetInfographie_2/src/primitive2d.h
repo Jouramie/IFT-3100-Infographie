@@ -18,7 +18,7 @@ public:
 
 	void draw(bool wireframe) override;
 
-	bool intersectsMeshInstance(const ofVec2f & screenCoordinates, const ofCamera & cam);
+	bool intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) override;
 
 protected:
 	const ofVec3f getLocalPosition() const override { return ofVec3f(); } //Fix later

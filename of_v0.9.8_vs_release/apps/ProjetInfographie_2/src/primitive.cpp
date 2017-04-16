@@ -8,13 +8,10 @@ const ofVec3f primitive::getGlobalPosition() const
 	return dummy.getGlobalPosition();
 }
 
-bool primitive::intersectsMesh(const ofVec2f &screenCoordinates, const ofMesh &mesh, const ofCamera &cam, const ofMatrix4x4 &toWorldSpace) {
-
-	ofVec3f screenToWorld = cam.screenToWorld(ofVec3f(screenCoordinates.x, screenCoordinates.y, 0.0));
-	ofRay ray(cam.getPosition(), screenToWorld - cam.getPosition());
+bool primitive::intersectsMesh(ofRay ray, const ofMesh &mesh, const ofMatrix4x4 &toWorldSpace, vector<int> *meshHit) {
 	const vector<ofMeshFace>& faces = mesh.getUniqueFaces();
 	bool intersection = false;
-	float t = 0;
+	float t;
 	for (int i = 0; i < faces.size(); i++) {
 		const ofMeshFace &face = faces[i];
 		// intersections are done worldSpace
@@ -26,7 +23,8 @@ bool primitive::intersectsMesh(const ofVec2f &screenCoordinates, const ofMesh &m
 		three = three * transfoMatrix;
 		intersection = calcTriangleIntersection(one, two, three, ray, &t);
 		if (intersection) {
-			break;
+			meshHit->push_back(i);
+			//break;
 		}
 	}
 	return intersection;
