@@ -27,6 +27,23 @@ void renderer::setup()
 	rotate = false;
 	scale = false;
 
+	lightAmbient = new ofColor(127, 127, 127);
+	ofSetGlobalAmbientColor(*lightAmbient);
+
+	lightDirectional = new ofLight();
+	lightDirectional->setDiffuseColor(ofColor(31, 31, 255));
+	lightDirectional->setSpecularColor(ofColor(191, 191, 191));
+	lightDirectional->setOrientation(ofVec3f(0.0f, 0.0f, 0.0f));
+	lightDirectional->setDirectional();
+	lightDirectional->enable();
+
+	mat = new ofMaterial();
+	mat->setAmbientColor(ofColor(63, 63, 63));
+	mat->setDiffuseColor(ofColor(0, 0, 127));
+	mat->setEmissiveColor(ofColor(0, 63, 63));
+	mat->setSpecularColor(ofColor(191, 191, 191));
+	mat->setShininess(8.0f);
+
 	time = lastTime = ofGetElapsedTimef();
 }
 
@@ -76,6 +93,7 @@ void renderer::draw()
 	ofPushMatrix();
 
 	ofEnableDepthTest();
+	ofEnableLighting();
 
 	ofSetLineWidth(1.0);
 
@@ -163,17 +181,20 @@ void renderer::draw()
 		hasRef = "";
 	}
 
+	mat->begin();
 	for (auto& p : *scn)
 	{
 		p.draw(wireFrame);
 	}
-
+	mat->end();
+	
 	std::list<ofRay>::iterator iterator2;
 	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
 	{
 		iterator2->draw();
 	}
 
+	ofDisableLighting();
 	ofDisableDepthTest();
 
 	ofPopMatrix();
@@ -504,6 +525,60 @@ ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int 
 	forme.setName("IceCream " + to_string(scn->nbElements() + 1));
 	scn->addElement(forme);
 	return forme.selected;
+}
+
+//------- Light --------
+ofParameter<bool> renderer::createDirectionalLight(int ax, int ay, int az, ofColor difCol, ofColor specCol)
+{
+	ofLight* ofl = new ofLight();
+	ofl->setDirectional();
+	ofl->enable();
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	ofQuaternion rotate{};
+	rotate.makeRotate(ax, ofVec3f(1, 0, 0), ay, ofVec3f(0, 1, 0), az, ofVec3f(0, 0, 1));
+	matrix.setRotate(rotate);
+
+	light* l = new light{ ofl, matrix };
+	l->setName("Directional " + to_string(scn->nbElements() + 1));
+	l->setDiffuseColor(difCol);
+	l->setSpecularColor(specCol);
+	scn->addElement(l);
+	return l->selected;
+}
+
+ofParameter<bool> renderer::createPonctualLight(int x, int y, int z, ofColor difCol, ofColor specCol)
+{
+	ofLight* ofl = new ofLight();
+	ofl->setPointLight();
+	ofl->enable();
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	matrix.setTranslation(x, y, z);
+
+	light* l = new light{ ofl, matrix };
+	l->setName("Pontual " + to_string(scn->nbElements() + 1));
+	l->setDiffuseColor(difCol);
+	l->setSpecularColor(specCol);
+	scn->addElement(l);
+	return l->selected;
+}
+
+ofParameter<bool> renderer::createSpotlight(ofVec3f pos, int ax, int ay, int az, ofColor difCol, ofColor specCol)
+{
+	ofLight* ofl = new ofLight();
+	ofl->setSpotlight();
+	ofl->enable();
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	matrix.setTranslation(pos);
+	ofQuaternion rotate{};
+	rotate.makeRotate(ax, ofVec3f(1, 0, 0), ay, ofVec3f(0, 1, 0), az, ofVec3f(0, 0, 1));
+	matrix.setRotate(rotate);
+
+	light* l = new light{ ofl, matrix };
+	l->setName("Spotlight " + to_string(scn->nbElements() + 1));
+	l->setDiffuseColor(difCol);
+	l->setSpecularColor(specCol);
+	scn->addElement(l);
+	return l->selected;
 }
 
 ofParameter<bool> renderer::importModel(string path) {

@@ -8,6 +8,7 @@
 #include "primitive2d.h"
 #include "ccamera.h"
 #include "extModel.h"
+#include "light.h"
 #include <typeinfo>
 
 
@@ -52,6 +53,11 @@ public:
 	ofParameter<bool> createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
 	ofParameter<bool> createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
 	ofParameter<bool> createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
+
+	ofParameter<bool> setAmbiantLight(ofColor col) { *lightAmbient = col; };
+	ofParameter<bool> createDirectionalLight(int ax, int ay, int az, ofColor difCol, ofColor specCol);
+	ofParameter<bool> createPonctualLight(int x, int y, int z, ofColor difCol, ofColor specCol);
+	ofParameter<bool> createSpotlight(ofVec3f pos, int ax, int ay, int az, ofColor difCol, ofColor specCol);
 
 	ofParameter<bool> importModel(string path);
 
@@ -126,5 +132,9 @@ private:
 
 	string hasRef;
 	int refPosition;
+
+	ofColor* lightAmbient;
+	ofLight* lightDirectional;
+	ofMaterial* mat;
 };
 

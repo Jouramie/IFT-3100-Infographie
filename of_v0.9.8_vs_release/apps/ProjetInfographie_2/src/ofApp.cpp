@@ -151,6 +151,11 @@ void ofApp::keyReleased(int key) {
 		isKeyPressPageUp = false;
 		ofLog() << "<app::keyReleasePageUp>";
 	}
+	else if (key == 'l')
+	{
+		selectionMenu.add(rend->createPonctualLight(100, 100, 100, ofColor(255, 255, 255), ofColor(255, 255, 255)));
+		ofLog() << "<app::keyReleasel>";
+	}
 	/*else if (key == 'q')
 		rend->changeRotate();*/
 

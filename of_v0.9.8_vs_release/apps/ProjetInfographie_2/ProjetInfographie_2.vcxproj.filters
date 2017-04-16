@@ -7,22 +7,10 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\ccamera.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\ofApp.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\primitive.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\primitive2d.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\primitive3d.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer.cpp">
@@ -106,11 +94,26 @@
     <ClCompile Include="..\..\addons\ofxRay\src\ofxRay\Ray.cpp">
       <Filter>addons\ofxRay\src\ofxRay</Filter>
     </ClCompile>
+    <ClCompile Include="src\primitive.cpp">
+      <Filter>src\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="src\primitive2d.cpp">
+      <Filter>src\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="src\primitive3d.cpp">
+      <Filter>src\primitive</Filter>
+    </ClCompile>
     <ClCompile Include="src\extModel.cpp">
-      <Filter>src</Filter>
+      <Filter>src\primitive</Filter>
     </ClCompile>
     <ClCompile Include="src\forme3d.cpp">
-      <Filter>src</Filter>
+      <Filter>src\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="src\light.cpp">
+      <Filter>src\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ccamera.cpp">
+      <Filter>src\camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -240,24 +243,18 @@
     <Filter Include="addons\ofxRay\src\ofxRay">
       <UniqueIdentifier>{5CB39972-96FB-BC3B-0AB4-9599}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\primitive">
+      <UniqueIdentifier>{26592809-0906-48b1-a9c7-cebf284ed58e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\camera">
+      <UniqueIdentifier>{f8fe1d81-9009-4958-8a95-c9b0285c4fc8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ofApp.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\ccamera.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\ofApp.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\primitive.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\primitive2d.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\primitive3d.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer.h">
@@ -941,11 +938,26 @@
     <ClInclude Include="..\..\addons\ofxRay\src\ofxRay.h">
       <Filter>addons\ofxRay\src</Filter>
     </ClInclude>
+    <ClInclude Include="src\primitive.h">
+      <Filter>src\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="src\primitive2d.h">
+      <Filter>src\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="src\primitive3d.h">
+      <Filter>src\primitive</Filter>
+    </ClInclude>
     <ClInclude Include="src\extModel.h">
-      <Filter>src</Filter>
+      <Filter>src\primitive</Filter>
     </ClInclude>
     <ClInclude Include="src\forme3d.h">
-      <Filter>src</Filter>
+      <Filter>src\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="src\light.h">
+      <Filter>src\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ccamera.h">
+      <Filter>src\camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

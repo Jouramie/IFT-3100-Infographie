@@ -6,7 +6,7 @@
 
 class primitive3d : public primitive {
 public:
-	
+
 	primitive3d();
 	primitive3d(of3dPrimitive* primitive);
 	primitive3d(of3dPrimitive* primitive, ofColor fill);
