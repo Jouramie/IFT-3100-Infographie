@@ -15,7 +15,7 @@ void renderer::setup()
 	rotate = -1;
 	mainCam.begin();*/
 
-	cam->setCamera(new ofEasyCam{ });
+	cam->setCamera(new ofEasyCam{});
 	cam->setup();
 	//filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
 
@@ -27,22 +27,23 @@ void renderer::setup()
 	rotate = false;
 	scale = false;
 
-	lightAmbient = new ofColor(127, 127, 127);
-	ofSetGlobalAmbientColor(*lightAmbient);
+	tempAmbientLight = new ofColor(127, 127, 127);
+	ofSetGlobalAmbientColor(*tempAmbientLight);
 
-	lightDirectional = new ofLight();
-	lightDirectional->setDiffuseColor(ofColor(31, 31, 255));
-	lightDirectional->setSpecularColor(ofColor(191, 191, 191));
-	lightDirectional->setOrientation(ofVec3f(0.0f, 0.0f, 0.0f));
-	lightDirectional->setDirectional();
-	lightDirectional->enable();
+	//TODO supprimer lorsque l'interface permettra la création de lumière
+	tempDirectionalLight = new ofLight();
+	tempDirectionalLight->setDiffuseColor(ofColor(31, 31, 255));
+	tempDirectionalLight->setSpecularColor(ofColor(191, 191, 191));
+	tempDirectionalLight->setOrientation(ofVec3f(0.0f, 0.0f, 0.0f));
+	tempDirectionalLight->setDirectional();
+	tempDirectionalLight->enable();
 
-	mat = new ofMaterial();
-	mat->setAmbientColor(ofColor(63, 63, 63));
-	mat->setDiffuseColor(ofColor(0, 0, 127));
-	mat->setEmissiveColor(ofColor(0, 63, 63));
-	mat->setSpecularColor(ofColor(191, 191, 191));
-	mat->setShininess(8.0f);
+	//default activeMaterial
+	activeMaterial.setAmbientColor(ofColor(63, 63, 63));
+	activeMaterial.setDiffuseColor(ofColor(0, 0, 127));
+	activeMaterial.setEmissiveColor(ofColor(0, 0, 63));
+	activeMaterial.setSpecularColor(ofColor(127, 127, 127));
+	activeMaterial.setShininess(8.0f);
 
 	time = lastTime = ofGetElapsedTimef();
 }
@@ -181,13 +182,11 @@ void renderer::draw()
 		hasRef = "";
 	}
 
-	mat->begin();
 	for (auto& p : *scn)
 	{
 		p.draw(wireFrame);
 	}
-	mat->end();
-	
+
 	std::list<ofRay>::iterator iterator2;
 	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
 	{
@@ -227,7 +226,7 @@ void renderer::imageExport(const string name, const string extension)
 	ofLog() << "<export image: " << fileName << ">";
 }
 
-void renderer::checkFilters(){
+void renderer::checkFilters() {
 	//--------------Filters
 	sceneImg.clear();
 	sceneImg.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
@@ -249,9 +248,9 @@ void renderer::checkFilters(){
 	filter.draw(0, 0);
 }
 
-void renderer::sceneTranslate(float x, float y, float z) {	
+void renderer::sceneTranslate(float x, float y, float z) {
 	translate = true;
-	deltaX = x; 
+	deltaX = x;
 	deltaY = y;
 	deltaZ = z;
 }
@@ -288,20 +287,21 @@ void renderer::applySelection(ofMatrix4x4 matrix)
 * Render a square with given width, height and border width.
 */
 ofParameter<bool> renderer::createSquare(float x, float y, float w, float h) {
-	return createSquare(x,y,w,h,fill, stroke);
+	return createSquare(x, y, w, h, activeMaterial);
 }
 
 /**
 * Render a square with given width, height, border width and color.
 */
-ofParameter<bool> renderer::createSquare(float x, float y, float w, float h, ofColor fillColor, ofColor strokeColor) {
+ofParameter<bool> renderer::createSquare(float x, float y, float w, float h, ofMaterial mat) {
 	ofPath* rect = new ofPath();
 	rect->rectangle(ofRectangle(x, y, w, h));
-	rect->setColor(fillColor);
-	rect->setStrokeColor(strokeColor);
+	//rect->setColor(fillColor);
+	//rect->setStrokeColor(strokeColor);
 	rect->setStrokeWidth(strokeThickness);
-	primitive2d prim = primitive2d{ rect, fillColor, strokeColor,strokeThickness };
+	primitive2d prim = primitive2d{ rect, ofColor(), ofColor(), strokeThickness };
 	prim.setName("Carre " + to_string(scn->nbElements() + 1));
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -310,20 +310,21 @@ ofParameter<bool> renderer::createSquare(float x, float y, float w, float h, ofC
 * Render a circle/ellipse with given radius.
 */
 ofParameter<bool> renderer::createCircle(float x, float y, float r1, float r2) {
-	return createCircle(x, y, r1, r2, fill, stroke);
+	return createCircle(x, y, r1, r2, activeMaterial);
 }
 
 /**
 * Render a circle/ellipse with given radius and color.
 */
-ofParameter<bool> renderer::createCircle(float x, float y, float r1, float r2, ofColor fillColor, ofColor strokeColor) {
+ofParameter<bool> renderer::createCircle(float x, float y, float r1, float r2, ofMaterial mat) {
 	ofPath* circle = new ofPath();
 	circle->ellipse(x, y, r1, r2);
-	circle->setColor(fillColor);
-	circle->setStrokeColor(strokeColor);
+	//circle->setColor(fillColor);
+	//circle->setStrokeColor(strokeColor);
 	circle->setStrokeWidth(strokeThickness);
-	primitive2d prim = primitive2d{ circle, fillColor, strokeColor, strokeThickness };
+	primitive2d prim = primitive2d{ circle, ofColor(), ofColor(), strokeThickness };
 	prim.setName("Cercle " + to_string(scn->nbElements() + 1));
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -332,21 +333,22 @@ ofParameter<bool> renderer::createCircle(float x, float y, float r1, float r2, o
 * Render a line with given x, y and deltas.
 */
 ofParameter<bool> renderer::createLine(float x, float y, float xDelta, float yDelta) {
-	return createLine(x, y, xDelta, yDelta, stroke);
+	return createLine(x, y, xDelta, yDelta, activeMaterial);
 }
 
 /**
 * Render a line with given color, x, y and deltas.
 */
-ofParameter<bool> renderer::createLine(float x, float y, float xDelta, float yDelta, ofColor fillColor) {
+ofParameter<bool> renderer::createLine(float x, float y, float xDelta, float yDelta, ofMaterial mat) {
 	ofPath* line = new ofPath();
 	line->moveTo(x, y, 0);
-	line->lineTo(x +  xDelta, y + yDelta);
-	line->setColor(fillColor);	
+	line->lineTo(x + xDelta, y + yDelta);
+	//line->setColor(fillColor);
 	line->setStrokeWidth(strokeThickness);
 
-	primitive2d prim = primitive2d{ line, fillColor, strokeThickness };
+	primitive2d prim = primitive2d{ line, ofColor(), strokeThickness };
 	prim.setName("Ligne " + to_string(scn->nbElements() + 1));
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -355,21 +357,22 @@ ofParameter<bool> renderer::createLine(float x, float y, float xDelta, float yDe
 * Render a triangle with given points.
 */
 ofParameter<bool> renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
-	return createTriangle(x1, y1, x2, y2, x3, y3, fill, stroke);
+	return createTriangle(x1, y1, x2, y2, x3, y3, activeMaterial);
 }
 
 /**
 * Render a triangle with given points and color.
 */
-ofParameter<bool> renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, float y3, ofColor fillColor, ofColor strokeColor) {
+ofParameter<bool> renderer::createTriangle(float x1, float y1, float x2, float y2, float x3, float y3, ofMaterial mat) {
 	ofPath* triangle = new ofPath();
 	triangle->triangle(x1, y1, x2, y2, x3, y3);
-	triangle->setColor(fillColor);
-	triangle->setStrokeColor(strokeColor);
+	//triangle->setColor(fillColor);
+	//triangle->setStrokeColor(strokeColor);
 	triangle->setStrokeWidth(strokeThickness);
 
-	primitive2d prim = primitive2d{ triangle, fillColor, strokeColor, strokeThickness };
+	primitive2d prim = primitive2d{ triangle, ofColor(), ofColor(), strokeThickness };
 	prim.setName("Triangle " + to_string(scn->nbElements() + 1));
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -378,31 +381,32 @@ ofParameter<bool> renderer::createTriangle(float x1, float y1, float x2, float y
 * Render a line with given x,y and deltas.
 */
 ofParameter<bool> renderer::createPoint(float x, float y, float radius) {
-	return createPoint(x, y, radius, fill, stroke);
+	return createPoint(x, y, radius, activeMaterial);
 }
 
 /**
 * Render a line with given x,y and deltas.
 */
-ofParameter<bool> renderer::createPoint(float x, float y, float radius, ofColor fillColor, ofColor strokeColor) {
+ofParameter<bool> renderer::createPoint(float x, float y, float radius, ofMaterial mat) {
 	ofPath* point = new ofPath();
 	point->circle(x, y, radius);
-	point->setColor(fillColor);
-	point->setStrokeColor(strokeColor);
+	//point->setColor(fillColor);
+	//point->setStrokeColor(strokeColor);
 	point->setStrokeWidth(strokeThickness);
 
-	primitive2d prim = primitive2d{ point, fillColor, strokeColor, strokeThickness };
+	primitive2d prim = primitive2d{ point, ofColor(), ofColor(), strokeThickness };
 	prim.setName("Point " + to_string(scn->nbElements() + 1));
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 }
 //-------------3D primitives-----------------------
 ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d)
 {
-	return createCube(x, y, z, w, h, d, fill);
+	return createCube(x, y, z, w, h, d, activeMaterial);
 }
 
-ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol)
+ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d, ofMaterial mat)
 {
 	ofBoxPrimitive* box = new ofBoxPrimitive();
 
@@ -427,27 +431,28 @@ ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d,
 
 	ofMesh boxMesh = box->getMesh();
 
-	primitive3d prim = primitive3d{ box, fillCol, matrix };
+	primitive3d prim = primitive3d{ box, ofColor(), matrix };
 	prim.setName("Cube " + to_string(scn->nbElements() + 1));
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 
- 	//cout << *scn;
+	//cout << *scn;
 }
 
 ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
 {
-	return createSphere(x, y, z, sizeX, sizeY, sizeZ, fill);
+	return createSphere(x, y, z, sizeX, sizeY, sizeZ, activeMaterial);
 }
 
-ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
+ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofMaterial mat)
 {
 	ofSpherePrimitive* ball = new ofSpherePrimitive();
 	ball->setPosition(0, 0, 0);
 
 	float smallest = min(sizeX, min(sizeY, sizeZ));
 
-	ball->setRadius(smallest/2);
+	ball->setRadius(smallest / 2);
 
 	float newX = (float)sizeX / smallest;
 	float newY = (float)sizeY / smallest;
@@ -457,18 +462,19 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 	matrix.scale(newX, newY, newZ);
 	matrix.setTranslation(x, y, z);
 
-	primitive3d prim = primitive3d{ ball, color, matrix };
+	primitive3d prim = primitive3d{ ball, ofColor(), matrix };
 	prim.setName("Sphere " + to_string(scn->nbElements() + 1));
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 }
 
 ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
 {
-	return createCone(x, y, z, sizeX, sizeY, sizeZ, fill);
+	return createCone(x, y, z, sizeX, sizeY, sizeZ, activeMaterial);
 }
 
-ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
+ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofMaterial mat)
 {
 	ofConePrimitive* cone = new ofConePrimitive();
 	cone->setPosition(0, 0, 0);
@@ -485,7 +491,7 @@ ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY
 	matrix.scale(newX, newY, newZ);
 	matrix.setTranslation(x, y, z);
 
-	primitive3d prim = primitive3d{ cone, color, matrix };
+	primitive3d prim = primitive3d{ cone, ofColor(), matrix };
 	prim.setName("Cone " + to_string(scn->nbElements() + 1));
 	scn->addElement(prim);
 	return prim.selected;
@@ -494,10 +500,10 @@ ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY
 
 ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ)
 {
-	return createIcecream(x, y, z, sizeX, sizeY, sizeZ, fill);
+	return createIcecream(x, y, z, sizeX, sizeY, sizeZ, activeMaterial);
 }
 
-ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
+ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofMaterial mat)
 {
 	ofSpherePrimitive* ball = new ofSpherePrimitive();
 	ball->setPosition(x, y + sizeY / 3, z);
@@ -520,7 +526,7 @@ ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int 
 	matrix.scale(newX, newY, newZ);
 	matrix.setTranslation(x, y, z);
 
-	forme3d forme{ ball, color, matrix };
+	forme3d forme{ ball, ofColor(), matrix };
 	forme.addPrimitive(cone);
 	forme.setName("IceCream " + to_string(scn->nbElements() + 1));
 	scn->addElement(forme);
@@ -702,7 +708,7 @@ void renderer::addBlur() {
 
 void renderer::removeBlur() {
 	blur = false;
-	if (!invert && !dilate) 
+	if (!invert && !dilate)
 		isFiltered = false;
 }
 

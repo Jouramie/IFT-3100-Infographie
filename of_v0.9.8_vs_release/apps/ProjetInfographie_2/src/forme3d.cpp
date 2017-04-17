@@ -35,7 +35,7 @@ void forme3d::draw(bool wireframe) {
 	ofRotate(rotationAmount, rotationAngle.x, rotationAngle.y, rotationAngle.z);
 
 	ofScale(transfoMatrix.getScale());
-
+	mat.begin();
 	if (wireframe || selected)
 		for (auto& i : prims) {
 			i->drawWireframe();
@@ -44,7 +44,7 @@ void forme3d::draw(bool wireframe) {
 		for (auto& i : prims) {
 			i->draw();
 		}
-
+	mat.begin();
 	ofPopMatrix();
 }
 

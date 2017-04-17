@@ -62,13 +62,13 @@ void primitive2d::draw(bool wireframe)
 	ofRotate(rotationAmount, rotationAngle.x, rotationAngle.y, rotationAngle.z);
 
 	ofScale(transfoMatrix.getScale());
-
+	mat.begin();
 	if (wireframe || selected.get())
 		prim->setFilled(false);
 	else
 		prim->setFilled(true);
 	prim->draw();
-
+	mat.end();
 	ofPopMatrix();
 }
 

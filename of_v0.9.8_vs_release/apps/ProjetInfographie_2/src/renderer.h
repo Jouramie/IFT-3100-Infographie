@@ -21,6 +21,7 @@ public:
 	ofColor background;
 	ofColor stroke;
 	ofColor fill;
+	ofMaterial activeMaterial;
 	ofParameter<float> strokeThickness;
 
 	void setup();
@@ -35,26 +36,26 @@ public:
 	void applySelection(ofMatrix4x4 matrix);
 	//2D primitives
 	ofParameter<bool> createSquare(float x, float y, float width, float height);
-	ofParameter<bool> createSquare(float x, float y, float width, float height, ofColor fillColor, ofColor strokeColor);
+	ofParameter<bool> createSquare(float x, float y, float width, float height, ofMaterial mat);
 	ofParameter<bool> createCircle(float x, float y, float r1, float r2);
-	ofParameter<bool> createCircle(float x, float y, float r1, float r2, ofColor fillColor, ofColor strokeColor);
+	ofParameter<bool> createCircle(float x, float y, float r1, float r2, ofMaterial mat);
 	ofParameter<bool> createLine(float x, float y, float xDelta, float yDelta);
-	ofParameter<bool> createLine(float x, float y, float xDelta, float yDelta, ofColor fillColor);
+	ofParameter<bool> createLine(float x, float y, float xDelta, float yDelta, ofMaterial mat);
 	ofParameter<bool> createTriangle(float x1, float y1, float x2, float y2, float x3, float y3);
-	ofParameter<bool> createTriangle(float x1, float y1, float x2, float y2, float x3, float y3, ofColor fillColor, ofColor strokeColor);
+	ofParameter<bool> createTriangle(float x1, float y1, float x2, float y2, float x3, float y3, ofMaterial mat);
 	ofParameter<bool> createPoint(float x, float y, float radius);
-	ofParameter<bool> createPoint(float x, float y, float radius, ofColor fillColor, ofColor strokeColor);
+	ofParameter<bool> createPoint(float x, float y, float radius, ofMaterial mat);
 
 	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d);
-	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol);
+	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d, ofMaterial mat);
 	ofParameter<bool> createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
-	ofParameter<bool> createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
+	ofParameter<bool> createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofMaterial mat);
 	ofParameter<bool> createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
-	ofParameter<bool> createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
+	ofParameter<bool> createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofMaterial mat);
 	ofParameter<bool> createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
-	ofParameter<bool> createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color);
+	ofParameter<bool> createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofMaterial mat);
 
-	ofParameter<bool> setAmbiantLight(ofColor col) { *lightAmbient = col; };
+	ofParameter<bool> setAmbiantLight(ofColor col) { *tempAmbientLight = col; };
 	ofParameter<bool> createDirectionalLight(int ax, int ay, int az, ofColor difCol, ofColor specCol);
 	ofParameter<bool> createPonctualLight(int x, int y, int z, ofColor difCol, ofColor specCol);
 	ofParameter<bool> createSpotlight(ofVec3f pos, int ax, int ay, int az, ofColor difCol, ofColor specCol);
@@ -133,8 +134,7 @@ private:
 	string hasRef;
 	int refPosition;
 
-	ofColor* lightAmbient;
-	ofLight* lightDirectional;
-	ofMaterial* mat;
+	ofColor* tempAmbientLight;
+	ofLight* tempDirectionalLight;
 };
 

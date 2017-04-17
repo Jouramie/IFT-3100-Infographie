@@ -706,7 +706,7 @@ void ofApp::btnApplySelectClicked() {
 void ofApp::applyAllChanged(bool& value) {
 	if (applyAll) {
 		btnApplySelect.removeListener(this, &ofApp::btnApplySelectClicked);
-		
+
 		float deltaX = rend->getDeltaX();
 		float deltaY = rend->getDeltaY();
 		float deltaZ = rend->getDeltaZ();
@@ -726,7 +726,7 @@ void ofApp::applyAllChanged(bool& value) {
 		proportionX.set(scaleX);
 		proportionY.set(scaleY);
 		proportionZ.set(scaleZ);
-		
+
 	}
 	else {
 		btnApplySelect.addListener(this, &ofApp::btnApplySelectClicked);
