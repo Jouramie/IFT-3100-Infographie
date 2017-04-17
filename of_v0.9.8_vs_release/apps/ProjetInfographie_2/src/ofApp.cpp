@@ -312,6 +312,7 @@ void ofApp::initGroups()
 	groupPrimitiveTypeTopo.add(primTypeBezier);
 	groupPrimitiveTypeTopo.add(primTypeHermite);
 	groupPrimitiveTypeTopo.add(primTypeCatmullRom);
+	groupPrimitiveTypeTopo.add(primTypeSurface);
 
 	groupPrimitivePosition2D.setName("Position");
 	groupPrimitivePosition2D.add(primPosX.set(primPosX));
@@ -464,6 +465,10 @@ void ofApp::initOfParameters() {
 	primTypeCatmullRom.setName("CatmullRom");
 	primTypeCatmullRom.set(false);
 	primTypeCatmullRom.addListener(this, &ofApp::primTypeCatmullRomChanged);
+
+	primTypeSurface.setName("Surface de Bézier");
+	primTypeSurface.set(false);
+	primTypeSurface.addListener(this, &ofApp::primTypeSurfaceChanged);
 
 	primPosX.setName("X");
 	primPosX.setMin(MinX);
@@ -737,6 +742,9 @@ void ofApp::btnDrawPrimitiveClicked()
 		}
 		else if (primTypeCatmullRom.get()) {
 			selectionMenu.add(rend->createCatmullRom(ofPoint(primPosX2, primPosY2, primPosZ2), ofPoint(primPosX, primPosY, primPosZ), ofPoint(primSizeWidth, primSizeHeight, primSizeDepth), ofPoint(primPosX3, primPosY3, primPosZ3), 100));
+		}
+		else {
+			selectionMenu.add(rend->createSurface(500, 500, 2, 20, ofPoint(primPosX2, primPosY2, primPosZ2), ofPoint(primPosX3, primPosY3, primPosZ3)));
 		}
 	}
 
@@ -1062,11 +1070,16 @@ void ofApp::primTypeBezierChanged(bool& value) {
 	primTypeBezier.disableEvents();
 	primTypeHermite.disableEvents();
 	primTypeCatmullRom.disableEvents();
+	primTypeSurface.disableEvents();
 
 	if (primTypeBezier.get())
 	{
 		primTypeHermite.set(false);
 		primTypeCatmullRom.set(false);
+		primTypeSurface.set(false);
+		primSizeWidth.setName("Xf");
+		primSizeHeight.setName("Yf");
+		primSizeDepth.setName("Zf");
 	}
 	else
 		primTypeBezier.set(true);
@@ -1074,6 +1087,7 @@ void ofApp::primTypeBezierChanged(bool& value) {
 	primTypeHermite.enableEvents();
 	primTypeBezier.enableEvents();
 	primTypeCatmullRom.enableEvents();
+	primTypeSurface.enableEvents();
 }
 
 void ofApp::primTypeHermiteChanged(bool& value) {
@@ -1081,11 +1095,16 @@ void ofApp::primTypeHermiteChanged(bool& value) {
 	primTypeBezier.disableEvents();
 	primTypeHermite.disableEvents();
 	primTypeCatmullRom.disableEvents();
+	primTypeSurface.disableEvents();
 
 	if (primTypeHermite.get())
 	{
 		primTypeBezier.set(false);
 		primTypeCatmullRom.set(false);
+		primTypeSurface.set(false);
+		primSizeWidth.setName("Xf");
+		primSizeHeight.setName("Yf");
+		primSizeDepth.setName("Zf");
 	}
 	else
 		primTypeHermite.set(true);
@@ -1093,6 +1112,7 @@ void ofApp::primTypeHermiteChanged(bool& value) {
 	primTypeHermite.enableEvents();
 	primTypeBezier.enableEvents();
 	primTypeCatmullRom.enableEvents();
+	primTypeSurface.enableEvents();
 }
 
 void ofApp::primTypeCatmullRomChanged(bool& value) {
@@ -1100,11 +1120,16 @@ void ofApp::primTypeCatmullRomChanged(bool& value) {
 	primTypeBezier.disableEvents();
 	primTypeHermite.disableEvents();
 	primTypeCatmullRom.disableEvents();
+	primTypeSurface.disableEvents();
 
-	if (primTypeHermite.get())
+	if (primTypeCatmullRom.get())
 	{
 		primTypeBezier.set(false);
 		primTypeHermite.set(false);
+		primTypeSurface.set(false);
+		primSizeWidth.setName("Xf");
+		primSizeHeight.setName("Yf");
+		primSizeDepth.setName("Zf");
 	}
 	else
 		primTypeCatmullRom.set(true);
@@ -1112,6 +1137,32 @@ void ofApp::primTypeCatmullRomChanged(bool& value) {
 	primTypeHermite.enableEvents();
 	primTypeBezier.enableEvents();
 	primTypeCatmullRom.enableEvents();
+	primTypeSurface.enableEvents();
+}
+
+void ofApp::primTypeSurfaceChanged(bool& value) {
+
+	primTypeBezier.disableEvents();
+	primTypeHermite.disableEvents();
+	primTypeCatmullRom.disableEvents();
+	primTypeSurface.disableEvents();
+
+	if (primTypeSurface.get())
+	{
+		primTypeBezier.set(false);
+		primTypeHermite.set(false);
+		primTypeCatmullRom.set(false);
+		primSizeWidth.setName("Largeur");
+		primSizeHeight.setName("Hauteur");
+		primSizeDepth.setName("");
+	}
+	else 
+		primTypeSurface.set(true);
+
+	primTypeHermite.enableEvents();
+	primTypeBezier.enableEvents();
+	primTypeCatmullRom.enableEvents();
+	primTypeSurface.enableEvents();
 }
 
 void ofApp::wireFrameChanged(bool& value) {
@@ -1291,7 +1342,7 @@ void ofApp::setupMenuTopo() {
 	menuTopo.add(groupPrimitivePositionTopo);
 	menuTopo.add(groupPrimitiveSizeTopo);
 
-	menuTopo.add(groupFill);
+	menuTopo.add(groupStroke);
 
 	menuTopo.add(groupTexture);
 

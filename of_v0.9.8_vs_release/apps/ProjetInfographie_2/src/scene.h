@@ -6,6 +6,7 @@
 #include "primitive.h"
 #include "primitive2d.h"
 #include "primitive3d.h"
+#include "primitiveTopo.h"
 #include "forme3d.h"
 #include "extModel.h"
 
@@ -22,11 +23,13 @@ public:
 	//temporaire
 	void addElement(const primitive2d& p) {	addElement(0, p, true); }
 	void addElement(const primitive3d& p) { addElement(0, p, true); }
+	void addElement(const primitiveTopo& p) { addElement(0, p, true); }
 	void addElement(const forme3d& p) { addElement(0, p, true); }
 	void addElement(const extModel& p) { addElement(0, p, true); }
 
 	void addElement(size_t index, const primitive2d& p, bool insertFirstChild);
 	void addElement(size_t index, const primitive3d& p, bool insertFirstChild);
+	void addElement(size_t index, const primitiveTopo& p, bool insertFirstChild);
 	void addElement(size_t index, const forme3d& p, bool insertFirstChild);
 	void addElement(size_t index, const extModel& p, bool insertFirstChild);
 	void removeElement(size_t index);

@@ -102,6 +102,7 @@ private:
 	ofParameter<bool> primTypeBezier;
 	ofParameter<bool> primTypeHermite;
 	ofParameter<bool> primTypeCatmullRom;
+	ofParameter<bool> primTypeSurface;
 
 	ofParameterGroup groupPrimitivePosition3D;
 	ofParameterGroup groupPrimitivePosition2D;
@@ -115,6 +116,12 @@ private:
 	ofParameter<float> primPosX3;
 	ofParameter<float> primPosY3;
 	ofParameter<float> primPosZ3;
+	ofParameter<float> primPosX4;
+	ofParameter<float> primPosY4;
+	ofParameter<float> primPosZ4;
+	ofParameter<float> primPosX5;
+	ofParameter<float> primPosY5;
+	ofParameter<float> primPosZ5;
 
 	ofParameterGroup groupPrimitiveSize2D;
 	ofParameterGroup groupPrimitiveSize3D;
@@ -192,7 +199,8 @@ private:
 	void primTypePointChanged(bool & value);
 	void primTypeBezierChanged(bool & value);
 	void primTypeHermiteChanged(bool& value);
-	void primTypeCatmullRomChanged(bool& value);
+	void primTypeCatmullRomChanged(bool& value); 
+	void primTypeSurfaceChanged(bool& value);
 
 	void wireFrameChanged(bool& value);
 
