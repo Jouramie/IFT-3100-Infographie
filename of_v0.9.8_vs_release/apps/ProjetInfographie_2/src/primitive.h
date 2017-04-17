@@ -10,8 +10,10 @@ public:
 	primitive(ofMatrix4x4 matrix) : transfoMatrix{ matrix }, selected{ false } { }
 
 	virtual void draw() { draw(false); }
-	virtual void draw(bool wireframe) = 0;
+	virtual void draw(bool wireframe) { };
 	const ofVec3f getGlobalPosition() const;
+
+	virtual void shouldPrepare() { };
 
 	bool getSelected() { return selected; }
 	void setSelected(bool selected) { this->selected = selected; }
@@ -33,9 +35,14 @@ public:
 	virtual bool getColorOfRay(ofRay ray, ofColor * hit) { return false; };
 	bool calcTriangleIntersection(const ofVec3f &vert0, const ofVec3f &vert1, const ofVec3f &vert2, ofRay ray, float *result) const;
 	bool calcPlaneIntersection(const ofVec3f &planeOrigin, const ofVec3f &planeNormal, ofRay ray, float *result) const;
+	virtual bool prepareGlass(const ccamera cam, vector<primitive*> otherPrims, ofColor backgroundCol) { return false; };
+	virtual ofMesh getMesh() { return ofMesh(); };
+
+	virtual bool isGlassy() { return false; };
+	virtual bool isCubeOrSphere() { return false; };
 
 protected:
-	virtual const ofVec3f getLocalPosition() const = 0;
+	virtual const ofVec3f getLocalPosition() const { return ofVec3f(); };
 	ofMatrix4x4 transfoMatrix;
 	string name;
 };

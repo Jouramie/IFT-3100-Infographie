@@ -28,6 +28,7 @@ void renderer::setup()
 	scale = false;
 
 	time = lastTime = ofGetElapsedTimef();
+	setMustPrepares();
 }
 
 void renderer::update()
@@ -54,6 +55,7 @@ void renderer::update()
 	}
 	sum /= count;
 	cam->setTarget(sum);
+	setMustPrepares();
 }
 
 void renderer::drawGlass(char axis)
@@ -70,6 +72,26 @@ void renderer::drawGlass(char axis)
 
 void renderer::draw()
 {
+	vector<primitive*> GlassyPrims;
+	vector<primitive*> other3D;
+
+	for (auto& p : *scn)
+	{
+		if (p.isCubeOrSphere())
+		{
+			other3D.push_back(&p);
+			if (p.isGlassy())
+			{
+				GlassyPrims.push_back(&p);
+			}
+		}
+	}
+
+	for (auto& glassy : GlassyPrims)
+	{
+		glassy->prepareGlass(*cam, other3D, background);
+	}
+
 	ofClear(background);
 
 	cam->begin();
@@ -375,6 +397,22 @@ ofParameter<bool> renderer::createPoint(float x, float y, float radius, ofColor 
 	scn->addElement(prim);
 	return prim.selected;
 }
+
+void renderer::setMustPrepares() {
+
+	for (auto& p : *scn)
+	{
+		if (p.isCubeOrSphere())
+		{
+			if (p.isGlassy())
+			{
+				p.shouldPrepare();
+			}
+		}
+	}
+
+}
+
 //-------------3D primitives-----------------------
 ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d)
 {
@@ -383,6 +421,8 @@ ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d)
 
 ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d, ofColor fillCol)
 {
+	setMustPrepares();
+
 	ofBoxPrimitive* box = new ofBoxPrimitive();
 
 	float smallest = min(w, min(h, d));
@@ -404,11 +444,9 @@ ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d,
 		//box->setSideColor(i, fillCol);
 	}
 
-	ofMesh boxMesh = box->getMesh();
-
 	primitive3d prim = primitive3d{ box, fillCol, matrix };
 	prim.setName("Cube " + to_string(scn->nbElements() + 1));
-	prim.setMirror(true);
+	prim.setMirror(false);
 	scn->addElement(prim);
 	return prim.selected;
 
@@ -422,8 +460,11 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 
 ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofColor color)
 {
+	setMustPrepares();
+
 	ofSpherePrimitive* ball = new ofSpherePrimitive();
 	ball->setPosition(0, 0, 0);
+	ball->setResolution(16);// (sizeX + sizeY + sizeZ) / 120);
 
 	float smallest = min(sizeX, min(sizeY, sizeZ));
 
@@ -437,8 +478,22 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 	matrix.scale(newX, newY, newZ);
 	matrix.setTranslation(x, y, z);
 
+	ofMesh * ballMesh = ball->getMeshPtr();
+	vector<ofMeshFace> allFaces = ballMesh->getUniqueFaces();
+
+	for (auto& f : allFaces)
+	{
+		ballMesh->addColor(color);
+		f.setHasColors(true);
+		f.setColor(0, color);
+	}
+
+	ballMesh->enableColors();
+
 	primitive3d prim = primitive3d{ ball, color, matrix };
 	prim.setName("Sphere " + to_string(scn->nbElements() + 1));
+	prim.setMirror(scn->nbElements() == 2);
+	prim.setGlass(false);
 	scn->addElement(prim);
 	return prim.selected;
 }

@@ -17,15 +17,22 @@ public:
 	void setMirror(bool mirror);
 	void setGlass(bool glass);
 
-	bool prepareGlass(const ofCamera &cam);// , const scene* scn);
+	bool prepareGlass(const ccamera cam, vector<primitive*> otherPrims, ofColor backgroundCol) override;// , const scene* scn);
 	void draw(bool wireframe) override;
 	bool intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) override;
 	bool getColorOfRay(ofRay ray, ofColor * hit) override;
 
+	ofMesh getMesh() override { return prim->getMesh(); };
+
+	void shouldPrepare() override { mustPrepare = true; };
+
+	bool isGlassy() override { return isMirror || isGlass; } ;
+	bool isCubeOrSphere() override { return true; };
+
 protected:
 	const ofVec3f getLocalPosition() const override { return prim->getPosition(); }
 private:
-
+	bool mustPrepare;
 	of3dPrimitive* prim;
 	ofColor fillCol;
 	bool isMirror;

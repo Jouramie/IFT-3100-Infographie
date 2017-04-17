@@ -41,6 +41,9 @@ public:
 	
 	friend std::ostream& operator<<(std::ostream& os, const scene& s);
 
+	vector<primitive3d> getCubesAndSpheres();
+	vector<primitive3d> getGlassyElements();
+
 private:
 	void addElement(size_t index, primitive_ptr& p, bool insertFirstChild);
 

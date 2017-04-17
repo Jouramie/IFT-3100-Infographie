@@ -111,6 +111,7 @@ void ofApp::keyPressed(int key) {
 		isKeyPressPageUp = true;
 		ofLog() << "<app::keyPressedPageUp>";
 	}
+	rend->setMustPrepares();
 }
 
 //--------------------------------------------------------------
@@ -154,6 +155,7 @@ void ofApp::keyReleased(int key) {
 	/*else if (key == 'q')
 		rend->changeRotate();*/
 
+	rend->setMustPrepares();
 }
 
 //--------------------------------------------------------------
@@ -279,7 +281,8 @@ void ofApp::gotMessage(ofMessage msg) {
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo) {
-	//TODO importer le model3d?
+	// TODO importer le model3d?
+	// wtf is this todo
 }
 
 void ofApp::initGroups()

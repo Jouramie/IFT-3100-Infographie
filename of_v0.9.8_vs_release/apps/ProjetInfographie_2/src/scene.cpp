@@ -43,6 +43,18 @@ void scene::addElement(size_t index, const extModel& p, bool insertFirstChild)
 	addElement(index, primitive_ptr{ new extModel{ p } }, insertFirstChild);
 }
 
+vector<primitive3d> scene::getCubesAndSpheres()
+{
+	vector<primitive3d> vec;
+
+	return vec;
+}
+
+vector<primitive3d> scene::getGlassyElements()
+{
+	return vector<primitive3d>();
+}
+
 void scene::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)
 {
 	if (index == 0 && !insertFirstChild)

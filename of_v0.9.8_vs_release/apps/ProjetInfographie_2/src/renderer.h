@@ -84,6 +84,8 @@ public:
 	void addDilate();
 	void removeDilate();
 
+	void setMustPrepares();
+
 	~renderer();
 
 private:

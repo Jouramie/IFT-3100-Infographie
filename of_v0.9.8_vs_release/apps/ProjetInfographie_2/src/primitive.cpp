@@ -11,6 +11,7 @@ const ofVec3f primitive::getGlobalPosition() const
 bool primitive::intersectsMesh(ofRay ray, const ofMesh &mesh, const ofMatrix4x4 &toWorldSpace, vector<int> *meshHit) {
 	const vector<ofMeshFace>& faces = mesh.getUniqueFaces();
 	bool intersection = false;
+	bool intersectedOnce = false;
 	float t;
 	for (int i = 0; i < faces.size(); i++) {
 		const ofMeshFace &face = faces[i];
@@ -24,10 +25,11 @@ bool primitive::intersectsMesh(ofRay ray, const ofMesh &mesh, const ofMatrix4x4 
 		intersection = calcTriangleIntersection(one, two, three, ray, &t);
 		if (intersection) {
 			meshHit->push_back(i);
+			intersectedOnce = true;
 			//break;
 		}
 	}
-	return intersection;
+	return intersectedOnce;
 }
 
 bool primitive::calcTriangleIntersection(const ofVec3f &vert0, const ofVec3f &vert1, const ofVec3f &vert2, ofRay ray, float *result) const

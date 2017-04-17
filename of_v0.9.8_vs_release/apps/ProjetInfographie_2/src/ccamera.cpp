@@ -62,6 +62,19 @@ void ccamera::setupParameters() {
 	parameterGroup.add(ortho);
 }
 
+bool ccamera::compare(ccamera otherCam) {
+	bool params1 = (otherCam.autoRatio.get() == autoRatio.get()) && (otherCam.farClip.get() == farClip.get()) && (otherCam.fov.get() == fov.get());
+	bool params2 = (otherCam.isCameraMoveBackward == isCameraMoveBackward) && (otherCam.isCameraMoveDown == isCameraMoveDown) && (otherCam.isCameraMoveForward == isCameraMoveForward);
+	bool params3 = (otherCam.isCameraMoveLeft == isCameraMoveLeft) && (otherCam.isCameraMoveRight == isCameraMoveRight) && (otherCam.isCameraMoveUp == isCameraMoveUp);
+	bool params4 = (otherCam.MaxX == MaxX) && (otherCam.MaxY == MaxY) && (otherCam.MaxZ == MaxZ);
+	bool params5 = (otherCam.MinX == MinX) && (otherCam.MinY == MinY) && (otherCam.MinZ == MinZ);
+	bool params6 = (otherCam.nearClip.get() == nearClip.get()) && (otherCam.ortho.get() == ortho.get()) && (otherCam.posX.get() == posX.get());
+	bool params7 = (otherCam.posY.get() == posY.get()) && (otherCam.posZ.get() == posZ.get()) && (otherCam.ratio.get() == ratio.get());
+	bool params8 = (otherCam.speed == speed);
+	bool params9 = (otherCam.cam->getGlobalOrientation() == cam->getGlobalOrientation()) && (otherCam.cam->getGlobalPosition() == cam->getGlobalPosition()) && (otherCam.cam->getGlobalScale() == cam->getGlobalScale()) && (otherCam.cam->getGlobalTransformMatrix()._mat == cam->getGlobalTransformMatrix()._mat);
+	return (params1 && params2 && params3 && params4 && params5 && params6 && params7 && params8);
+}
+
 void ccamera::update(float dt)
 {
 	float dist = speed * dt;
