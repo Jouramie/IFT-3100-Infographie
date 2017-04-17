@@ -386,23 +386,21 @@ ofParameter<bool> renderer::createCatmullRom(const ofPoint cp1, const ofPoint cp
 	return prim.selected;
 }
 
-ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2) {
-	return createSurface(w, h, dim, res, cp1, cp2, fill, stroke);
+ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2, const ofPoint cp3, const ofPoint cp4) {
+	return createSurface(w, h, dim, res, cp1, cp2, cp3, cp4, fill, stroke);
 }
 
-ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2, ofColor fillColor, ofColor strokeColor) {
+ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2, const ofPoint cp3, const ofPoint cp4, ofColor fillColor, ofColor strokeColor) {
 	ofxBezierSurface* surface = new ofxBezierSurface();
 	surface->setup(w, h, dim, res);
 	std::vector<ofPoint> pts;
-	ofVec3f pt3 = cp1 + cp2;
-	ofVec3f pt4 = cp2 + cp1;
 	pts.push_back(cp1);
 	pts.push_back(cp2);
-	pts.push_back(pt3);
-	pts.push_back(pt4);
+	pts.push_back(cp3);
+	pts.push_back(cp4);
 	surface->setControlPnts(pts);
 	primitiveTopo prim = primitiveTopo{ surface, fillColor, strokeColor, strokeThickness };
-	prim.setName("Bézier Surface " + to_string(scn->nbElements() + 1));
+	prim.setName("Bezier Surface " + to_string(scn->nbElements() + 1));
 	scn->addElement(prim);
 	return prim.selected;
 }

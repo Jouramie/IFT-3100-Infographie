@@ -347,6 +347,12 @@ void ofApp::initGroups()
 	groupPrimitiveSizeTopo.add(primPosX3.set(primPosX3));
 	groupPrimitiveSizeTopo.add(primPosY3.set(primPosY3));
 	groupPrimitiveSizeTopo.add(primPosZ3.set(primPosZ3));
+	groupPrimitiveSizeTopo.add(primPosX4.set(primPosX4));
+	groupPrimitiveSizeTopo.add(primPosY4.set(primPosY4));
+	groupPrimitiveSizeTopo.add(primPosZ4.set(primPosZ4));
+	groupPrimitiveSizeTopo.add(primPosX5.set(primPosX5));
+	groupPrimitiveSizeTopo.add(primPosY5.set(primPosY5));
+	groupPrimitiveSizeTopo.add(primPosZ5.set(primPosZ5));
 
 	groupThick.setName("Epaisseur des traits");
 	groupThick.add(strokeThickness.set(strokeThickness));
@@ -466,7 +472,7 @@ void ofApp::initOfParameters() {
 	primTypeCatmullRom.set(false);
 	primTypeCatmullRom.addListener(this, &ofApp::primTypeCatmullRomChanged);
 
-	primTypeSurface.setName("Surface de Bézier");
+	primTypeSurface.setName("Surface de Bezier");
 	primTypeSurface.set(false);
 	primTypeSurface.addListener(this, &ofApp::primTypeSurfaceChanged);
 
@@ -514,6 +520,36 @@ void ofApp::initOfParameters() {
 	primPosZ3.setMin(MinZ);
 	primPosZ3.setMax(MaxZ);
 	primPosZ3.set((MinZ + MaxZ) / 2);
+
+	primPosX4.setName("X3");
+	primPosX4.setMin(MinX);
+	primPosX4.setMax(MaxX);
+	primPosX4.set((MinX + MaxX) / 2);
+
+	primPosY4.setName("Y3");
+	primPosY4.setMin(MinY);
+	primPosY4.setMax(MaxY);
+	primPosY4.set((MinY + MaxY) / 2);
+
+	primPosZ4.setName("Z3");
+	primPosZ4.setMin(MinZ);
+	primPosZ4.setMax(MaxZ);
+	primPosZ4.set((MinZ + MaxZ) / 2);
+
+	primPosX5.setName("X2");
+	primPosX5.setMin(MinX);
+	primPosX5.setMax(MaxX);
+	primPosX5.set((MinX + MaxX) / 2);
+
+	primPosY5.setName("Y2");
+	primPosY5.setMin(MinY);
+	primPosY5.setMax(MaxY);
+	primPosY5.set((MinY + MaxY) / 2);
+
+	primPosZ5.setName("Z2");
+	primPosZ5.setMin(MinZ);
+	primPosZ5.setMax(MaxZ);
+	primPosZ5.set((MinZ + MaxZ) / 2);
 
 	primSizeHeight.setName("Hauteur");
 	primSizeHeight.setMin(0);
@@ -744,7 +780,7 @@ void ofApp::btnDrawPrimitiveClicked()
 			selectionMenu.add(rend->createCatmullRom(ofPoint(primPosX2, primPosY2, primPosZ2), ofPoint(primPosX, primPosY, primPosZ), ofPoint(primSizeWidth, primSizeHeight, primSizeDepth), ofPoint(primPosX3, primPosY3, primPosZ3), 100));
 		}
 		else {
-			selectionMenu.add(rend->createSurface(500, 500, 2, 20, ofPoint(primPosX2, primPosY2, primPosZ2), ofPoint(primPosX3, primPosY3, primPosZ3)));
+			selectionMenu.add(rend->createSurface(500, 500, 2, 20, ofPoint(primPosX2, primPosY2, primPosZ2), ofPoint(primPosX3, primPosY3, primPosZ3), ofPoint(primPosX4, primPosY4, primPosZ4), ofPoint(primPosX5, primPosY5, primPosZ5)));
 		}
 	}
 
@@ -1080,6 +1116,12 @@ void ofApp::primTypeBezierChanged(bool& value) {
 		primSizeWidth.setName("Xf");
 		primSizeHeight.setName("Yf");
 		primSizeDepth.setName("Zf");
+		primPosX4.setName("inutile ici");
+		primPosY4.setName("inutile ici");
+		primPosZ4.setName("inutile ici");
+		primPosX5.setName("inutile ici");
+		primPosY5.setName("inutile ici");
+		primPosZ5.setName("inutile ici");
 	}
 	else
 		primTypeBezier.set(true);
@@ -1105,6 +1147,12 @@ void ofApp::primTypeHermiteChanged(bool& value) {
 		primSizeWidth.setName("Xf");
 		primSizeHeight.setName("Yf");
 		primSizeDepth.setName("Zf");
+		primPosX4.setName("inutile ici");
+		primPosY4.setName("inutile ici");
+		primPosZ4.setName("inutile ici");
+		primPosX5.setName("inutile ici");
+		primPosY5.setName("inutile ici");
+		primPosZ5.setName("inutile ici");
 	}
 	else
 		primTypeHermite.set(true);
@@ -1130,6 +1178,12 @@ void ofApp::primTypeCatmullRomChanged(bool& value) {
 		primSizeWidth.setName("Xf");
 		primSizeHeight.setName("Yf");
 		primSizeDepth.setName("Zf");
+		primPosX4.setName("inutile ici");
+		primPosY4.setName("inutile ici");
+		primPosZ4.setName("inutile ici");
+		primPosX5.setName("inutile ici");
+		primPosY5.setName("inutile ici");
+		primPosZ5.setName("inutile ici");
 	}
 	else
 		primTypeCatmullRom.set(true);
@@ -1155,6 +1209,12 @@ void ofApp::primTypeSurfaceChanged(bool& value) {
 		primSizeWidth.setName("Largeur");
 		primSizeHeight.setName("Hauteur");
 		primSizeDepth.setName("");
+		primPosX4.setName("X3");
+		primPosY4.setName("Y3");
+		primPosZ4.setName("Z3");
+		primPosX5.setName("X4");
+		primPosY5.setName("Y4");
+		primPosZ5.setName("Z4");
 	}
 	else 
 		primTypeSurface.set(true);
