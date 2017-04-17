@@ -2,3 +2,4 @@ ofxAssimpModelLoader
 ofxGui
 ofxOpenCv
 ofxRay
+ofxShadersFX
