@@ -31,6 +31,9 @@
 		<ClCompile Include="src\primitive3d.cpp">
 			<Filter>src</Filter>
 		</ClCompile>
+		<ClCompile Include="src\primitiveTopo.cpp">
+			<Filter>src</Filter>
+		</ClCompile>
 		<ClCompile Include="src\renderer.cpp">
 			<Filter>src</Filter>
 		</ClCompile>
@@ -48,6 +51,9 @@
 		</ClCompile>
 		<ClCompile Include="..\..\addons\ofxAssimpModelLoader\src\ofxAssimpTexture.cpp">
 			<Filter>addons\ofxAssimpModelLoader\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\addons\ofxBezierSurface\src\ofxBezierSurface.cpp">
+			<Filter>addons\ofxBezierSurface\src</Filter>
 		</ClCompile>
 		<ClCompile Include="..\..\addons\ofxGui\src\ofxBaseGui.cpp">
 			<Filter>addons\ofxGui\src</Filter>
@@ -112,6 +118,30 @@
 		<ClCompile Include="..\..\addons\ofxRay\src\ofxRay\Ray.cpp">
 			<Filter>addons\ofxRay\src\ofxRay</Filter>
 		</ClCompile>
+		<ClCompile Include="..\..\addons\ofxShadersFX\src\LightingShader_sources.cpp">
+			<Filter>addons\ofxShadersFX\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\addons\ofxShadersFX\src\MappingShader_sources.cpp">
+			<Filter>addons\ofxShadersFX\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\addons\ofxShadersFX\src\ofxShadersFX.cpp">
+			<Filter>addons\ofxShadersFX\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\addons\ofxShadersFX\src\ofxShadersFX_AlphaBlendingShader.cpp">
+			<Filter>addons\ofxShadersFX\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\addons\ofxShadersFX\src\ofxShadersFX_ColorKeyShader.cpp">
+			<Filter>addons\ofxShadersFX\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\addons\ofxShadersFX\src\ofxShadersFX_DisplaceMapShader.cpp">
+			<Filter>addons\ofxShadersFX\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\addons\ofxShadersFX\src\ofxShadersFX_LightingShader.cpp">
+			<Filter>addons\ofxShadersFX\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\addons\ofxShadersFX\src\ofxShadersFX_MappingShader.cpp">
+			<Filter>addons\ofxShadersFX\src</Filter>
+		</ClCompile>
 	</ItemGroup>
 	<ItemGroup>
 		<Filter Include="src">
@@ -141,17 +171,17 @@
 		<Filter Include="addons\ofxAssimpModelLoader\libs\assimp\include\assimp\Compiler">
 			<UniqueIdentifier>{A0C31C2E-6C01-8850-3B72-C818}</UniqueIdentifier>
 		</Filter>
+		<Filter Include="addons\ofxBezierSurface">
+			<UniqueIdentifier>{9359652E-0F6C-FAE6-7414-8192}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxBezierSurface\src">
+			<UniqueIdentifier>{09D0E532-7E2A-FD37-B415-212B}</UniqueIdentifier>
+		</Filter>
 		<Filter Include="addons\ofxGui">
 			<UniqueIdentifier>{4F2A59AF-5F4E-704B-D067-EC13}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxGui\src">
 			<UniqueIdentifier>{645E9533-4DCD-6179-1CDF-CB65}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="addons\ofxHSpline">
-			<UniqueIdentifier>{D81F5149-A53B-2B60-1B93-ECE9}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="addons\ofxHSpline\src">
-			<UniqueIdentifier>{3612EF22-1234-0BF2-4EE4-2A2D}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv">
 			<UniqueIdentifier>{FFA81411-43B9-BD99-75AF-1DC3}</UniqueIdentifier>
@@ -246,6 +276,12 @@
 		<Filter Include="addons\ofxRay\src\ofxRay">
 			<UniqueIdentifier>{5CB39972-96FB-BC3B-0AB4-9599}</UniqueIdentifier>
 		</Filter>
+		<Filter Include="addons\ofxShadersFX">
+			<UniqueIdentifier>{FB4F8032-184E-AE7B-8F4A-B1EC}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxShadersFX\src">
+			<UniqueIdentifier>{5E92B2A1-38FF-6A71-7AE3-0954}</UniqueIdentifier>
+		</Filter>
 	</ItemGroup>
 	<ItemGroup>
 		<ClInclude Include="src\ofApp.h">
@@ -270,6 +306,9 @@
 			<Filter>src</Filter>
 		</ClInclude>
 		<ClInclude Include="src\primitive3d.h">
+			<Filter>src</Filter>
+		</ClInclude>
+		<ClInclude Include="src\primitiveTopo.h">
 			<Filter>src</Filter>
 		</ClInclude>
 		<ClInclude Include="src\renderer.h">
@@ -401,6 +440,9 @@
 		<ClInclude Include="..\..\addons\ofxAssimpModelLoader\libs\assimp\include\assimp\version.h">
 			<Filter>addons\ofxAssimpModelLoader\libs\assimp\include\assimp</Filter>
 		</ClInclude>
+		<ClInclude Include="..\..\addons\ofxBezierSurface\src\ofxBezierSurface.h">
+			<Filter>addons\ofxBezierSurface\src</Filter>
+		</ClInclude>
 		<ClInclude Include="..\..\addons\ofxGui\src\ofxBaseGui.h">
 			<Filter>addons\ofxGui\src</Filter>
 		</ClInclude>
@@ -427,9 +469,6 @@
 		</ClInclude>
 		<ClInclude Include="..\..\addons\ofxGui\src\ofxToggle.h">
 			<Filter>addons\ofxGui\src</Filter>
-		</ClInclude>
-		<ClInclude Include="..\..\addons\ofxHSpline\src\ofxHSpline.h">
-			<Filter>addons\ofxHSpline\src</Filter>
 		</ClInclude>
 		<ClInclude Include="..\..\addons\ofxOpenCv\src\ofxCvBlob.h">
 			<Filter>addons\ofxOpenCv\src</Filter>
@@ -955,6 +994,24 @@
 		</ClInclude>
 		<ClInclude Include="..\..\addons\ofxRay\src\ofxRay.h">
 			<Filter>addons\ofxRay\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\addons\ofxShadersFX\src\ofxShadersFX.h">
+			<Filter>addons\ofxShadersFX\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\addons\ofxShadersFX\src\ofxShadersFX_AlphaBlendingShader.h">
+			<Filter>addons\ofxShadersFX\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\addons\ofxShadersFX\src\ofxShadersFX_ColorKeyShader.h">
+			<Filter>addons\ofxShadersFX\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\addons\ofxShadersFX\src\ofxShadersFX_DisplaceMapShader.h">
+			<Filter>addons\ofxShadersFX\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\addons\ofxShadersFX\src\ofxShadersFX_LightingShader.h">
+			<Filter>addons\ofxShadersFX\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\addons\ofxShadersFX\src\ofxShadersFX_MappingShader.h">
+			<Filter>addons\ofxShadersFX\src</Filter>
 		</ClInclude>
 	</ItemGroup>
 	<ItemGroup>

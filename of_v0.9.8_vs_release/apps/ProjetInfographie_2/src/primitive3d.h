@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "primitive.h"
+#include "ccamera.h"
 
 class primitive3d : public primitive {
 public:
@@ -13,11 +14,7 @@ public:
 	of3dPrimitive* getPrimitive();
 	ofColor getFillColor();
 	void draw(bool wireframe) override;
-	bool calcTriangleIntersection(ofRay ray, float *result) const;
-
-	bool inside(ofVec3f p, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) const;
-	bool checkIntersectionPlaneAndLine(ofRay ray, float *result) const override;
-	bool checkIntersectionTriangleRay(ofRay ray, ofPoint* inter);
+	bool intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) override;
 
 protected:
 	const ofVec3f getLocalPosition() const override { return prim->getPosition(); }

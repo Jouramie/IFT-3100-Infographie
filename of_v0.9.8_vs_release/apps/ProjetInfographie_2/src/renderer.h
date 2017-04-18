@@ -10,6 +10,7 @@
 #include "primitiveTopo.h"
 #include "ccamera.h"
 #include "extModel.h"
+#include <typeinfo>
 
 // fonction d'évaluation d'une courbe de hermite (4 points de contrôle)
 inline void hermite(
@@ -44,6 +45,7 @@ public:
 
 	void setup();
 	void update();
+	void drawGlass(char axis);
 	void draw();
 	void imageExport(const string name, const string extension);
 	void checkFilters();
@@ -118,15 +120,18 @@ private:
 
 	//ofEasyCam mainCam;
 	bool wireFrame;
+
 	//Filters
 	bool isFiltered;
 	bool blur;
 	bool invert;
 	bool dilate;
+
 	//Transformations
 	bool translate;
 	bool rotate;
 	bool scale;
+
 	//Translations
 	float deltaX, deltaY, deltaZ; 
 	//Rotation;
@@ -148,5 +153,8 @@ private:
 	ofxCvColorImage filter;
 	ofImage sceneImg;
 	ofPixels scenePixels;
+
+	string hasRef;
+	int refPosition;
 };
 
