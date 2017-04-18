@@ -373,7 +373,8 @@ void LightingShader::setupProgrammableRendererLights() {
         }
 
         const GLchar **glnames_ptr = &glnames[0];
-        GLuint indices[glnames.size()];
+        //GLuint indices[glnames.size()];
+		GLuint* indices = new GLuint[glnames.size()];
 
         glGetUniformIndices(m_shader.getProgram(), glnames.size(), glnames_ptr, indices);
 
@@ -396,6 +397,7 @@ void LightingShader::setupProgrammableRendererLights() {
         glBufferData(GL_UNIFORM_BUFFER, uboSize, &buffer[0], GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, 0, lights_ubo);
         glUniformBlockBinding (m_shader.getProgram(), uniformBlockIndex, 0);
+		delete[] indices;
 }
 
 

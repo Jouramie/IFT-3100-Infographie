@@ -13,7 +13,7 @@ public:
 	primitive3d(of3dPrimitive* primitive, ofColor fill, ofMatrix4x4 matrix);
 	of3dPrimitive* getPrimitive();
 	ofColor getFillColor();
-	void draw(bool wireframe) override;
+	void draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader) override;
 	bool intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) override;
 
 protected:

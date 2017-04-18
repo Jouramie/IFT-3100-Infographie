@@ -14,7 +14,7 @@ public:
 	extModel(ofxAssimpModelLoader* mod);
 	extModel(ofxAssimpModelLoader* mod, ofMatrix4x4 transfoMatrix);
 	ofxAssimpModelLoader* getModel();
-	void draw(bool wireframe = false) override;
+	void draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader) override;
 
 	bool calcTriangleIntersection(ofRay ray, float *result) const;
 	bool inside(ofVec3f p, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) const;

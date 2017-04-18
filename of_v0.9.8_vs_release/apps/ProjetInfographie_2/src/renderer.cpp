@@ -2,21 +2,20 @@
 #include "ofxCvImage.h"
 #include "forme3d.h"
 
-
-renderer::renderer()
-{
-}
-
-
 void renderer::setup()
 {
 	ofSetFrameRate(60);
+	ofSetVerticalSync(true);
 	/*mainCam = ofEasyCam();
 	rotate = -1;
 	mainCam.begin();*/
+	
+	lightShader.setLightingMethod(ofxShadersFX::Lighting::BLINN_PHONG_LIGHTING);
+	lightShader.setShadingMethod(ofxShadersFX::Lighting::PIXEL_SHADING);
 
 	cam->setCamera(new ofEasyCam{});
 	cam->setup();
+	lightShader.useCamera(cam->getOfCamera());
 	//filter.allocate(ofGetWindowWidth(), ofGetWindowHeight());
 
 	isFiltered = false;
@@ -27,8 +26,8 @@ void renderer::setup()
 	rotate = false;
 	scale = false;
 
-	tempAmbientLight = new ofColor(127, 127, 127);
-	ofSetGlobalAmbientColor(*tempAmbientLight);
+	tempAmbientLight = ofColor::black;
+	ofSetGlobalAmbientColor(tempAmbientLight);
 
 	//TODO supprimer lorsque l'interface permettra la création de lumière
 	tempDirectionalLight = new ofLight();
@@ -36,14 +35,15 @@ void renderer::setup()
 	tempDirectionalLight->setSpecularColor(ofColor(191, 191, 191));
 	tempDirectionalLight->setOrientation(ofVec3f(0.0f, 0.0f, 0.0f));
 	tempDirectionalLight->setDirectional();
-	tempDirectionalLight->enable();
+	//tempDirectionalLight->enable();
+	lightShader.useLight(tempDirectionalLight);
 
 	//default activeMaterial
-	activeMaterial.setAmbientColor(ofColor(63, 63, 63));
-	activeMaterial.setDiffuseColor(ofColor(0, 0, 127));
-	activeMaterial.setEmissiveColor(ofColor(0, 0, 63));
-	activeMaterial.setSpecularColor(ofColor(127, 127, 127));
-	activeMaterial.setShininess(8.0f);
+	activeMaterial.setAmbientColor(ofColor::gray);
+	activeMaterial.setDiffuseColor(ofColor::darkSeaGreen);
+	activeMaterial.setEmissiveColor(ofColor::darkSlateBlue);
+	activeMaterial.setSpecularColor(ofColor::gray);
+	activeMaterial.setShininess(120.0f);
 
 	time = lastTime = ofGetElapsedTimef();
 }
@@ -94,7 +94,7 @@ void renderer::draw()
 	ofPushMatrix();
 
 	ofEnableDepthTest();
-	ofEnableLighting();
+	//ofEnableLighting();
 
 	ofSetLineWidth(1.0);
 
@@ -168,7 +168,7 @@ void renderer::draw()
 				{
 					glScalef(x, y, z);
 					//setLightSourcePositions();
-					p.draw(wireFrame);
+					p.draw(wireFrame, lightShader);
 					glPopMatrix();
 				}
 			}
@@ -184,7 +184,7 @@ void renderer::draw()
 
 	for (auto& p : *scn)
 	{
-		p.draw(wireFrame);
+		p.draw(wireFrame, lightShader);
 	}
 
 	std::list<ofRay>::iterator iterator2;
@@ -193,7 +193,7 @@ void renderer::draw()
 		iterator2->draw();
 	}
 
-	ofDisableLighting();
+	//ofDisableLighting();
 	ofDisableDepthTest();
 
 	ofPopMatrix();
@@ -538,7 +538,8 @@ ofParameter<bool> renderer::createDirectionalLight(int ax, int ay, int az, ofCol
 {
 	ofLight* ofl = new ofLight();
 	ofl->setDirectional();
-	ofl->enable();
+	//ofl->enable();
+	lightShader.useLight(ofl);
 	ofMatrix4x4 matrix = ofMatrix4x4();
 	ofQuaternion rotate{};
 	rotate.makeRotate(ax, ofVec3f(1, 0, 0), ay, ofVec3f(0, 1, 0), az, ofVec3f(0, 0, 1));
@@ -548,6 +549,7 @@ ofParameter<bool> renderer::createDirectionalLight(int ax, int ay, int az, ofCol
 	l->setName("Directional " + to_string(scn->nbElements() + 1));
 	l->setDiffuseColor(difCol);
 	l->setSpecularColor(specCol);
+	l->setLightShader(&lightShader);
 	scn->addElement(l);
 	return l->selected;
 }
@@ -556,7 +558,8 @@ ofParameter<bool> renderer::createPonctualLight(int x, int y, int z, ofColor dif
 {
 	ofLight* ofl = new ofLight();
 	ofl->setPointLight();
-	ofl->enable();
+	//ofl->enable();
+	lightShader.useLight(ofl);
 	ofMatrix4x4 matrix = ofMatrix4x4();
 	matrix.setTranslation(x, y, z);
 
@@ -564,6 +567,7 @@ ofParameter<bool> renderer::createPonctualLight(int x, int y, int z, ofColor dif
 	l->setName("Pontual " + to_string(scn->nbElements() + 1));
 	l->setDiffuseColor(difCol);
 	l->setSpecularColor(specCol);
+	l->setLightShader(&lightShader);
 	scn->addElement(l);
 	return l->selected;
 }
@@ -572,7 +576,8 @@ ofParameter<bool> renderer::createSpotlight(ofVec3f pos, int ax, int ay, int az,
 {
 	ofLight* ofl = new ofLight();
 	ofl->setSpotlight();
-	ofl->enable();
+	//ofl->enable();
+	lightShader.useLight(ofl);
 	ofMatrix4x4 matrix = ofMatrix4x4();
 	matrix.setTranslation(pos);
 	ofQuaternion rotate{};
@@ -583,6 +588,7 @@ ofParameter<bool> renderer::createSpotlight(ofVec3f pos, int ax, int ay, int az,
 	l->setName("Spotlight " + to_string(scn->nbElements() + 1));
 	l->setDiffuseColor(difCol);
 	l->setSpecularColor(specCol);
+	l->setLightShader(&lightShader);
 	scn->addElement(l);
 	return l->selected;
 }
@@ -734,6 +740,10 @@ void renderer::removeDilate() {
 		isFiltered = false;
 }
 
-renderer::~renderer()
-{
+void renderer::setIlluminationModel(illuminationModel model) {
+	if (model == PHONG) {
+		lightShader.setLightingMethod(ofxShadersFX::Lighting::PHONG_LIGHTING);
+	} else {
+		lightShader.setLightingMethod(ofxShadersFX::Lighting::BLINN_PHONG_LIGHTING);
+	}
 }
