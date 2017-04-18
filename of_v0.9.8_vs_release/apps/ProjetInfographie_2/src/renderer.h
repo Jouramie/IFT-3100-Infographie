@@ -10,13 +10,16 @@
 #include "extModel.h"
 #include "light.h"
 #include <typeinfo>
+#include "ofxShadersFX.h"
 
 
 class renderer
 {
 public:
-
-	renderer();
+	enum illuminationModel
+	{
+		PHONG, BLINN_PHONG
+	};
 
 	ofColor background;
 	ofColor stroke;
@@ -55,7 +58,7 @@ public:
 	ofParameter<bool> createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
 	ofParameter<bool> createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofMaterial mat);
 
-	ofParameter<bool> setAmbiantLight(ofColor col) { *tempAmbientLight = col; };
+	ofParameter<bool> setAmbiantLight(ofColor col) { tempAmbientLight = col; };
 	ofParameter<bool> createDirectionalLight(int ax, int ay, int az, ofColor difCol, ofColor specCol);
 	ofParameter<bool> createPonctualLight(int x, int y, int z, ofColor difCol, ofColor specCol);
 	ofParameter<bool> createSpotlight(ofVec3f pos, int ax, int ay, int az, ofColor difCol, ofColor specCol);
@@ -91,7 +94,7 @@ public:
 	void addDilate();
 	void removeDilate();
 
-	~renderer();
+	void setIlluminationModel(illuminationModel model);
 
 private:
 
@@ -110,7 +113,7 @@ private:
 	bool scale;
 
 	//Translations
-	float deltaX, deltaY, deltaZ; 
+	float deltaX, deltaY, deltaZ;
 	//Rotation;
 	float centerX, centerY, centerZ;
 	//Scale
@@ -134,7 +137,9 @@ private:
 	string hasRef;
 	int refPosition;
 
-	ofColor* tempAmbientLight;
+	ofColor tempAmbientLight;
 	ofLight* tempDirectionalLight;
+
+	ofxShadersFX::Lighting::LightingShader lightShader;
 };
 

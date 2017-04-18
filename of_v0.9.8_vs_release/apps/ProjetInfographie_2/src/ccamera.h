@@ -37,6 +37,7 @@ public:
 	bool isCameraMoveBackward = false;
 
 	const ofEasyCam& operator*() const { return *cam; }
+	ofCamera* getOfCamera() { return cam; };
 
 private:
 

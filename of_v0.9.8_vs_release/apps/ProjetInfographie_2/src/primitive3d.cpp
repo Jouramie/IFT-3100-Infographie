@@ -29,7 +29,7 @@ ofColor primitive3d::getFillColor() {
 	return fillCol;
 }
 
-void primitive3d::draw(bool wireframe) {
+void primitive3d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader) {
 
 	/*ofPoint pointa = ofPoint(0, -200, 0);
 	ofPoint pointb = ofPoint(100, 100, 0);
@@ -52,12 +52,15 @@ void primitive3d::draw(bool wireframe) {
 
 	ofScale(transfoMatrix.getScale());
 
-	mat.begin();
+	//mat.begin();
+	lightShader.useMaterial(&mat);
+	lightShader.begin();
 	if (wireframe || selected.get())
 		prim->drawWireframe();
 	else
 		prim->drawFaces();
-	mat.end();
+	lightShader.end();
+	lightShader.removeMaterial();
 	ofPopMatrix();
 }
 

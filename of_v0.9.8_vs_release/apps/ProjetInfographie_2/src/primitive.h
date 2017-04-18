@@ -1,8 +1,8 @@
-
 #pragma once
 
 #include "ofxRay.h"
 #include "ccamera.h"
+#include "ofxShadersFX.h"
 
 class primitive
 {
@@ -10,8 +10,8 @@ public:
 	primitive() : primitive{ ofMatrix4x4() } { }
 	primitive(ofMatrix4x4 matrix) : transfoMatrix{ matrix }, selected{ false } { }
 
-	virtual void draw() { draw(false); }
-	virtual void draw(bool wireframe) = 0;
+	virtual void draw(ofxShadersFX::Lighting::LightingShader& lightShader) { draw(false, lightShader); }
+	virtual void draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader) = 0;
 	const ofVec3f getGlobalPosition() const;
 
 	bool getSelected() { return selected; }
