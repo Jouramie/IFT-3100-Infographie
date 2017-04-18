@@ -52,6 +52,7 @@ private:
 	ofxPanel selectionMenu;
 
 	ofxButton btnDrawPrimitive;
+	ofxButton btnAddLight;
 	ofxButton btnClear;
 	ofxButton btnExit;
 
@@ -65,19 +66,30 @@ private:
 	ofParameterGroup groupThick;
 	ofParameter<float> strokeThickness;
 
-	ofParameterGroup groupStroke;
-	ofColor stroke;
-	ofParameter<float> strokeHue;
-	ofParameter<float> strokeSaturation;
-	ofParameter<float> strokeBrightess;
-	ofParameter<float> strokeAlpha;
+	ofParameterGroup groupCouleur;
+	ofParameterGroup groupAmbient;
+	ofColor ambient;
+	ofParameter<float> ambientHue;
+	ofParameter<float> ambientSaturation;
+	ofParameter<float> ambientBrightess;
 
-	ofParameterGroup groupFill;
-	ofColor fill;
-	ofParameter<float> fillHue;
-	ofParameter<float> fillSaturation;
-	ofParameter<float> fillBrightess;
-	ofParameter<float> fillAlpha;
+	ofParameterGroup groupDiff;
+	ofColor diff;
+	ofParameter<float> diffHue;
+	ofParameter<float> diffSaturation;
+	ofParameter<float> diffBrightess;
+
+	ofParameterGroup groupEmis;
+	ofColor emis;
+	ofParameter<float> emisHue;
+	ofParameter<float> emisSaturation;
+	ofParameter<float> emisBrightess;
+
+	ofParameterGroup groupSpec;
+	ofColor spec;
+	ofParameter<float> specHue;
+	ofParameter<float> specSaturation;
+	ofParameter<float> specBrightess;
 
 	ofParameterGroup groupBackground;
 	ofColor background;
@@ -110,10 +122,34 @@ private:
 	ofParameter<float> primSizeDepth;
 
 #pragma endregion
-	ofParameterGroup groupTexture;
-	ofParameter<bool> noTexture;
-	ofParameter<bool> metalTexture;
-	ofParameter<bool> waterTexture;
+
+	ofParameterGroup groupLight;
+	ofParameter<bool> directionalLight;
+	ofParameter<bool> ponctualLight;
+	ofParameter<bool> spotLight;
+
+	ofParameterGroup groupTranslateLight;
+	ofParameter<float> translateXLight;
+	ofParameter<float> translateYLight;
+	ofParameter<float> translateZLight;
+
+	ofParameterGroup groupRotateLight;
+	ofParameter<float> rotateXLight;
+	ofParameter<float> rotateYLight;
+	ofParameter<float> rotateZLight;
+
+	ofParameterGroup groupDiffLight;
+	ofColor diffLight;
+	ofParameter<float> diffLightHue;
+	ofParameter<float> diffLightSaturation;
+	ofParameter<float> diffLightBrightess;
+
+	ofParameterGroup groupSpecLight;
+	ofColor specLight;
+	ofParameter<float> specLightHue;
+	ofParameter<float> specLightSaturation;
+	ofParameter<float> specLightBrightess;
+
 
 	ofParameterGroup groupTranslate2D;
 	ofParameterGroup groupTranslate3D;
@@ -160,6 +196,7 @@ private:
 	void updatePositionMenu();
 
 	void btnDrawPrimitiveClicked();
+	void btnAddLightClicked();
 	void btnClearClicked();
 	void btnExitClicked();
 	void btnExportClicked();
@@ -175,11 +212,13 @@ private:
 	void primTypeLineChanged(bool & value);
 	void primTypePointChanged(bool & value);
 
-	void wireFrameChanged(bool& value);
+	void directionalLightChanged(bool & value);
 
-	void noTextureChanged(bool & value);
-	void metalTextureChanged(bool & value);
-	void waterTextureChanged(bool & value);
+	void ponctualLightChanged(bool & value);
+
+	void spotLightChanged(bool & value);
+
+	void wireFrameChanged(bool& value);
 
 	void translateChanged(float & value);
 	void rotateChanged(float & value);
