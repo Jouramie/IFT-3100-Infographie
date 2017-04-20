@@ -87,11 +87,6 @@ void renderer::draw()
 		}
 	}
 
-	for (auto& glassy : GlassyPrims)
-	{
-		glassy->prepareGlass(*cam, other3D, background);
-	}
-
 	ofClear(background);
 
 	cam->begin();
@@ -197,6 +192,11 @@ void renderer::draw()
 	}
 
 	ofDisableDepthTest();
+
+	for (auto& glassy : GlassyPrims)
+	{
+		glassy->prepareGlass(*cam, other3D, background);
+	}
 
 	ofPopMatrix();
 
@@ -398,6 +398,7 @@ ofParameter<bool> renderer::createPoint(float x, float y, float radius, ofColor 
 	return prim.selected;
 }
 
+<<<<<<< HEAD
 void renderer::setMustPrepares() {
 
 	for (auto& p : *scn)
@@ -411,6 +412,120 @@ void renderer::setMustPrepares() {
 		}
 	}
 
+=======
+/**
+* Render a Bezier curve with given x,y,z and deltas.
+*/
+ofParameter<bool> renderer::createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf) {
+	return createBezier(cx1, cy1, cz1, cx2, cy2, cz2, xi, yi, zi, xf, yf, zf, fill, stroke);
+}
+
+/**
+* Render a Bezier curve with given x,y,z and deltas.
+*/
+ofParameter<bool> renderer::createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, ofColor fillColor, ofColor strokeColor) {
+	ofPath* bezier = new ofPath();
+	bezier->moveTo(xi, yi, zi);
+	bezier->bezierTo(cx1, cy1, cz1, cx2, cy2, cz2, xf, yf, zf);
+	bezier->setColor(fillColor);
+	bezier->setStrokeColor(strokeColor);
+	bezier->setStrokeWidth(strokeThickness);
+
+	primitive2d prim = primitive2d{ bezier, fillColor, strokeColor, strokeThickness };
+	prim.setName("Bezier " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+}
+/**
+* Creates a Hermite spline with given control points ans line Resolution.
+*/
+ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes) { 
+
+	return createHermite(cx1, cy1, cz1, cx2, cy2, cz2, xi, yi, zi, xf, yf, zf, lineRes, fill, stroke); 
+}
+ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes, ofColor fillColor, ofColor strokeColor) { 
+	ofPath* herm = new ofPath();
+	ofVec3f position;
+	ofVec3f cp1;
+	cp1.x = xi;
+	cp1.y = yi;
+	cp1.z = zi;
+	ofVec3f cp2;
+	cp2.x = cx1;
+	cp2.y = cy1;
+	cp2.z = cz1;
+	ofVec3f cp3;
+	cp3.x = cx2;
+	cp3.y = cy2;
+	cp3.z = cz2;
+	ofVec3f cp4;
+	cp4.x = xf;
+	cp4.y = yf;
+	cp4.z = zf;
+	herm->setMode(ofPath::POLYLINES);
+	herm->moveTo(xi, yi, zi);
+	herm->setColor(fillColor);
+	herm->setStrokeColor(strokeColor);
+	herm->setStrokeWidth(strokeThickness);
+	ofVec3f tangent1 = cp2 - position;
+	ofVec3f tangent2 = cp3 - cp4;
+	for (int i = 0; i <= lineRes; ++i) {
+		hermite(
+			i / (float)lineRes,
+			cp1.x, cp1.y, cp1.z,
+			tangent1.x, tangent1.y, tangent1.z,
+			tangent2.x, tangent2.y, tangent2.z,
+			cp4.x, cp4.y, cp4.z,
+			position.x, position.y, position.z);
+		herm->curveTo(position);
+	}
+	
+	primitive2d prim = primitive2d{ herm, fillColor, strokeColor, strokeThickness };
+	prim.setName("Hermite " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+}
+/**
+* Creates CatmullRom spline with given control points and line resolution.
+*/
+ofParameter<bool> renderer::createCatmullRom(const ofPoint cp1, const ofPoint cp2, const ofPoint to, const ofPoint cp4, int lineRes) {
+	return createCatmullRom(cp1, cp2, to, cp4, lineRes, fill, stroke);
+}
+
+ofParameter<bool> renderer::createCatmullRom(const ofPoint cp1, const ofPoint cp2, const ofPoint to, const ofPoint cp4, int lineRes, ofColor fillColor, ofColor strokeColor) {
+	ofPath* catmullRom = new ofPath();
+	catmullRom->moveTo(cp2);
+	catmullRom->curveTo(cp1);
+	catmullRom->curveTo(cp2);
+	catmullRom->curveTo(to);
+	catmullRom->curveTo(cp4);
+	catmullRom->setColor(fillColor);
+	catmullRom->setStrokeColor(strokeColor);
+	catmullRom->setStrokeWidth(strokeThickness);
+	primitive2d prim = primitive2d{ catmullRom, fillColor, strokeColor, strokeThickness };
+	prim.setName("Catmull Rom " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+}
+
+ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2, const ofPoint cp3, const ofPoint cp4) {
+	return createSurface(w, h, dim, res, cp1, cp2, cp3, cp4, fill, stroke);
+}
+
+ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2, const ofPoint cp3, const ofPoint cp4, ofColor fillColor, ofColor strokeColor) {
+	ofxBezierSurface* surface = new ofxBezierSurface();
+	surface->setup(w, h, dim, res);
+	std::vector<ofPoint> pts;
+	pts.push_back(cp1);
+	pts.push_back(cp2);
+	pts.push_back(cp3);
+	pts.push_back(cp4);
+	surface->setControlPnts(pts);
+	primitiveTopo prim = primitiveTopo{ surface, fillColor, strokeColor, strokeThickness };
+	prim.setName("Bezier Surface " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+>>>>>>> 5213828d0d1807502a551b02b6ff405a2246d526
 }
 
 //-------------3D primitives-----------------------

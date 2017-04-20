@@ -1,4 +1,6 @@
 ofxAssimpModelLoader
+ofxBezierSurface
 ofxGui
 ofxOpenCv
 ofxRay
+ofxShadersFX

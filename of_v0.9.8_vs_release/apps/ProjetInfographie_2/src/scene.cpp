@@ -25,6 +25,15 @@ void scene::addElement(size_t index, const primitive3d& p, bool insertFirstChild
 	addElement(index, primitive_ptr{ new primitive3d{ p } }, insertFirstChild);
 }
 
+void scene::addElement(size_t index, const primitiveTopo& p, bool insertFirstChild)
+{
+	if (index == 0 && !insertFirstChild)
+	{
+		throw invalid_argument("root don't have parent...");
+	}
+	addElement(index, primitive_ptr{ new primitiveTopo{ p } }, insertFirstChild);
+}
+
 void scene::addElement(size_t index, const forme3d& p, bool insertFirstChild)
 {
 	if (index == 0 && !insertFirstChild)

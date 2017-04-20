@@ -119,7 +119,85 @@ bool primitive3d::prepareGlass(const ccamera cam, vector<primitive*> otherPrims,
 
 			int wid = ofGetWidth();
 			int hei = ofGetHeight();
+
+			int firstX = wid;
+			int lastX = 0;
+			int firstY = hei;
+			int lastY = 0;
+
 			for (int i = 0; i < allFaces.size(); i++) {
+				for (int j = 0; j < 3; j++)
+				{
+					ofVec3f screen = (*cam).worldToScreen(allFaces[i].getVertex(0) * toWorldSpace);
+					if (firstX > screen.x)
+						firstX = screen.x;
+					if (firstY > screen.y)
+						firstY = screen.y;
+					if (lastX < screen.x)
+						lastX = screen.x;
+					if (lastY < screen.y)
+						lastY = screen.y;
+				}
+			}
+
+			if (firstX < 0)
+				firstX = 0;
+			if (firstY < 0)
+				firstY = 0;
+			if (lastX >= wid)
+				lastX = wid - 1;
+			if (lastY >= hei - 1)
+				lastY = hei;
+
+			for (int x = firstX; x <= lastX; x++)
+			{
+				for (int y = firstY; y <= lastY; y++)
+				{
+					ofVec2f coords = ofVec2f(x, y);
+					vector<int>* hits = new vector<int>();
+
+					ofVec3f screenToWorld = (*cam).screenToWorld(ofVec3f(coords.x, coords.y, 0.0));
+					ofRay ray((*cam).getPosition(), screenToWorld - (*cam).getPosition());
+
+					if (intersectsMesh(ray, *mesh, toWorldSpace, hits)) {
+
+						for (int iter = 0; iter < hits->size(); iter++) {
+							ofMeshFace * face = &allFaces[(*hits)[iter]];
+
+							ofColor col = backgroundCol;
+
+							if (isMirror) {
+								ofVec3f normal = face->getFaceNormal();
+								ofVec3f transmi = ray.getTransmissionVector().getNormalized();
+								ofVec3f start = ray.getStart();
+								ofVec3f k = face->getVertex(1);
+								ofVec3f TVPlusP = k / normal;
+								ofVec3f TV = TVPlusP - start;
+								ofVec3f t = TV / transmi;
+								ofRay reflectedRay = ofRay(t, transmi + (2 * (transmi * normal) * transmi));
+
+								for (auto& otherPrim3D : otherPrims)
+								{
+									if (otherPrim3D->getName() != getName())
+									{
+										if (otherPrim3D->getColorOfRay(reflectedRay, &col))
+											iter = hits->size() + 1;
+									}
+								}
+							}
+							ofColor lighter = getSlightlyLighterColor(col);
+							//face->setColor(0, lighter);
+							//face->setColor(1, lighter);
+							//face->setColor(2, lighter);
+
+							ofSetColor(lighter);
+							ofDrawRectangle(x, y, 1, 1);
+						}
+					}
+				}
+			}
+
+			/*for (int i = 0; i < allFaces.size(); i++) {
 				ofVec3f screen1 = (*cam).worldToScreen(allFaces[i].getVertex(0) * toWorldSpace);
 				ofVec2f coords = ofVec2f(screen1.x, screen1.y);
 				vector<int>* hits = new vector<int>();
@@ -159,7 +237,7 @@ bool primitive3d::prepareGlass(const ccamera cam, vector<primitive*> otherPrims,
 						mesh->setColor(i, lighter);
 					}
 				}
-			}
+			}*/
 			mustPrepare = false;
 		}
 	}
@@ -191,7 +269,8 @@ bool primitive3d::getColorOfRay(ofRay ray, ofColor * hit) {
 
 	if (hasHit)
 	{
-		*hit = allFaces[(*hits)[0]].getColor(0);
+		//*hit = allFaces[(*hits)[0]].getColor(0);
+		*hit = fillCol;
 	}
 	return hasHit;
 }
