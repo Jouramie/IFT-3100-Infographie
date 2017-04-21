@@ -35,7 +35,7 @@ public:
 	virtual bool getColorOfRay(ofRay ray, ofColor * hit) { return false; };
 	bool calcTriangleIntersection(const ofVec3f &vert0, const ofVec3f &vert1, const ofVec3f &vert2, ofRay ray, float *result) const;
 	bool calcPlaneIntersection(const ofVec3f &planeOrigin, const ofVec3f &planeNormal, ofRay ray, float *result) const;
-	virtual bool prepareGlass(const ccamera cam, vector<primitive*> otherPrims, ofColor backgroundCol) { return false; };
+	virtual vector<ofRay> prepareGlass(const ofCamera cam, vector<primitive*> otherPrims, ofColor backgroundCol) { return vector<ofRay>(); };
 	virtual ofMesh getMesh() { return ofMesh(); };
 
 	virtual bool isGlassy() { return false; };

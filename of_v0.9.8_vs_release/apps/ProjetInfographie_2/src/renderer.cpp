@@ -55,19 +55,6 @@ void renderer::update()
 	}
 	sum /= count;
 	cam->setTarget(sum);
-	setMustPrepares();
-}
-
-void renderer::drawGlass(char axis)
-{
-	ofPushMatrix();
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//ofSetColor(0.7, 0.7, 0.7, 0.20);
-	glColor4f(0.7, 0.7, 0.7, 0.20);
-	ofDrawRectangle(-4000, -4000, 8000, 8000);
-	glDisable(GL_BLEND);
-	ofPopMatrix();
 }
 
 void renderer::draw()
@@ -108,99 +95,37 @@ void renderer::draw()
 		ofScale(scaleX, scaleY, scaleZ);
 	}
 
-	hasRef = "";
-
-	bool mustReflect = false;
-	bool mustRefract = false;
-	char axis = 'x';
-
-	if (hasRef.length() != 2)
-	{
-		hasRef = "";
-	}
-	else
-	{
-		if (hasRef[0] == 'l')
-			mustReflect = true;
-		else if (hasRef[0] == 'r')
-			mustRefract = true;
-
-		axis = hasRef[1];
-	}
-
-	if (mustReflect || mustRefract)
-	{
-		ofDisableDepthTest();
-
-		for (auto& p : *scn)
-		{
-			if (mustReflect)
-			{
-				glPushMatrix();
-
-				float x = 1.0;
-				float y = 1.0;
-				float z = 1.0;
-				bool mustDraw = false;
-
-				if (axis == 'x')
-				{
-					x = -x;
-					if ((*cam).getPosX() > 0)
-						mustDraw = true;
-				}
-				else if (axis == 'y')
-				{
-					y = -y;
-					if ((*cam).getPosY() > 0)
-						mustDraw = true;
-				}
-				else if (axis == 'z')
-				{
-					z = -z;
-					if ((*cam).getPosZ() > 0)
-						mustDraw = true;
-				}
-
-				if (mustDraw)
-				{
-					glScalef(x, y, z);
-					//setLightSourcePositions();
-					p.draw(wireFrame);
-					glPopMatrix();
-				}
-			}
-		}
-		drawGlass(axis);
-		ofEnableDepthTest();
-	}
-	else
-	{
-		refPosition = 0;
-		hasRef = "";
-	}
-
 	for (auto& p : *scn)
 	{
 		p.draw(wireFrame);
 	}
 
 	std::list<ofRay>::iterator iterator2;
+	bool origRay = true;
 	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
 	{
+		if (origRay)
+			ofSetColor(255, 0, 0);
+		else
+			ofSetColor(0, 255, 0);
 		iterator2->draw();
+		origRay = !origRay;
 	}
 
 	ofDisableDepthTest();
 
-	for (auto& glassy : GlassyPrims)
-	{
-		glassy->prepareGlass(*cam, other3D, background);
-	}
-
 	ofPopMatrix();
 
 	cam->end();
+
+	for (auto& glassy : GlassyPrims)
+	{
+		vector<ofRay> newRays = glassy->prepareGlass((**cam), other3D, background);
+		for (auto r : newRays)
+		{
+			//rays.push_back(r);
+		}
+	}
 
 	if (isFiltered) {
 		checkFilters();
@@ -398,7 +323,6 @@ ofParameter<bool> renderer::createPoint(float x, float y, float radius, ofColor 
 	return prim.selected;
 }
 
-<<<<<<< HEAD
 void renderer::setMustPrepares() {
 
 	for (auto& p : *scn)
@@ -411,8 +335,8 @@ void renderer::setMustPrepares() {
 			}
 		}
 	}
+}
 
-=======
 /**
 * Render a Bezier curve with given x,y,z and deltas.
 */
@@ -525,7 +449,6 @@ ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const 
 	prim.setName("Bezier Surface " + to_string(scn->nbElements() + 1));
 	scn->addElement(prim);
 	return prim.selected;
->>>>>>> 5213828d0d1807502a551b02b6ff405a2246d526
 }
 
 //-------------3D primitives-----------------------
@@ -561,7 +484,8 @@ ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d,
 
 	primitive3d prim = primitive3d{ box, fillCol, matrix };
 	prim.setName("Cube " + to_string(scn->nbElements() + 1));
-	prim.setMirror(false);
+	prim.setMirror(scn->nbElements() == 6);
+	prim.setGlass(false);
 	scn->addElement(prim);
 	return prim.selected;
 
@@ -579,7 +503,7 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 
 	ofSpherePrimitive* ball = new ofSpherePrimitive();
 	ball->setPosition(0, 0, 0);
-	ball->setResolution(16);// (sizeX + sizeY + sizeZ) / 120);
+	ball->setResolution(64);// (sizeX + sizeY + sizeZ) / 120);
 
 	float smallest = min(sizeX, min(sizeY, sizeZ));
 
@@ -593,7 +517,7 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 	matrix.scale(newX, newY, newZ);
 	matrix.setTranslation(x, y, z);
 
-	ofMesh * ballMesh = ball->getMeshPtr();
+	/*ofMesh * ballMesh = ball->getMeshPtr();
 	vector<ofMeshFace> allFaces = ballMesh->getUniqueFaces();
 
 	for (auto& f : allFaces)
@@ -603,11 +527,11 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 		f.setColor(0, color);
 	}
 
-	ballMesh->enableColors();
+	ballMesh->enableColors();*/
 
 	primitive3d prim = primitive3d{ ball, color, matrix };
 	prim.setName("Sphere " + to_string(scn->nbElements() + 1));
-	prim.setMirror(scn->nbElements() == 2);
+	prim.setMirror(false);
 	prim.setGlass(false);
 	scn->addElement(prim);
 	return prim.selected;
@@ -728,67 +652,13 @@ void renderer::setWireFrameMode(bool wf)
 
 void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 {
-
 	for (primitive& p : *scn)
 	{
 		if (p.intersectsMeshInstance(ofVec2f(x, y), (**cam))) {
 			p.changeSelected();
+			break;
 		}
 	}
-
-	//ofVec3f screenToWorld = (**cam).screenToWorld(ofVec3f(x, y, 0.0));
-	//ofRay ray((**cam).getPosition(), screenToWorld - (**cam).getPosition());
-	//bool intersection = false;
-	//float t = 0;
-
-	//// Pour dessiner le rayon (à des fins de débogage)
-	//rays.push_back(ray);
-
-	//bool found = false;
-
-	//for (primitive& p : *scn)
-	//{
-	//	intersection = p.calcTriangleIntersection(one, two, three, &t);
-	//	if (intersection) {
-	//		break;
-	//	}
-
-	//	const vector<ofMeshFace>& faces = sphere.getMesh().getUniqueFaces();
-	//	/*if (!shiftHeld)
-	//	{
-	//		p.setSelected(false);
-	//	}*/
-
-	//	if (p.getName().find("Car") == string::npos)
-	//	{
-
-	//		float* distance = new float(0);
-
-	//		found = p.checkIntersectionPlaneAndLine(ray, distance, *cam);
-
-	//		if (found)// && *distance >= 0 && *distance < distanceClosest)
-	//		{
-	//			intersectPrim = &p;
-	//			intersectPrim->changeSelected();
-	//			//ofSetColor(0, 255, 0);
-	//			//distanceClosest = *distance;
-	//		}
-	//		else
-	//		{
-	//			//ofSetColor(255, 0, 0);
-	//		}
-	//	}
-	//}
-
-	////if (distanceClosest < (std::numeric_limits<int>::max() - 1))
-	////{
-	////	intersectPrim->setSelected(!intersectPrim->getSelected());
-	////	std::cout << "Selected Primitive" << std::endl;
-	////}
-	////else
-	////{
-	////	std::cout << "Selected Nothing" << std::endl;
-	////}
 }
 
 void renderer::addBlur() {

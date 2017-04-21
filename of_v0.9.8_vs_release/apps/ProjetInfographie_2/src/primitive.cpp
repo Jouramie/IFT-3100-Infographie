@@ -8,11 +8,22 @@ const ofVec3f primitive::getGlobalPosition() const
 	return dummy.getGlobalPosition();
 }
 
+struct hit {
+	int faceIndex;
+	float distance;
+};
+
+struct by_distance {
+	bool operator()(hit const &a, hit const &b) {
+		return a.distance < b.distance;
+	}
+};
+
 bool primitive::intersectsMesh(ofRay ray, const ofMesh &mesh, const ofMatrix4x4 &toWorldSpace, vector<int> *meshHit) {
 	const vector<ofMeshFace>& faces = mesh.getUniqueFaces();
 	bool intersection = false;
 	bool intersectedOnce = false;
-	float t;
+	vector<hit> distances = vector<hit>();
 	for (int i = 0; i < faces.size(); i++) {
 		const ofMeshFace &face = faces[i];
 		// intersections are done worldSpace
@@ -22,13 +33,29 @@ bool primitive::intersectsMesh(ofRay ray, const ofMesh &mesh, const ofMatrix4x4 
 		one = one * transfoMatrix;
 		two = two * transfoMatrix;
 		three = three * transfoMatrix;
+
+		float t;
 		intersection = calcTriangleIntersection(one, two, three, ray, &t);
-		if (intersection) {
-			meshHit->push_back(i);
+
+		if (intersection && t > 0) {
+			hit newHit = hit();
+			newHit.distance = t;
+			newHit.faceIndex = i;
+			distances.push_back(newHit);
 			intersectedOnce = true;
 			//break;
 		}
 	}
+
+	if (intersectedOnce)
+	{
+		std::sort(distances.begin(), distances.end(), by_distance());
+		for (int i = 0; i < distances.size(); i++)
+		{
+			meshHit->push_back(distances[i].faceIndex);
+		}
+	}
+
 	return intersectedOnce;
 }
 
