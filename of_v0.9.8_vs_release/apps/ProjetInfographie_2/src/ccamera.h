@@ -9,7 +9,8 @@ public:
 	const float MaxX = 5000.0f, MaxY = 5000.0f, MaxZ = 5000.0f;
 	const float MinX = -5000.0f, MinY = -5000.0f, MinZ = -5000.0f;
 
-	ccamera() : ccamera{ nullptr } {}
+	ccamera() : ccamera{ nullptr } {};
+	ccamera(const ccamera&) = default;
 	ccamera(ofEasyCam* cam) : cam{ cam } { }
 
 	ofParameterGroup getParameterGroup() { return parameterGroup; }
@@ -28,6 +29,8 @@ public:
 
 	void begin() { cam->begin(); }
 	void end() { cam->end(); }
+
+	bool compare(ccamera otherCam);
 	
 	bool isCameraMoveLeft = false;
 	bool isCameraMoveRight = false;
@@ -38,6 +41,8 @@ public:
 
 	const ofEasyCam& operator*() const { return *cam; }
 	ofCamera* getOfCamera() { return cam; };
+
+	ccamera& operator=(const ccamera&) = default;
 
 private:
 

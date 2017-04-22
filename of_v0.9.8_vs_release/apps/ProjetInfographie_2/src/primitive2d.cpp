@@ -76,10 +76,10 @@ void primitive2d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& l
 	ofPopMatrix();
 }
 
-bool primitive2d::intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) {
+vector<hit> primitive2d::intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) {
 
 	//ofMatrix4x4 toWorldSpace = transfoMatrix;
 	//ofMesh mesh = prim->();
 
-	return false;// primitive::intersectsMesh(screenCoordinates, mesh, cam, toWorldSpace);
+	return vector<hit>();// primitive::intersectsMesh(screenCoordinates, mesh, cam, toWorldSpace);
 }

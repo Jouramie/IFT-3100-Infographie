@@ -25,6 +25,15 @@ void scene::addElement(size_t index, const primitive3d& p, bool insertFirstChild
 	addElement(index, primitive_ptr{ new primitive3d{ p } }, insertFirstChild);
 }
 
+void scene::addElement(size_t index, const primitiveTopo& p, bool insertFirstChild)
+{
+	if (index == 0 && !insertFirstChild)
+	{
+		throw invalid_argument("root don't have parent...");
+	}
+	addElement(index, primitive_ptr{ new primitiveTopo{ p } }, insertFirstChild);
+}
+
 void scene::addElement(size_t index, const forme3d& p, bool insertFirstChild)
 {
 	if (index == 0 && !insertFirstChild)
@@ -50,6 +59,18 @@ void scene::addElement(size_t index, light* p, bool insertFirstChild)
 		throw invalid_argument("root don't have parent...e");
 	}
 	addElement(index, primitive_ptr{ p }, insertFirstChild);
+}
+
+vector<primitive3d> scene::getCubesAndSpheres()
+{
+	vector<primitive3d> vec;
+
+	return vec;
+}
+
+vector<primitive3d> scene::getGlassyElements()
+{
+	return vector<primitive3d>();
 }
 
 void scene::addElement(size_t index, primitive_ptr& p, bool insertFirstChild)

@@ -46,6 +46,7 @@ void renderer::setup()
 	activeMaterial.setShininess(120.0f);
 
 	time = lastTime = ofGetElapsedTimef();
+	setMustPrepares();
 }
 
 void renderer::update()
@@ -74,20 +75,23 @@ void renderer::update()
 	cam->setTarget(sum);
 }
 
-void renderer::drawGlass(char axis)
-{
-	ofPushMatrix();
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//ofSetColor(0.7, 0.7, 0.7, 0.20);
-	glColor4f(0.7, 0.7, 0.7, 0.20);
-	ofDrawRectangle(-4000, -4000, 8000, 8000);
-	glDisable(GL_BLEND);
-	ofPopMatrix();
-}
-
 void renderer::draw()
 {
+	vector<primitive*> GlassyPrims;
+	vector<primitive*> other3D;
+
+	for (auto& p : *scn)
+	{
+		if (p.isCubeOrSphere())
+		{
+			other3D.push_back(&p);
+			if (p.isGlassy())
+			{
+				GlassyPrims.push_back(&p);
+			}
+		}
+	}
+
 	ofClear(background);
 
 	cam->begin();
@@ -110,87 +114,21 @@ void renderer::draw()
 		ofScale(scaleX, scaleY, scaleZ);
 	}
 
-	hasRef = "lz";
-
-	bool mustReflect = false;
-	bool mustRefract = false;
-	char axis = 'x';
-
-	if (hasRef.length() != 2)
-	{
-		hasRef = "";
-	}
-	else
-	{
-		if (hasRef[0] == 'l')
-			mustReflect = true;
-		else if (hasRef[0] == 'r')
-			mustRefract = true;
-
-		axis = hasRef[1];
-	}
-
-	if (mustReflect || mustRefract)
-	{
-		ofDisableDepthTest();
-
-		for (auto& p : *scn)
-		{
-			if (mustReflect)
-			{
-				glPushMatrix();
-
-				float x = 1.0;
-				float y = 1.0;
-				float z = 1.0;
-				bool mustDraw = false;
-
-				if (axis == 'x')
-				{
-					x = -x;
-					if ((*cam).getPosX() > 0)
-						mustDraw = true;
-				}
-				else if (axis == 'y')
-				{
-					y = -y;
-					if ((*cam).getPosY() > 0)
-						mustDraw = true;
-				}
-				else if (axis == 'z')
-				{
-					z = -z;
-					if ((*cam).getPosZ() > 0)
-						mustDraw = true;
-				}
-
-				if (mustDraw)
-				{
-					glScalef(x, y, z);
-					//setLightSourcePositions();
-					p.draw(wireFrame, lightShader);
-					glPopMatrix();
-				}
-			}
-		}
-		drawGlass(axis);
-		ofEnableDepthTest();
-	}
-	else
-	{
-		refPosition = 0;
-		hasRef = "";
-	}
-
 	for (auto& p : *scn)
 	{
 		p.draw(wireFrame, lightShader);
 	}
 
 	std::list<ofRay>::iterator iterator2;
+	bool origRay = true;
 	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
 	{
+		if (origRay)
+			ofSetColor(255, 0, 0);
+		else
+			ofSetColor(0, 255, 0);
 		iterator2->draw();
+		origRay = !origRay;
 	}
 
 	//ofDisableLighting();
@@ -199,6 +137,15 @@ void renderer::draw()
 	ofPopMatrix();
 
 	cam->end();
+
+	for (auto& glassy : GlassyPrims)
+	{
+		vector<ofRay> newRays = glassy->prepareGlass((**cam), other3D, background);
+		for (auto r : newRays)
+		{
+			//rays.push_back(r);
+		}
+	}
 
 	if (isFiltered) {
 		checkFilters();
@@ -400,6 +347,135 @@ ofParameter<bool> renderer::createPoint(float x, float y, float radius, ofMateri
 	scn->addElement(prim);
 	return prim.selected;
 }
+
+void renderer::setMustPrepares() {
+
+	for (auto& p : *scn)
+	{
+		if (p.isCubeOrSphere())
+		{
+			if (p.isGlassy())
+			{
+				p.shouldPrepare();
+			}
+		}
+	}
+}
+
+/**
+* Render a Bezier curve with given x,y,z and deltas.
+*/
+ofParameter<bool> renderer::createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf) {
+	return createBezier(cx1, cy1, cz1, cx2, cy2, cz2, xi, yi, zi, xf, yf, zf, fill, stroke);
+}
+
+/**
+* Render a Bezier curve with given x,y,z and deltas.
+*/
+ofParameter<bool> renderer::createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, ofColor fillColor, ofColor strokeColor) {
+	ofPath* bezier = new ofPath();
+	bezier->moveTo(xi, yi, zi);
+	bezier->bezierTo(cx1, cy1, cz1, cx2, cy2, cz2, xf, yf, zf);
+	bezier->setColor(fillColor);
+	bezier->setStrokeColor(strokeColor);
+	bezier->setStrokeWidth(strokeThickness);
+
+	primitive2d prim = primitive2d{ bezier, fillColor, strokeColor, strokeThickness };
+	prim.setName("Bezier " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+}
+/**
+* Creates a Hermite spline with given control points ans line Resolution.
+*/
+ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes) { 
+
+	return createHermite(cx1, cy1, cz1, cx2, cy2, cz2, xi, yi, zi, xf, yf, zf, lineRes, fill, stroke); 
+}
+ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes, ofColor fillColor, ofColor strokeColor) { 
+	ofPath* herm = new ofPath();
+	ofVec3f position;
+	ofVec3f cp1;
+	cp1.x = xi;
+	cp1.y = yi;
+	cp1.z = zi;
+	ofVec3f cp2;
+	cp2.x = cx1;
+	cp2.y = cy1;
+	cp2.z = cz1;
+	ofVec3f cp3;
+	cp3.x = cx2;
+	cp3.y = cy2;
+	cp3.z = cz2;
+	ofVec3f cp4;
+	cp4.x = xf;
+	cp4.y = yf;
+	cp4.z = zf;
+	herm->setMode(ofPath::POLYLINES);
+	herm->moveTo(xi, yi, zi);
+	herm->setColor(fillColor);
+	herm->setStrokeColor(strokeColor);
+	herm->setStrokeWidth(strokeThickness);
+	ofVec3f tangent1 = cp2 - position;
+	ofVec3f tangent2 = cp3 - cp4;
+	for (int i = 0; i <= lineRes; ++i) {
+		hermite(
+			i / (float)lineRes,
+			cp1.x, cp1.y, cp1.z,
+			tangent1.x, tangent1.y, tangent1.z,
+			tangent2.x, tangent2.y, tangent2.z,
+			cp4.x, cp4.y, cp4.z,
+			position.x, position.y, position.z);
+		herm->curveTo(position);
+	}
+	
+	primitive2d prim = primitive2d{ herm, fillColor, strokeColor, strokeThickness };
+	prim.setName("Hermite " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+}
+/**
+* Creates CatmullRom spline with given control points and line resolution.
+*/
+ofParameter<bool> renderer::createCatmullRom(const ofPoint cp1, const ofPoint cp2, const ofPoint to, const ofPoint cp4, int lineRes) {
+	return createCatmullRom(cp1, cp2, to, cp4, lineRes, fill, stroke);
+}
+
+ofParameter<bool> renderer::createCatmullRom(const ofPoint cp1, const ofPoint cp2, const ofPoint to, const ofPoint cp4, int lineRes, ofColor fillColor, ofColor strokeColor) {
+	ofPath* catmullRom = new ofPath();
+	catmullRom->moveTo(cp2);
+	catmullRom->curveTo(cp1);
+	catmullRom->curveTo(cp2);
+	catmullRom->curveTo(to);
+	catmullRom->curveTo(cp4);
+	catmullRom->setColor(fillColor);
+	catmullRom->setStrokeColor(strokeColor);
+	catmullRom->setStrokeWidth(strokeThickness);
+	primitive2d prim = primitive2d{ catmullRom, fillColor, strokeColor, strokeThickness };
+	prim.setName("Catmull Rom " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+}
+
+ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2, const ofPoint cp3, const ofPoint cp4) {
+	return createSurface(w, h, dim, res, cp1, cp2, cp3, cp4, fill, stroke);
+}
+
+ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2, const ofPoint cp3, const ofPoint cp4, ofColor fillColor, ofColor strokeColor) {
+	ofxBezierSurface* surface = new ofxBezierSurface();
+	surface->setup(w, h, dim, res);
+	std::vector<ofPoint> pts;
+	pts.push_back(cp1);
+	pts.push_back(cp2);
+	pts.push_back(cp3);
+	pts.push_back(cp4);
+	surface->setControlPnts(pts);
+	primitiveTopo prim = primitiveTopo{ surface, fillColor, strokeColor, strokeThickness };
+	prim.setName("Bezier Surface " + to_string(scn->nbElements() + 1));
+	scn->addElement(prim);
+	return prim.selected;
+}
+
 //-------------3D primitives-----------------------
 ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d)
 {
@@ -408,6 +484,8 @@ ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d)
 
 ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d, ofMaterial mat)
 {
+	setMustPrepares();
+
 	ofBoxPrimitive* box = new ofBoxPrimitive();
 
 	float smallest = min(w, min(h, d));
@@ -429,11 +507,14 @@ ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d,
 		//box->setSideColor(i, fillCol);
 	}
 
-	ofMesh boxMesh = box->getMesh();
+	//ofMesh boxMesh = box->getMesh();
 
 	primitive3d prim = primitive3d{ box, ofColor(), matrix };
 	prim.setName("Cube " + to_string(scn->nbElements() + 1));
-	prim.setMaterial(mat);
+	prim.setName("Cube " + to_string(scn->nbElements() + 1));
+	prim.setMirror(scn->nbElements() == 6);
+	prim.setGlass(false);
+
 	scn->addElement(prim);
 	return prim.selected;
 
@@ -447,8 +528,11 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 
 ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofMaterial mat)
 {
+	setMustPrepares();
+
 	ofSpherePrimitive* ball = new ofSpherePrimitive();
 	ball->setPosition(0, 0, 0);
+	ball->setResolution(64);// (sizeX + sizeY + sizeZ) / 120);
 
 	float smallest = min(sizeX, min(sizeY, sizeZ));
 
@@ -462,9 +546,22 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 	matrix.scale(newX, newY, newZ);
 	matrix.setTranslation(x, y, z);
 
+	/*ofMesh * ballMesh = ball->getMeshPtr();
+	vector<ofMeshFace> allFaces = ballMesh->getUniqueFaces();
+
+	for (auto& f : allFaces)
+	{
+		ballMesh->addColor(color);
+		f.setHasColors(true);
+		f.setColor(0, color);
+	}
+
+	ballMesh->enableColors();*/
+
 	primitive3d prim = primitive3d{ ball, ofColor(), matrix };
 	prim.setName("Sphere " + to_string(scn->nbElements() + 1));
-	prim.setMaterial(mat);
+	prim.setMirror(false);
+	prim.setGlass(false);
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -644,67 +741,22 @@ void renderer::setWireFrameMode(bool wf)
 
 void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 {
-
+	primitive* toSelect;
+	float distance = -1;
 	for (primitive& p : *scn)
 	{
-		if (p.intersectsMeshInstance(ofVec2f(x, y), (**cam))) {
-			p.changeSelected();
+		vector<hit> hits = p.intersectsMeshInstance(ofVec2f(x, y), (**cam));
+		if (hits.size() > 0 && (distance == -1 || hits[0].distance < distance))
+		{
+			distance = hits[0].distance;
+			toSelect = &p;
 		}
 	}
 
-	//ofVec3f screenToWorld = (**cam).screenToWorld(ofVec3f(x, y, 0.0));
-	//ofRay ray((**cam).getPosition(), screenToWorld - (**cam).getPosition());
-	//bool intersection = false;
-	//float t = 0;
-
-	//// Pour dessiner le rayon (à des fins de débogage)
-	//rays.push_back(ray);
-
-	//bool found = false;
-
-	//for (primitive& p : *scn)
-	//{
-	//	intersection = p.calcTriangleIntersection(one, two, three, &t);
-	//	if (intersection) {
-	//		break;
-	//	}
-
-	//	const vector<ofMeshFace>& faces = sphere.getMesh().getUniqueFaces();
-	//	/*if (!shiftHeld)
-	//	{
-	//		p.setSelected(false);
-	//	}*/
-
-	//	if (p.getName().find("Car") == string::npos)
-	//	{
-
-	//		float* distance = new float(0);
-
-	//		found = p.checkIntersectionPlaneAndLine(ray, distance, *cam);
-
-	//		if (found)// && *distance >= 0 && *distance < distanceClosest)
-	//		{
-	//			intersectPrim = &p;
-	//			intersectPrim->changeSelected();
-	//			//ofSetColor(0, 255, 0);
-	//			//distanceClosest = *distance;
-	//		}
-	//		else
-	//		{
-	//			//ofSetColor(255, 0, 0);
-	//		}
-	//	}
-	//}
-
-	////if (distanceClosest < (std::numeric_limits<int>::max() - 1))
-	////{
-	////	intersectPrim->setSelected(!intersectPrim->getSelected());
-	////	std::cout << "Selected Primitive" << std::endl;
-	////}
-	////else
-	////{
-	////	std::cout << "Selected Nothing" << std::endl;
-	////}
+	if (distance > -0.9)
+	{
+		toSelect->changeSelected();
+	}
 }
 
 void renderer::addBlur() {

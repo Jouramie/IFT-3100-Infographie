@@ -2,16 +2,37 @@
 #include "ofMain.h"
 #include "ofxRay.h"
 #include "ofxOpenCv.h"
+#include "ofxBezierSurface.h"
 #include "primitive3d.h"
 #include <limits>
 #include "scene.h"
 #include "primitive2d.h"
+#include "primitiveTopo.h"
 #include "ccamera.h"
 #include "extModel.h"
 #include "light.h"
 #include <typeinfo>
 #include "ofxShadersFX.h"
 
+// fonction d'évaluation d'une courbe de hermite (4 points de contrôle)
+inline void hermite(
+	float t,
+	float p1x, float p1y, float p1z,
+	float p2x, float p2y, float p2z,
+	float p3x, float p3y, float p3z,
+	float p4x, float p4y, float p4z,
+	float&  x, float& y, float&  z)
+{
+	float u = 1 - t;
+	float uu = u * u;
+	float uuu = uu * u;
+	float tt = t * t;
+	float ttt = tt * t;
+
+	x = (2 * ttt - 3 * tt + 1) * p1x + (ttt - 2 * tt + t) * p2x + (ttt - tt) * p3x + (-2 * ttt + 3 * tt) * p4x;
+	y = (2 * ttt - 3 * tt + 1) * p1y + (ttt - 2 * tt + t) * p2y + (ttt - tt) * p3y + (-2 * ttt + 3 * tt) * p4y;
+	z = (2 * ttt - 3 * tt + 1) * p1z + (ttt - 2 * tt + t) * p2z + (ttt - tt) * p3z + (-2 * ttt + 3 * tt) * p4z;
+}
 
 class renderer
 {
@@ -37,6 +58,7 @@ public:
 	void sceneRotate(float angle, float centerX, float centerY, float centerZ);
 	void sceneScale(float scaleX, float scaleY, float scaleZ);
 	void applySelection(ofMatrix4x4 matrix);
+
 	//2D primitives
 	ofParameter<bool> createSquare(float x, float y, float width, float height);
 	ofParameter<bool> createSquare(float x, float y, float width, float height, ofMaterial mat);
@@ -49,6 +71,17 @@ public:
 	ofParameter<bool> createPoint(float x, float y, float radius);
 	ofParameter<bool> createPoint(float x, float y, float radius, ofMaterial mat);
 
+	//Topologie
+	ofParameter<bool> createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf);
+	ofParameter<bool> createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, ofColor fillColor, ofColor strokeColor);
+	ofParameter<bool> createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes);
+	ofParameter<bool> createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes, ofColor fillColor, ofColor strokeColor);
+	ofParameter<bool> createCatmullRom(const ofPoint cp1, const ofPoint cp2, const ofPoint to, const ofPoint cp4, int lineRes);
+	ofParameter<bool> createCatmullRom(const ofPoint cp1, const ofPoint cp2, const ofPoint to, const ofPoint cp4, int lineRes, ofColor fillColor, ofColor strokeColor);
+	ofParameter<bool> createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2, const ofPoint cp3, const ofPoint cp4);
+	ofParameter<bool> createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2, const ofPoint cp3, const ofPoint cp4, ofColor fillColor, ofColor strokeColor);
+
+	//3D primitives
 	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d);
 	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d, ofMaterial mat);
 	ofParameter<bool> createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
@@ -95,6 +128,9 @@ public:
 	void removeDilate();
 
 	void setIlluminationModel(illuminationModel model);
+	void setMustPrepares();
+
+	~renderer();
 
 private:
 
