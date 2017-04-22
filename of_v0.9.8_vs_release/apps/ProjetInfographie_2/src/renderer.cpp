@@ -366,22 +366,23 @@ void renderer::setMustPrepares() {
 * Render a Bezier curve with given x,y,z and deltas.
 */
 ofParameter<bool> renderer::createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf) {
-	return createBezier(cx1, cy1, cz1, cx2, cy2, cz2, xi, yi, zi, xf, yf, zf, fill, stroke);
+	return createBezier(cx1, cy1, cz1, cx2, cy2, cz2, xi, yi, zi, xf, yf, zf, activeMaterial);
 }
 
 /**
 * Render a Bezier curve with given x,y,z and deltas.
 */
-ofParameter<bool> renderer::createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, ofColor fillColor, ofColor strokeColor) {
+ofParameter<bool> renderer::createBezier(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, ofMaterial mat) {
 	ofPath* bezier = new ofPath();
 	bezier->moveTo(xi, yi, zi);
 	bezier->bezierTo(cx1, cy1, cz1, cx2, cy2, cz2, xf, yf, zf);
-	bezier->setColor(fillColor);
-	bezier->setStrokeColor(strokeColor);
+	//bezier->setColor(fillColor);
+	//bezier->setStrokeColor(strokeColor);
 	bezier->setStrokeWidth(strokeThickness);
 
-	primitive2d prim = primitive2d{ bezier, fillColor, strokeColor, strokeThickness };
+	primitive2d prim = primitive2d{ bezier, ofColor(), ofColor(), strokeThickness };
 	prim.setName("Bezier " + to_string(scn->nbElements() + 1));
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -390,9 +391,9 @@ ofParameter<bool> renderer::createBezier(float cx1, float cy1, float cz1, float 
 */
 ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes) { 
 
-	return createHermite(cx1, cy1, cz1, cx2, cy2, cz2, xi, yi, zi, xf, yf, zf, lineRes, fill, stroke); 
+	return createHermite(cx1, cy1, cz1, cx2, cy2, cz2, xi, yi, zi, xf, yf, zf, lineRes, activeMaterial);
 }
-ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes, ofColor fillColor, ofColor strokeColor) { 
+ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float cx2, float cy2, float cz2, float xi, float yi, float zi, float xf, float yf, float zf, int lineRes, ofMaterial mat) {
 	ofPath* herm = new ofPath();
 	ofVec3f position;
 	ofVec3f cp1;
@@ -413,8 +414,8 @@ ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float
 	cp4.z = zf;
 	herm->setMode(ofPath::POLYLINES);
 	herm->moveTo(xi, yi, zi);
-	herm->setColor(fillColor);
-	herm->setStrokeColor(strokeColor);
+	//herm->setColor(fillColor);
+	//herm->setStrokeColor(strokeColor);
 	herm->setStrokeWidth(strokeThickness);
 	ofVec3f tangent1 = cp2 - position;
 	ofVec3f tangent2 = cp3 - cp4;
@@ -429,8 +430,9 @@ ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float
 		herm->curveTo(position);
 	}
 	
-	primitive2d prim = primitive2d{ herm, fillColor, strokeColor, strokeThickness };
+	primitive2d prim = primitive2d{ herm, ofColor(), ofColor(), strokeThickness };
 	prim.setName("Hermite " + to_string(scn->nbElements() + 1));
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -438,30 +440,31 @@ ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float
 * Creates CatmullRom spline with given control points and line resolution.
 */
 ofParameter<bool> renderer::createCatmullRom(const ofPoint cp1, const ofPoint cp2, const ofPoint to, const ofPoint cp4, int lineRes) {
-	return createCatmullRom(cp1, cp2, to, cp4, lineRes, fill, stroke);
+	return createCatmullRom(cp1, cp2, to, cp4, lineRes, activeMaterial);
 }
 
-ofParameter<bool> renderer::createCatmullRom(const ofPoint cp1, const ofPoint cp2, const ofPoint to, const ofPoint cp4, int lineRes, ofColor fillColor, ofColor strokeColor) {
+ofParameter<bool> renderer::createCatmullRom(const ofPoint cp1, const ofPoint cp2, const ofPoint to, const ofPoint cp4, int lineRes, ofMaterial mat) {
 	ofPath* catmullRom = new ofPath();
 	catmullRom->moveTo(cp2);
 	catmullRom->curveTo(cp1);
 	catmullRom->curveTo(cp2);
 	catmullRom->curveTo(to);
 	catmullRom->curveTo(cp4);
-	catmullRom->setColor(fillColor);
-	catmullRom->setStrokeColor(strokeColor);
+	//catmullRom->setColor(fillColor);
+	//catmullRom->setStrokeColor(strokeColor);
 	catmullRom->setStrokeWidth(strokeThickness);
-	primitive2d prim = primitive2d{ catmullRom, fillColor, strokeColor, strokeThickness };
+	primitive2d prim = primitive2d{ catmullRom, ofColor(), ofColor(), strokeThickness };
 	prim.setName("Catmull Rom " + to_string(scn->nbElements() + 1));
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 }
 
 ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2, const ofPoint cp3, const ofPoint cp4) {
-	return createSurface(w, h, dim, res, cp1, cp2, cp3, cp4, fill, stroke);
+	return createSurface(w, h, dim, res, cp1, cp2, cp3, cp4, activeMaterial);
 }
 
-ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2, const ofPoint cp3, const ofPoint cp4, ofColor fillColor, ofColor strokeColor) {
+ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2, const ofPoint cp3, const ofPoint cp4, ofMaterial mat) {
 	ofxBezierSurface* surface = new ofxBezierSurface();
 	surface->setup(w, h, dim, res);
 	std::vector<ofPoint> pts;
@@ -470,8 +473,9 @@ ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const 
 	pts.push_back(cp3);
 	pts.push_back(cp4);
 	surface->setControlPnts(pts);
-	primitiveTopo prim = primitiveTopo{ surface, fillColor, strokeColor, strokeThickness };
+	primitiveTopo prim = primitiveTopo{ surface, ofColor(), ofColor(), strokeThickness };
 	prim.setName("Bezier Surface " + to_string(scn->nbElements() + 1));
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 }

@@ -1549,9 +1549,9 @@ void ofApp::setupMenuTopo() {
 	menuTopo.add(groupPrimitivePositionTopo);
 	menuTopo.add(groupPrimitiveSizeTopo);
 
-	menuTopo.add(groupStroke);
+	menu3D.add(groupCouleur);
 
-	menuTopo.add(groupTexture);
+	menu3D.add(groupLight);
 
 	menuTopo.minimizeAll();
 

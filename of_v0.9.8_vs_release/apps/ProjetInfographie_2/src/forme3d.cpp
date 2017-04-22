@@ -35,7 +35,7 @@ void forme3d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& light
 	ofRotate(rotationAmount, rotationAngle.x, rotationAngle.y, rotationAngle.z);
 
 	ofScale(transfoMatrix.getScale());
-	//mat.begin();
+
 	lightShader.useMaterial(&mat);
 	lightShader.begin();
 	if (wireframe || selected)
@@ -46,7 +46,6 @@ void forme3d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& light
 		for (auto& i : prims) {
 			i->draw();
 		}
-	//mat.begin();
 	lightShader.end();
 	lightShader.removeMaterial();
 	ofPopMatrix();
