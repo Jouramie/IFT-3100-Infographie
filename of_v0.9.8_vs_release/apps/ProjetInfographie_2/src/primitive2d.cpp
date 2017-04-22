@@ -43,7 +43,7 @@ ofColor primitive2d::getStrokeColor() {
 	return strokeCol;
 }
 
-void primitive2d::draw(bool wireframe)
+void primitive2d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader)
 {
 	ofSetLineWidth(1.0);
 	prim->setStrokeWidth(strokeThickness);
@@ -62,13 +62,17 @@ void primitive2d::draw(bool wireframe)
 	ofRotate(rotationAmount, rotationAngle.x, rotationAngle.y, rotationAngle.z);
 
 	ofScale(transfoMatrix.getScale());
-
+	//mat.begin();
+	lightShader.useMaterial(&mat);
+	lightShader.begin();
 	if (wireframe || selected.get())
 		prim->setFilled(false);
 	else
 		prim->setFilled(true);
 	prim->draw();
-
+	//mat.end();
+	lightShader.end();
+	lightShader.removeMaterial();
 	ofPopMatrix();
 }
 

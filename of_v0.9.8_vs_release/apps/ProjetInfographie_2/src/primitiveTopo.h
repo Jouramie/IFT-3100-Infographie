@@ -17,7 +17,7 @@ public:
 	ofColor getFillColor();
 	ofColor getStrokeColor();
 
-	void draw(bool wireframe) override;
+	void draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader) override;
 
 protected:
 	const ofVec3f getLocalPosition() const override { return ofVec3f(); } //Fix later

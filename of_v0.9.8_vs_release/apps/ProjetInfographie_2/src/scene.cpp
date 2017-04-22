@@ -52,6 +52,15 @@ void scene::addElement(size_t index, const extModel& p, bool insertFirstChild)
 	addElement(index, primitive_ptr{ new extModel{ p } }, insertFirstChild);
 }
 
+void scene::addElement(size_t index, light* p, bool insertFirstChild)
+{
+	if (index == 0 && !insertFirstChild)
+	{
+		throw invalid_argument("root don't have parent...e");
+	}
+	addElement(index, primitive_ptr{ p }, insertFirstChild);
+}
+
 vector<primitive3d> scene::getCubesAndSpheres()
 {
 	vector<primitive3d> vec;

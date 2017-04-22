@@ -43,7 +43,7 @@ ofColor primitiveTopo::getStrokeColor() {
 	return strokeCol;
 }
 
-void primitiveTopo::draw(bool wireframe)
+void primitiveTopo::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader)
 {
 	ofSetLineWidth(1.0);
 
@@ -62,10 +62,14 @@ void primitiveTopo::draw(bool wireframe)
 
 	ofScale(transfoMatrix.getScale());
 
+	lightShader.useMaterial(&mat);
+	lightShader.begin();
 	if (wireframe || selected.get())
 		prim->drawWireframe();
 	else
 		prim->draw();
+	lightShader.end();
+	lightShader.removeMaterial();
 
 	ofPopMatrix();
 }
