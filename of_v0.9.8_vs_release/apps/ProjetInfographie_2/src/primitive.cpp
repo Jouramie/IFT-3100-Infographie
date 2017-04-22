@@ -8,18 +8,7 @@ const ofVec3f primitive::getGlobalPosition() const
 	return dummy.getGlobalPosition();
 }
 
-struct hit {
-	int faceIndex;
-	float distance;
-};
-
-struct by_distance {
-	bool operator()(hit const &a, hit const &b) {
-		return a.distance < b.distance;
-	}
-};
-
-bool primitive::intersectsMesh(ofRay ray, const ofMesh &mesh, const ofMatrix4x4 &toWorldSpace, vector<int> *meshHit) {
+bool primitive::intersectsMesh(ofRay ray, const ofMesh &mesh, const ofMatrix4x4 &toWorldSpace, vector<hit> *meshHit) {
 	const vector<ofMeshFace>& faces = mesh.getUniqueFaces();
 	bool intersection = false;
 	bool intersectedOnce = false;
@@ -52,7 +41,7 @@ bool primitive::intersectsMesh(ofRay ray, const ofMesh &mesh, const ofMatrix4x4 
 		std::sort(distances.begin(), distances.end(), by_distance());
 		for (int i = 0; i < distances.size(); i++)
 		{
-			meshHit->push_back(distances[i].faceIndex);
+			meshHit->push_back(distances[i]);
 		}
 	}
 
@@ -70,7 +59,7 @@ bool primitive::calcTriangleIntersection(const ofVec3f &vert0, const ofVec3f &ve
 	edge1 = vert1 - vert0;
 	edge2 = vert2 - vert0;
 
-	pvec = ray.getTransmissionVector().getCrossed(edge2);
+	pvec = ray.getTransmissionVector().getNormalized().getCrossed(edge2);
 	det = edge1.dot(pvec);
 
 #if 0 // we don't want to backface cull
@@ -101,7 +90,7 @@ bool primitive::calcTriangleIntersection(const ofVec3f &vert0, const ofVec3f &ve
 
 	qvec = tvec.getCrossed(edge1);
 
-	v = ray.getTransmissionVector().dot(qvec) * inv_det;
+	v = ray.getTransmissionVector().getNormalized().dot(qvec) * inv_det;
 	if (v < 0.0f || u + v > 1.0f)
 		return 0;
 

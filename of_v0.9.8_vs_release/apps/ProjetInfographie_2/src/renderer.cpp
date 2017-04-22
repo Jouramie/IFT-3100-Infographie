@@ -652,12 +652,21 @@ void renderer::setWireFrameMode(bool wf)
 
 void renderer::selectPrimitive(int x, int y, bool shiftHeld)
 {
+	primitive* toSelect;
+	float distance = -1;
 	for (primitive& p : *scn)
 	{
-		if (p.intersectsMeshInstance(ofVec2f(x, y), (**cam))) {
-			p.changeSelected();
-			break;
+		vector<hit> hits = p.intersectsMeshInstance(ofVec2f(x, y), (**cam));
+		if (hits.size() > 0 && (distance == -1 || hits[0].distance < distance))
+		{
+			distance = hits[0].distance;
+			toSelect = &p;
 		}
+	}
+
+	if (distance > -0.9)
+	{
+		toSelect->changeSelected();
 	}
 }
 

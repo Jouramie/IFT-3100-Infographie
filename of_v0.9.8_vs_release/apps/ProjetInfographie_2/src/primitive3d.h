@@ -19,7 +19,7 @@ public:
 
 	vector<ofRay> prepareGlass(const ofCamera cam, vector<primitive*> otherPrims, ofColor backgroundCol) override;// , const scene* scn);
 	void draw(bool wireframe) override;
-	bool intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) override;
+	vector<hit> intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) override;
 	bool getColorOfRay(ofRay ray, ofColor * hit) override;
 
 	ofMesh getMesh() override { return prim->getMesh(); };
@@ -37,6 +37,7 @@ private:
 	ofColor fillCol;
 	bool isMirror;
 	bool isGlass;
+	ofImage toPaint;
 	//ofVec3f scale;
 
 };

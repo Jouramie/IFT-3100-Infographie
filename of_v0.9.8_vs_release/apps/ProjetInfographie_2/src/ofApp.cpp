@@ -112,7 +112,6 @@ void ofApp::keyPressed(int key) {
 		isKeyPressPageUp = true;
 		ofLog() << "<app::keyPressedPageUp>";
 	}
-	rend->setMustPrepares();
 }
 
 //--------------------------------------------------------------
