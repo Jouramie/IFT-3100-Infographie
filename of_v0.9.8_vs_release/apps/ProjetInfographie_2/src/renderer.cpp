@@ -30,6 +30,9 @@ void renderer::setup()
 	time = lastTime = ofGetElapsedTimef();
 	setMustPrepares();
 	setupShader();
+
+	cubeMap.loadImages("Skybox/thefog_ft.jpg", "Skybox/thefog_bk.jpg", "Skybox/thefog_up.jpg", "Skybox/thefog_dn.jpg", "Skybox/thefog_rt.jpg", "Skybox/thefog_lf.jpg");
+	isSkyboxUsed = true;
 }
 
 void renderer::update()
@@ -77,7 +80,17 @@ void renderer::draw()
 
 	ofClear(background);
 
+
 	cam->begin();
+	if (isSkyboxUsed) {
+
+		cubeMap.bind();
+		ofPushMatrix();
+		ofTranslate(0,0,0);
+		cubeMap.drawSkybox(4800);
+		ofPopMatrix();
+		cubeMap.unbind();
+	}
 	ofPushMatrix();
 
 	ofEnableDepthTest();
@@ -345,10 +358,10 @@ void renderer::drawLines()
 	ofPushMatrix();
 
 	if (isShaderUsed) {
-		shader.begin();
+		geometryShader.begin();
 
-		shader.setUniform1f("thickness", 20);
-		shader.setUniform3f("lightDir", sin(ofGetElapsedTimef() / 10), cos(ofGetElapsedTimef() / 10), 0);
+		geometryShader.setUniform1f("thickness", 20);
+		geometryShader.setUniform3f("lightDir", sin(ofGetElapsedTimef() / 10), cos(ofGetElapsedTimef() / 10), 0);
 	}
 
 	ofColor(255);
@@ -357,7 +370,7 @@ void renderer::drawLines()
 		ofDrawLine(points[i - 1], points[i]);
 	}
 
-	if (isShaderUsed) shader.end();
+	if (isShaderUsed) geometryShader.end();
 
 	ofPopMatrix();
 }
@@ -722,10 +735,10 @@ void renderer::removeDilate() {
 void renderer::setupShader()
 {
 
-	shader.setGeometryInputType(GL_LINES);
-	shader.setGeometryOutputType(GL_TRIANGLE_STRIP);
-	shader.setGeometryOutputCount(4);
-	shader.load("shaders/vert.glsl", "shaders/frag.glsl", "shaders/geom.glsl");
+	geometryShader.setGeometryInputType(GL_LINES);
+	geometryShader.setGeometryOutputType(GL_TRIANGLE_STRIP);
+	geometryShader.setGeometryOutputCount(4);
+	geometryShader.load("shaders/vert.glsl", "shaders/frag.glsl", "shaders/geom.glsl");
 	isShaderUsed = false;
 
 }

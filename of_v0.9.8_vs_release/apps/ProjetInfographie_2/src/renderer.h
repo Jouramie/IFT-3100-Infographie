@@ -3,6 +3,7 @@
 #include "ofxRay.h"
 #include "ofxOpenCv.h"
 #include "ofxBezierSurface.h"
+#include "ofxCubeMap.h"
 #include "primitive3d.h"
 #include <limits>
 #include "scene.h"
@@ -165,8 +166,11 @@ private:
 	int refPosition;
 
 
-	ofShader shader;
+	ofShader geometryShader;
 	bool isShaderUsed;
 	vector<ofPoint> points;
+
+	bool isSkyboxUsed;
+	ofxCubeMap cubeMap;
 };
 
