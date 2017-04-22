@@ -50,9 +50,11 @@ private:
 	ofxPanel transformationMenu;
 	ofxPanel filterMenu;
 	ofxPanel optionMenu;
+	ofxPanel pointMenu;
 	ofxPanel selectionMenu;
 
 	ofxButton btnDrawPrimitive;
+	ofxButton btnAddPoint;
 	ofxButton btnClear;
 	ofxButton btnExit;
 
@@ -162,6 +164,12 @@ private:
 	ofParameterGroup groupWireFrame;
 	ofParameter<bool> wireFrame;
 
+	ofParameterGroup groupPoint;
+	ofParameter<float> pointPosX;
+	ofParameter<float> pointPosY;
+	ofParameter<float> pointPosZ;
+	ofParameter<bool> shader;
+
 	void initGroups();
 	void initButtonListener();
 	void initOfParameters();
@@ -179,9 +187,12 @@ private:
 	void setupSelectionMenu();
 	void setupOptionMenu();
 
+	void setupPointMenu();
+
 	void updatePositionMenu();
 
 	void btnDrawPrimitiveClicked();
+	void btnAddPointClicked();
 	void btnClearClicked();
 	void btnExitClicked();
 	void btnExportClicked();
@@ -203,6 +214,8 @@ private:
 	void primTypeSurfaceChanged(bool& value);
 
 	void wireFrameChanged(bool& value);
+
+	void shaderChanged(bool & value);
 
 	void noTextureChanged(bool & value);
 	void metalTextureChanged(bool & value);

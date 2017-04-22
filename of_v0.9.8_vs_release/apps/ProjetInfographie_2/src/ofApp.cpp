@@ -30,6 +30,7 @@ void ofApp::setup()
 	setupCameraMenu();
 	setupTransformationMenu();
 	setupOptionMenu();
+	setupPointMenu();
 	setupSelectionMenu();
 
 	initButtonListener();
@@ -416,10 +417,18 @@ void ofApp::initGroups()
 	groupFilter.add(blur);
 	groupFilter.add(invert);
 	groupFilter.add(dilate);
+
+	groupPoint.setName("Ensemble de lignes");
+	groupPoint.add(pointPosX);
+	groupPoint.add(pointPosY);
+	groupPoint.add(pointPosZ);
+	groupPoint.add(shader);
+
 }
 
 void ofApp::initButtonListener() {
 	btnDrawPrimitive.addListener(this, &ofApp::btnDrawPrimitiveClicked);
+	btnAddPoint.addListener(this, &ofApp::btnAddPointClicked);
 	btnClear.addListener(this, &ofApp::btnClearClicked);
 	btnExit.addListener(this, &ofApp::btnExitClicked);
 
@@ -719,6 +728,25 @@ void ofApp::initOfParameters() {
 	dilate.setName("Dilater");
 	dilate.set(false);
 	dilate.addListener(this, &ofApp::dilateChanged);
+
+	pointPosX.setName("X");
+	pointPosX.setMin(MinX);
+	pointPosX.setMax(MaxX);
+	pointPosX.set((MinX + MaxX) / 2);
+
+	pointPosY.setName("Y");
+	pointPosY.setMin(MinY);
+	pointPosY.setMax(MaxY);
+	pointPosY.set((MinY + MaxY) / 2);
+
+	pointPosZ.setName("Z");
+	pointPosZ.setMin(MinZ);
+	pointPosZ.setMax(MaxZ);
+	pointPosZ.set((MinZ + MaxZ) / 2);
+
+	shader.setName("Shader de geometrie");
+	shader.set(false);
+	shader.addListener(this, &ofApp::shaderChanged);
 }
 
 void ofApp::setColors()
@@ -787,6 +815,11 @@ void ofApp::btnDrawPrimitiveClicked()
 		}
 	}
 
+}
+
+void ofApp::btnAddPointClicked() {
+	ofLog() << "<app::btnAddPointClicked>";
+	rend->addPoint(ofPoint(pointPosX, pointPosY, pointPosZ));
 }
 
 void ofApp::btnClearClicked() {
@@ -1234,6 +1267,12 @@ void ofApp::wireFrameChanged(bool& value) {
 	rend->setWireFrameMode(value);
 }
 
+void ofApp::shaderChanged(bool& value) {
+
+	ofLog() << "<app::shaderChanged>";
+	rend->setIsShaderUsed(value);
+}
+
 void ofApp::noTextureChanged(bool& value) {
 
 	ofLog() << "<app::noTextureChanged>";
@@ -1350,6 +1389,7 @@ void ofApp::drawMenus() {
 	cameraMenu.draw();
 	transformationMenu.draw();
 	optionMenu.draw();
+	pointMenu.draw();
 	selectionMenu.draw();
 }
 
@@ -1490,6 +1530,23 @@ void ofApp::setupOptionMenu() {
 	optionMenu.registerMouseEvents();
 }
 
+void ofApp::setupPointMenu() {
+
+	pointMenu.setDefaultWidth(200);
+
+	pointMenu.setup();
+
+	pointMenu.add(groupPoint);
+
+	pointMenu.add(btnAddPoint.setup("Ajouter un point"));
+
+	pointMenu.minimizeAll();
+
+	pointMenu.setPosition(220, 10);
+
+	optionMenu.registerMouseEvents();
+}
+
 void ofApp::updatePositionMenu() {
 	menu2D.setPosition(10, 260);
 	menu3D.setPosition(10, 260);
@@ -1499,6 +1556,7 @@ void ofApp::updatePositionMenu() {
 	//transformationMenu.setPosition(ofGetWindowWidth() - 280, 260);
 	//filterMenu.setPosition(ofGetWindowWidth() - 280, 540);
 	optionMenu.setPosition(10, 10);
+	//pointMenu.setPosition(220, 10);
 }
 
 //Source : MsDN (la place où que tu vas quand tu veux savoir comment ça marche microsoft)

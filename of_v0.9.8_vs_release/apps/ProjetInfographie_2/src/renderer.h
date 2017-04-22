@@ -116,6 +116,11 @@ public:
 
 	void setMustPrepares();
 
+	void drawLines();
+	void setIsShaderUsed(bool val) { isShaderUsed = val; };
+	void addPoint(ofPoint pt) { points.push_back(pt); };
+	void setupShader();
+
 	~renderer();
 
 private:
@@ -158,5 +163,10 @@ private:
 
 	string hasRef;
 	int refPosition;
+
+
+	ofShader shader;
+	bool isShaderUsed;
+	vector<ofPoint> points;
 };
 

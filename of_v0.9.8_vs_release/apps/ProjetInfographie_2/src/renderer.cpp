@@ -29,6 +29,7 @@ void renderer::setup()
 
 	time = lastTime = ofGetElapsedTimef();
 	setMustPrepares();
+	setupShader();
 }
 
 void renderer::update()
@@ -115,6 +116,8 @@ void renderer::draw()
 	ofDisableDepthTest();
 
 	ofPopMatrix();
+
+	drawLines();
 
 	cam->end();
 
@@ -335,6 +338,28 @@ void renderer::setMustPrepares() {
 			}
 		}
 	}
+}
+
+void renderer::drawLines()
+{
+	ofPushMatrix();
+
+	if (isShaderUsed) {
+		shader.begin();
+
+		shader.setUniform1f("thickness", 20);
+		shader.setUniform3f("lightDir", sin(ofGetElapsedTimef() / 10), cos(ofGetElapsedTimef() / 10), 0);
+	}
+
+	ofColor(255);
+	
+	for (unsigned int i = 1; i<points.size(); i++) {
+		ofDrawLine(points[i - 1], points[i]);
+	}
+
+	if (isShaderUsed) shader.end();
+
+	ofPopMatrix();
 }
 
 /**
@@ -692,6 +717,17 @@ void renderer::removeDilate() {
 	dilate = false;
 	if (!blur && !invert)
 		isFiltered = false;
+}
+
+void renderer::setupShader()
+{
+
+	shader.setGeometryInputType(GL_LINES);
+	shader.setGeometryOutputType(GL_TRIANGLE_STRIP);
+	shader.setGeometryOutputCount(4);
+	shader.load("shaders/vert.glsl", "shaders/frag.glsl", "shaders/geom.glsl");
+	isShaderUsed = false;
+
 }
 
 renderer::~renderer()
