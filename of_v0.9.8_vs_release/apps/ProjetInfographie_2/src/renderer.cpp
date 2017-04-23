@@ -516,7 +516,7 @@ ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d,
 	primitive3d prim = primitive3d{ box, mat.getAmbientColor(), matrix };
 	prim.setName("Cube " + to_string(scn->nbElements() + 1));
 	prim.setMirror(false);
-	prim.setGlass(scn->nbElements() == 6);
+	prim.setGlass(false);
 	scn->addElement(prim);
 	return prim.selected;
 
