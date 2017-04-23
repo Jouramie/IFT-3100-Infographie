@@ -9,6 +9,7 @@
 #include "primitiveTopo.h"
 #include "forme3d.h"
 #include "extModel.h"
+#include "light.h"
 
 
 typedef std::shared_ptr<primitive> primitive_ptr;
@@ -26,12 +27,14 @@ public:
 	void addElement(const primitiveTopo& p) { addElement(0, p, true); }
 	void addElement(const forme3d& p) { addElement(0, p, true); }
 	void addElement(const extModel& p) { addElement(0, p, true); }
+	void addElement(light* p) { addElement(0, p, true); }
 
 	void addElement(size_t index, const primitive2d& p, bool insertFirstChild);
 	void addElement(size_t index, const primitive3d& p, bool insertFirstChild);
 	void addElement(size_t index, const primitiveTopo& p, bool insertFirstChild);
 	void addElement(size_t index, const forme3d& p, bool insertFirstChild);
 	void addElement(size_t index, const extModel& p, bool insertFirstChild);
+	void addElement(size_t index, light* p, bool insertFirstChild);
 	void removeElement(size_t index);
 	void clearElements();
 

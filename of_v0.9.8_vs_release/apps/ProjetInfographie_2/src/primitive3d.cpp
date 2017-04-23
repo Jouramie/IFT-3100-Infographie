@@ -29,7 +29,6 @@ of3dPrimitive* primitive3d::getPrimitive() {
 ofColor primitive3d::getFillColor() {
 	return fillCol;
 }
-
 void primitive3d::setMirror(bool mirror) {
 	if (mirror)
 	{
@@ -46,7 +45,7 @@ void primitive3d::setGlass(bool glass) {
 	isGlass = glass;
 }
 
-void primitive3d::draw(bool wireframe) {
+void primitive3d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader) {
 
 	if ((!isGlass && !isMirror) || true)
 	{
@@ -71,7 +70,8 @@ void primitive3d::draw(bool wireframe) {
 
 		ofScale(transfoMatrix.getScale());
 
-
+		/*lightShader.useMaterial(&mat);
+		lightShader.begin();*/
 		if (wireframe || selected.get())
 			prim->drawWireframe();
 		else
@@ -84,12 +84,14 @@ void primitive3d::draw(bool wireframe) {
 			}*/
 			prim->drawFaces();
 		}
-
+	
+		/*lightShader.end();
+		lightShader.removeMaterial();*/
 		ofPopMatrix();
 	}
 }
 
-ofColor getSlightlyLighterColor(ofColor original, float ratio = 1.1) {
+ofColor getSlightlyLighterColor(ofColor original, float ratio = 1.5) {
 	int red = original.r;
 	int green = original.g;
 	int blue = original.b;

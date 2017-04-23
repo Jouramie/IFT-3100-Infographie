@@ -152,6 +152,11 @@ void ofApp::keyReleased(int key) {
 		isKeyPressPageUp = false;
 		ofLog() << "<app::keyReleasePageUp>";
 	}
+	else if (key == 'l')
+	{
+		selectionMenu.add(rend->createPonctualLight(100, 100, 100, ofColor(255, 255, 255), ofColor(255, 255, 255)));
+		ofLog() << "<app::keyReleasel>";
+	}
 	/*else if (key == 'q')
 		rend->changeRotate();*/
 
@@ -359,27 +364,62 @@ void ofApp::initGroups()
 	groupThick.setName("Epaisseur des traits");
 	groupThick.add(strokeThickness.set(strokeThickness));
 
-	groupFill.setName("Couleur de remplissage");
-	groupFill.add(fillHue.set(fillHue));
-	groupFill.add(fillSaturation.set(fillSaturation));
-	groupFill.add(fillBrightess.set(fillBrightess));
-	groupFill.add(fillAlpha.set(fillAlpha));
+	groupAmbient.setName("Couleur ambiente");
+	groupAmbient.add(ambientHue.set(ambientHue));
+	groupAmbient.add(ambientSaturation.set(ambientSaturation));
+	groupAmbient.add(ambientBrightess.set(ambientBrightess));
 
-	groupStroke.setName("Couleur de bordure");
-	groupStroke.add(strokeHue.set(strokeHue));
-	groupStroke.add(strokeSaturation.set(strokeSaturation));
-	groupStroke.add(strokeBrightess.set(strokeBrightess));
-	groupStroke.add(strokeAlpha.set(strokeAlpha));
+	groupDiff.setName("Couleur de diffusion");
+	groupDiff.add(diffHue.set(diffHue));
+	groupDiff.add(diffSaturation.set(diffSaturation));
+	groupDiff.add(diffBrightess.set(diffBrightess));
+
+	groupEmis.setName("Couleur d'emission");
+	groupEmis.add(emisHue.set(emisHue));
+	groupEmis.add(emisSaturation.set(emisSaturation));
+	groupEmis.add(emisBrightess.set(emisBrightess));
+
+	groupSpec.setName("Couleur speculaire");
+	groupSpec.add(specHue.set(specHue));
+	groupSpec.add(specSaturation.set(specSaturation));
+	groupSpec.add(specBrightess.set(specBrightess));
 
 	groupBackground.setName("Couleur de fond");
 	groupBackground.add(bgHue.set(bgHue));
 	groupBackground.add(bgSaturation.set(bgSaturation));
 	groupBackground.add(bgBrightess.set(bgBrightess));
+	
 
-	groupTexture.setName("Texture");
-	groupTexture.add(noTexture);
-	groupTexture.add(metalTexture);
-	groupTexture.add(waterTexture);
+	groupTranslateLight.setName("Position");
+	groupTranslateLight.add(translateXLight);
+	groupTranslateLight.add(translateYLight);
+	groupTranslateLight.add(translateZLight);
+
+	groupRotateLight.setName("Angle");
+	groupRotateLight.add(rotateXLight);
+	groupRotateLight.add(rotateYLight);
+	groupRotateLight.add(rotateZLight);
+
+	groupDiffLight.setName("Couleur de diffusion");
+	groupDiffLight.add(diffLightHue.set(diffLightHue));
+	groupDiffLight.add(diffLightSaturation.set(diffLightSaturation));
+	groupDiffLight.add(diffLightBrightess.set(diffLightBrightess));
+
+	groupSpecLight.setName("Couleur speculaire");
+	groupSpecLight.add(specLightHue.set(specLightHue));
+	groupSpecLight.add(specLightSaturation.set(specLightSaturation));
+	groupSpecLight.add(specLightBrightess.set(specLightBrightess));
+
+
+	groupLight.setName("Lumiere");
+	groupLight.add(directionalLight);
+	groupLight.add(ponctualLight);
+	groupLight.add(spotLight);
+	groupLight.add(groupTranslateLight);
+	groupLight.add(groupRotateLight);
+	groupLight.add(groupDiffLight);
+	groupLight.add(groupSpecLight);
+
 
 	groupWireFrame.setName("Représentation 3D");
 	groupWireFrame.add(wireFrame);
@@ -415,10 +455,18 @@ void ofApp::initGroups()
 	groupFilter.add(blur);
 	groupFilter.add(invert);
 	groupFilter.add(dilate);
+
+	groupCouleur.setName("Couleurs");
+	groupCouleur.add(groupAmbient);
+	groupCouleur.add(groupDiff);
+	groupCouleur.add(groupEmis);
+	groupCouleur.add(groupSpec);
+
 }
 
 void ofApp::initButtonListener() {
 	btnDrawPrimitive.addListener(this, &ofApp::btnDrawPrimitiveClicked);
+	btnAddLight.addListener(this, &ofApp::btnAddLightClicked);
 	btnClear.addListener(this, &ofApp::btnClearClicked);
 	btnExit.addListener(this, &ofApp::btnExitClicked);
 
@@ -573,46 +621,66 @@ void ofApp::initOfParameters() {
 	strokeThickness.setMax(20);
 	strokeThickness.set(3);
 
-	fillHue.setName("Teinte");
-	fillHue.setMin(0);
-	fillHue.setMax(255);
-	fillHue.set(0);
+	specHue.setName("Teinte");
+	specHue.setMin(0);
+	specHue.setMax(255);
+	specHue.set(0);
 
-	fillSaturation.setName("Saturation");
-	fillSaturation.setMin(0);
-	fillSaturation.setMax(255);
-	fillSaturation.set(100);
+	specSaturation.setName("Saturation");
+	specSaturation.setMin(0);
+	specSaturation.setMax(255);
+	specSaturation.set(100);
 
-	fillBrightess.setName("Valeur");
-	fillBrightess.setMin(0);
-	fillBrightess.setMax(255);
-	fillBrightess.set(255);
+	specBrightess.setName("Valeur");
+	specBrightess.setMin(0);
+	specBrightess.setMax(255);
+	specBrightess.set(255);
 
-	fillAlpha.setName("Transparence");
-	fillAlpha.setMin(0);
-	fillAlpha.setMax(255);
-	fillAlpha.set(255);
+	emisHue.setName("Teinte");
+	emisHue.setMin(0);
+	emisHue.setMax(255);
+	emisHue.set(0);
+
+	emisSaturation.setName("Saturation");
+	emisSaturation.setMin(0);
+	emisSaturation.setMax(255);
+	emisSaturation.set(100);
+
+	emisBrightess.setName("Valeur");
+	emisBrightess.setMin(0);
+	emisBrightess.setMax(255);
+	emisBrightess.set(255);
+
+	diffHue.setName("Teinte");
+	diffHue.setMin(0);
+	diffHue.setMax(255);
+	diffHue.set(0);
+
+	diffSaturation.setName("Saturation");
+	diffSaturation.setMin(0);
+	diffSaturation.setMax(255);
+	diffSaturation.set(100);
+
+	diffBrightess.setName("Valeur");
+	diffBrightess.setMin(0);
+	diffBrightess.setMax(255);
+	diffBrightess.set(255);
 
 
-	strokeHue.setName("Teinte");
-	strokeHue.setMin(0);
-	strokeHue.setMax(255);
-	strokeHue.set(0);
+	ambientHue.setName("Teinte");
+	ambientHue.setMin(0);
+	ambientHue.setMax(255);
+	ambientHue.set(0);
 
-	strokeSaturation.setName("Saturation");
-	strokeSaturation.setMin(0);
-	strokeSaturation.setMax(255);
-	strokeSaturation.set(100);
+	ambientSaturation.setName("Saturation");
+	ambientSaturation.setMin(0);
+	ambientSaturation.setMax(255);
+	ambientSaturation.set(100);
 
-	strokeBrightess.setName("Valeur");
-	strokeBrightess.setMin(0);
-	strokeBrightess.setMax(255);
-	strokeBrightess.set(255);
-
-	strokeAlpha.setName("Transparence");
-	strokeAlpha.setMin(0);
-	strokeAlpha.setMax(255);
-	strokeAlpha.set(255);
+	ambientBrightess.setName("Valeur");
+	ambientBrightess.setMin(0);
+	ambientBrightess.setMax(255);
+	ambientBrightess.set(255);
 
 
 	bgHue.setName("Teinte");
@@ -635,19 +703,7 @@ void ofApp::initOfParameters() {
 	wireFrame.setName("Mode file de fer");
 	wireFrame.set(true);
 	wireFrame.addListener(this, &ofApp::wireFrameChanged);
-
-	noTexture.setName("Aucune");
-	noTexture.set(true);
-	noTexture.addListener(this, &ofApp::noTextureChanged);
-
-	metalTexture.setName("Metalique");
-	metalTexture.set(false);
-	metalTexture.addListener(this, &ofApp::metalTextureChanged);
-
-	waterTexture.setName("Aquatique");
-	waterTexture.set(false);
-	waterTexture.addListener(this, &ofApp::waterTextureChanged);
-
+	
 
 	translateX.setName("X");
 	translateX.setMin(MinX);
@@ -718,19 +774,104 @@ void ofApp::initOfParameters() {
 	dilate.setName("Dilater");
 	dilate.set(false);
 	dilate.addListener(this, &ofApp::dilateChanged);
+
+
+
+	directionalLight.setName("Directionnelle");
+	directionalLight.set(true);
+	directionalLight.addListener(this, &ofApp::directionalLightChanged);
+
+	ponctualLight.setName("Ponctuelle");
+	ponctualLight.set(false);
+	ponctualLight.addListener(this, &ofApp::ponctualLightChanged);
+
+	spotLight.setName("Projecteur");
+	spotLight.set(false);
+	spotLight.addListener(this, &ofApp::spotLightChanged);
+
+	translateXLight.setName("X");
+	translateXLight.setMin(MinX);
+	translateXLight.setMax(MaxX);
+	translateXLight.set((MinX + MaxX) / 2);
+	translateXLight.addListener(this, &ofApp::translateChanged);
+
+	translateYLight.setName("Y");
+	translateYLight.setMin(MinY);
+	translateYLight.setMax(MaxY);
+	translateYLight.set((MinY + MaxY) / 2);
+	translateYLight.addListener(this, &ofApp::translateChanged);
+
+	translateZLight.setName("Z");
+	translateZLight.setMin(MinZ);
+	translateZLight.setMax(MaxZ);
+	translateZLight.set((MinZ + MaxZ) / 2);
+	translateZLight.addListener(this, &ofApp::translateChanged);
+
+	rotateXLight.setName("X");
+	rotateXLight.setMin(0);
+	rotateXLight.setMax(360);
+	rotateXLight.set(0);
+	rotateXLight.addListener(this, &ofApp::rotateChanged);
+
+	rotateYLight.setName("Y");
+	rotateYLight.setMin(0);
+	rotateYLight.setMax(360);
+	rotateYLight.set(0);
+	rotateYLight.addListener(this, &ofApp::rotateChanged);
+
+	rotateZLight.setName("Z");
+	rotateZLight.setMin(0);
+	rotateZLight.setMax(360);
+	rotateZLight.set(0);
+	rotateZLight.addListener(this, &ofApp::rotateChanged);
+
+	specLightHue.setName("Teinte");
+	specLightHue.setMin(0);
+	specLightHue.setMax(255);
+	specLightHue.set(0);
+
+	specLightSaturation.setName("Saturation");
+	specLightSaturation.setMin(0);
+	specLightSaturation.setMax(255);
+	specLightSaturation.set(100);
+
+	specLightBrightess.setName("Valeur");
+	specLightBrightess.setMin(0);
+	specLightBrightess.setMax(255);
+	specLightBrightess.set(255);
+
+	diffLightHue.setName("Teinte");
+	diffLightHue.setMin(0);
+	diffLightHue.setMax(255);
+	diffLightHue.set(0);
+
+	diffLightSaturation.setName("Saturation");
+	diffLightSaturation.setMin(0);
+	diffLightSaturation.setMax(255);
+	diffLightSaturation.set(100);
+
+	diffLightBrightess.setName("Valeur");
+	diffLightBrightess.setMin(0);
+	diffLightBrightess.setMax(255);
+	diffLightBrightess.set(255);
 }
 
 void ofApp::setColors()
 {
-	stroke = ofColor::fromHsb(strokeHue, strokeSaturation, strokeBrightess, strokeAlpha);
-	fill = ofColor::fromHsb(fillHue, fillSaturation, fillBrightess, fillAlpha);
+	ambient = ofColor::fromHsb(ambientHue, ambientSaturation, ambientBrightess);
+	diff = ofColor::fromHsb(diffHue, diffSaturation, diffBrightess);
+	emis = ofColor::fromHsb(emisHue, emisSaturation, emisBrightess);
+	spec = ofColor::fromHsb(specHue, specSaturation, specBrightess);
 	background = ofColor::fromHsb(bgHue, bgSaturation, bgBrightess);
 }
 
 void ofApp::setRendererParameter() {
 
-	rend->stroke = stroke;
-	rend->fill = fill;
+	rend->activeMaterial.setAmbientColor(ambient);
+	rend->activeMaterial.setDiffuseColor(diff);
+	rend->activeMaterial.setEmissiveColor(emis);
+	rend->activeMaterial.setSpecularColor(spec);
+	
 	rend->background = background;
 
 	rend->strokeThickness = strokeThickness;
@@ -788,6 +929,20 @@ void ofApp::btnDrawPrimitiveClicked()
 
 }
 
+void ofApp::btnAddLightClicked() {
+		diffLight = ofColor::fromHsb(diffLightHue, diffLightSaturation, diffLightBrightess);
+		specLight = ofColor::fromHsb(specLightHue, specLightSaturation, specLightBrightess);
+	if (directionalLight.get()) {
+		rend->createDirectionalLight(rotateXLight, rotateYLight, rotateZLight, diffLight, specLight);
+	}
+	else if (ponctualLight.get()) {
+		rend->createPonctualLight(translateXLight, translateYLight, translateZLight, diffLight, specLight);
+	}
+	else if (spotLight.get()) {
+		rend->createSpotlight(ofVec3f(translateXLight, translateYLight, translateZLight), rotateXLight, rotateYLight, rotateZLight, diffLight, specLight);
+	}
+}
+
 void ofApp::btnClearClicked() {
 	rend->clearPrimitives();
 	selectionMenu.clear();
@@ -829,7 +984,7 @@ void ofApp::btnApplySelectClicked() {
 void ofApp::applyAllChanged(bool& value) {
 	if (applyAll) {
 		btnApplySelect.removeListener(this, &ofApp::btnApplySelectClicked);
-		
+
 		float deltaX = rend->getDeltaX();
 		float deltaY = rend->getDeltaY();
 		float deltaZ = rend->getDeltaZ();
@@ -849,7 +1004,7 @@ void ofApp::applyAllChanged(bool& value) {
 		proportionX.set(scaleX);
 		proportionY.set(scaleY);
 		proportionZ.set(scaleZ);
-		
+
 	}
 	else {
 		btnApplySelect.addListener(this, &ofApp::btnApplySelectClicked);
@@ -1227,75 +1382,67 @@ void ofApp::primTypeSurfaceChanged(bool& value) {
 	primTypeSurface.enableEvents();
 }
 
+void ofApp::directionalLightChanged(bool& value) {
+
+	directionalLight.disableEvents();
+	ponctualLight.disableEvents();
+	spotLight.disableEvents();
+
+	if (directionalLight.get()) {
+		ponctualLight.set(false);
+		spotLight.set(false);
+	}
+	else {
+		directionalLight.set(true);
+	}
+
+	directionalLight.enableEvents();
+	ponctualLight.enableEvents();
+	spotLight.enableEvents();
+}
+
+void ofApp::ponctualLightChanged(bool& value) {
+
+	directionalLight.disableEvents();
+	ponctualLight.disableEvents();
+	spotLight.disableEvents();
+
+	if (ponctualLight.get()) {
+		directionalLight.set(false);
+		spotLight.set(false);
+	}
+	else {
+		ponctualLight.set(true);
+	}
+
+	directionalLight.enableEvents();
+	ponctualLight.enableEvents();
+	spotLight.enableEvents();
+}
+
+void ofApp::spotLightChanged(bool& value) {
+
+	directionalLight.disableEvents();
+	ponctualLight.disableEvents();
+	spotLight.disableEvents();
+
+	if (spotLight.get()) {
+		ponctualLight.set(false);
+		directionalLight.set(false);
+	}
+	else {
+		spotLight.set(true);
+	}
+
+	directionalLight.enableEvents();
+	ponctualLight.enableEvents();
+	spotLight.enableEvents();
+}
+
 void ofApp::wireFrameChanged(bool& value) {
 
 	ofLog() << "<app::wireFrameModeChanged>";
 	rend->setWireFrameMode(value);
-}
-
-void ofApp::noTextureChanged(bool& value) {
-
-	ofLog() << "<app::noTextureChanged>";
-
-	noTexture.disableEvents();
-	metalTexture.disableEvents();
-	waterTexture.disableEvents();
-
-	noTexture.set(true);
-	metalTexture.set(false);
-	waterTexture.set(false);
-
-
-
-	noTexture.enableEvents();
-	metalTexture.enableEvents();
-	waterTexture.enableEvents();
-}
-
-void ofApp::metalTextureChanged(bool& value) {
-
-	ofLog() << "<app::metalTextureChanged>";
-
-	noTexture.disableEvents();
-	metalTexture.disableEvents();
-	waterTexture.disableEvents();
-
-	waterTexture.set(false);
-
-	if (metalTexture) {
-		noTexture.set(false);
-	}
-	else {
-		noTexture.set(true);
-	}
-
-
-
-	noTexture.enableEvents();
-	metalTexture.enableEvents();
-	waterTexture.enableEvents();
-}
-
-void ofApp::waterTextureChanged(bool& value) {
-
-	ofLog() << "<app::waterTextureChanged>";
-
-	noTexture.disableEvents();
-	metalTexture.disableEvents();
-	waterTexture.disableEvents();
-
-	metalTexture.set(false);
-
-	if (waterTexture) {
-		noTexture.set(false);
-	}
-	else {
-		noTexture.set(true);
-	}
-
-	noTexture.enableEvents();
-	metalTexture.enableEvents();
-	waterTexture.enableEvents();
 }
 
 void ofApp::translateChanged(float& value) {
@@ -1364,11 +1511,9 @@ void ofApp::setupMenu2D() {
 
 	menu2D.add(groupThick);
 
-	menu2D.add(groupFill);
+	menu2D.add(groupCouleur);
 
-	menu2D.add(groupStroke);
-
-	menu2D.add(groupTexture);
+	menu2D.add(groupLight);
 
 	menu2D.minimizeAll();
 
@@ -1385,9 +1530,9 @@ void ofApp::setupMenu3D() {
 	menu3D.add(groupPrimitivePosition3D);
 	menu3D.add(groupPrimitiveSize3D);
 
-	menu3D.add(groupFill);
+	menu3D.add(groupCouleur);
 
-	menu3D.add(groupTexture);
+	menu3D.add(groupLight);
 
 	menu3D.minimizeAll();
 
@@ -1404,9 +1549,9 @@ void ofApp::setupMenuTopo() {
 	menuTopo.add(groupPrimitivePositionTopo);
 	menuTopo.add(groupPrimitiveSizeTopo);
 
-	menuTopo.add(groupStroke);
+	menu3D.add(groupCouleur);
 
-	menuTopo.add(groupTexture);
+	menu3D.add(groupLight);
 
 	menuTopo.minimizeAll();
 
@@ -1475,6 +1620,7 @@ void ofApp::setupOptionMenu() {
 	optionMenu.setup();
 
 	optionMenu.add(btnDrawPrimitive.setup("Ajouter une primitive"));
+	optionMenu.add(btnAddLight.setup("Ajouter une lumiere"));
 	optionMenu.add(btnClear.setup("Supprimer la scene"));
 
 	optionMenu.add(groupBackground);

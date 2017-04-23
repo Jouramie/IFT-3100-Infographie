@@ -10,7 +10,7 @@ ofxAssimpModelLoader* extModel::getModel() {
 	return model;
 }
 
-void extModel::draw(bool wireframe) {
+void extModel::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader) {
 
 	ofPushMatrix();
 

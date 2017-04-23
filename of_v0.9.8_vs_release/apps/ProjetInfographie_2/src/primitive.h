@@ -2,6 +2,7 @@
 
 #include "ofxRay.h"
 #include "ccamera.h"
+#include "ofxShadersFX.h"
 
 struct hit {
 	int faceIndex;
@@ -20,15 +21,15 @@ public:
 	primitive() : primitive{ ofMatrix4x4() } { }
 	primitive(ofMatrix4x4 matrix) : transfoMatrix{ matrix }, selected{ false } { }
 
-	virtual void draw() { draw(false); }
-	virtual void draw(bool wireframe) { };
+	virtual void draw(ofxShadersFX::Lighting::LightingShader& lightShader) { draw(false, lightShader); }
+	virtual void draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader) { };
 	const ofVec3f getGlobalPosition() const;
 
 	virtual void shouldPrepare() { };
 
 	bool getSelected() { return selected; }
 	void setSelected(bool selected) { this->selected = selected; }
-	void changeSelected() {	selected = !selected; }
+	void changeSelected() { selected = !selected; }
 
 	string getName() { return name; }
 
@@ -37,8 +38,8 @@ public:
 		selected.setName(n);
 	}
 
-	ofMatrix4x4 getTransfo() { return transfoMatrix; }
-	void setTransfo(ofMatrix4x4 matrix) { this->transfoMatrix = matrix; }
+	ofMatrix4x4 getTransfo() const { return transfoMatrix; }
+	void setTransfo(const ofMatrix4x4& matrix) { this->transfoMatrix = matrix; }
 	ofParameter<bool> selected;
 
 	bool intersectsMesh(ofRay ray, const ofMesh &mesh, const ofMatrix4x4 &toWorldSpace, vector<hit> *meshHit);
@@ -52,9 +53,13 @@ public:
 	virtual bool isGlassy() { return false; };
 	virtual bool isCubeOrSphere() { return false; };
 
+	void setMaterial(const ofMaterial& mat) { this->mat = mat; };
+	ofMaterial getMaterial() const { return mat; };
+
 protected:
 	virtual const ofVec3f getLocalPosition() const { return ofVec3f(); };
 	ofMatrix4x4 transfoMatrix;
 	string name;
+	ofMaterial mat;
 };
 
