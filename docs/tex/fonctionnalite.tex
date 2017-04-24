@@ -1008,7 +1008,7 @@ geometryShader.setUniform3f("lightDir", sin(ofGetElapsedTimef() / 10), cos(ofGet
 Non-implémenté
 
 \subsection{Passes de rendu}
-Non-implémenté
+La passe de rendu multiple est utilisé afin de rendre l'effet pleine fenêtre. Une première passe de rendu génère la scène à l'écran et une deuxième modifie l'image à l'écran pour rendre l'effet visuel. L'essentiel de l'implémentation repose sur l'appel de applyContrast à la fin de renderer::draw().
 
 \subsection{Techniques d'occlusion}
 Non-implémenté
@@ -1793,6 +1793,7 @@ La triangulation de la surface de Bézier a été fait à l'aide de l'algorithme
 \pagebreak
 \section{Techniques de rendu}
 
+
 \subsection{Effet de relief}
 Non-implémenté
 
@@ -1821,7 +1822,7 @@ ofPushMatrix();
 Non-implémenté
 
 \subsection{Effet en pleine fenêtre}
-Dans le menu se trouve la fonction effet visuel. Cette effet s'applique sur toute la fenêtre. 
+Dans le menu se trouve la fonction effet visuel. Cette effet s'applique sur toute la fenêtre. En résumer, cette fonction génère une ofxCvShortImage, lui applique un contrastStretch et affiche l'image modifiée a l'écran. L'essentiel du code se retrouve dans la méthode renderer::applyContrast().
 
 \subsection{Style libre}
 Nous avons esseyé de mettre des gif dans la scènes. Par contre nous avons rencontré quelques problèmes et cette fonctionnalité n'a pu être implémenté. Le but étais de faire apparaître une animation de feu dans la scènes. Cette méthode aurait pris en paramètre une position x et y pour pouvoir placer l'animation à un endroit voulu. 
