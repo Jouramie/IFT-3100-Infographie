@@ -993,7 +993,16 @@ Non-implémenté
 Non-implémenté
 
 \subsection{Shader de géométrie}
-Non-implémenté
+Dans le menu se trouve un petit menu nommé ensemble de ligne, dans ce menu se trouve la fonctionnalité shader de géométrie. 
+
+\begin{lstlisting}
+if (isShaderUsed) {
+geometryShader.begin();
+
+geometryShader.setUniform1f("thickness", 20);
+geometryShader.setUniform3f("lightDir", sin(ofGetElapsedTimef() / 10), cos(ofGetElapsedTimef() / 10), 0);
+}
+\end{lstlisting}
 
 \subsection{Rétroaction de transformation}
 Non-implémenté
@@ -1726,18 +1735,37 @@ La triangulation de la surface de Bézier a été fait à l'aide de l'algorithme
 
 \pagebreak
 \section{Techniques de rendu}
+
 \subsection{Effet de relief}
 Non-implémenté
 
 \subsection{Cube de réflexion}
-Non-implémenté
+Dans le menu se trouve un choix nommé skyBox. Cette option permet de rendre un cube de réflexion. 
 
+Cette partie permet d'aller chercher l'image.
+\begin{lstlisting}
+cubeMap.loadImages("Skybox/thefog_ft.jpg", "Skybox/thefog_bk.jpg", "Skybox/thefog_up.jpg", "Skybox/thefog_dn.jpg", "Skybox/thefog_rt.jpg", "Skybox/thefog_lf.jpg");
+isSkyboxUsed = false;
+\end{lstlisting}
+
+Cette partie dessine le cubeMap
+\begin{lstlisting}
+if (isSkyboxUsed) {
+
+cubeMap.bind();
+ofPushMatrix();
+cubeMap.drawSkybox(4800);
+ofPopMatrix();
+cubeMap.unbind();
+}
+ofPushMatrix();
+\end{lstlisting}
 \subsection{BRDF}
 Non-implémenté
 
 \subsection{Effet en pleine fenêtre}
-Non-implémenté
+Dans le menu se trouve la fonction effet visuel. Cette effet s'applique sur toute la fenêtre. 
 
 \subsection{Style libre}
-Non-implémenté
+Nous avons esseyé de mettre des gif dans la scènes. Par contre nous avons rencontré quelques problèmes et cette fonctionnalité n'a pu être implémenté. Le but étais de faire apparaître une animation de feu dans la scènes. Cette méthode aurait pris en paramètre une position x et y pour pouvoir placer l'animation à un endroit voulu. 
 
