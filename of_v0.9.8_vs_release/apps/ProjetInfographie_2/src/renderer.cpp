@@ -481,12 +481,12 @@ ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const 
 }
 
 //-------------3D primitives-----------------------
-ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d)
+ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d, bool glass, bool mirror)
 {
-	return createCube(x, y, z, w, h, d, activeMaterial);
+	return createCube(x, y, z, w, h, d, glass, mirror, activeMaterial);
 }
 
-ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d, ofMaterial mat)
+ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d, bool glass, bool mirror, ofMaterial mat)
 {
 	setMustPrepares();
 
@@ -515,8 +515,8 @@ ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d,
 
 	primitive3d prim = primitive3d{ box, mat.getAmbientColor(), matrix };
 	prim.setName("Cube " + to_string(scn->nbElements() + 1));
-	prim.setMirror(false);
-	prim.setGlass(false);
+	prim.setMirror(mirror);
+	prim.setGlass(glass);
 	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;

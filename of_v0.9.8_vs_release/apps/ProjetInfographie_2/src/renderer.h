@@ -82,8 +82,8 @@ public:
 	ofParameter<bool> createSurface(int w, int h, int dim, int res, const ofPoint cp1, const ofPoint cp2, const ofPoint cp3, const ofPoint cp4, ofMaterial mat);
 
 	//3D primitives
-	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d);
-	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d, ofMaterial mat);
+	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d, bool glass, bool mirror);
+	ofParameter<bool> createCube(int x, int y, int z, int w, int h, int d, bool glass, bool mirror, ofMaterial mat);
 	ofParameter<bool> createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
 	ofParameter<bool> createSphere(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofMaterial mat);
 	ofParameter<bool> createCone(int x, int y, int z, int sizeX, int sizeY, int sizeZ);

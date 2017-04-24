@@ -511,7 +511,7 @@ void ofApp::initOfParameters() {
 	primTypeCube.set(true);
 	primTypeCube.addListener(this, &ofApp::primTypeCubeChanged);
 
-	primTypeCubeReflect.setName("Cube mirroir");
+	primTypeCubeReflect.setName("Cube miroir");
 	primTypeCubeReflect.set(false);
 	primTypeCubeReflect.addListener(this, &ofApp::primTypeCubeReflectChanged);
 
@@ -896,13 +896,13 @@ void ofApp::btnDrawPrimitiveClicked()
 	}
 	else if (primType3D.get()) {
 		if (primTypeCube.get()) {
-			selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+			selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, false, false));
 		}
 		else if (primTypeCubeReflect.get()) {
-			//selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+			selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, false, true));
 		}
 		else if (primTypeCubeRefract.get()) {
-			//selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+			selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth, true, false));
 		}
 		else if (primTypeSphere.get()) {
 			selectionMenu.add(rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
