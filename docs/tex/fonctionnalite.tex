@@ -1230,11 +1230,11 @@ Il est techniquement aussi possible de créer des sphères miroir, mais nous n'a
 
 \smallskip
 
-En effet, la charge de calcul pour les cubes est déjà terriblement élevée, et celle-ci ne fait que grandir très rapidement avec le nombre de triangles du miroir et des entités refletées. Cela fait que, pour un cube ne reflétant que d'autres cubes, cela peut prendre jusqu'à 1 minute pour générer une seule frame. Si le cube doit refléter des sphères, ce temps augmente à plusieurs minutes, et si le miroir est lui-même une sphère, on peut avoir jusqu'à des heures d'attente si le miroir occupe une assez grande partie de l'écran (on envoie un rayon par pixel qui est au dessus d'un miroir après tout). C'est la raison pourquoi nous avons jugé inutile d'offrir l'option des sphères miroirs dans le menu, et nous recommandont fortement de n'utiliser que des cubes pour tester les miroirs.
+En effet, la charge de calcul pour les cubes est déjà terriblement élevée, et celle-ci ne fait que grandir très rapidement avec le nombre de triangles du miroir et des entités refletées. Cela fait que, pour un cube ne reflétant que d'autres cubes, cela peut prendre jusqu'à 1 minute pour générer une seule frame. Si le cube doit refléter des sphères, ce temps augmente à plusieurs minutes, et si le miroir est lui-même une sphère, on peut avoir jusqu'à des heures d'attente si le miroir occupe une assez grande partie de l'écran (on envoie un rayon par pixel qui est au dessus d'un miroir après tout). C'est la raison pourquoi nous avons jugé inutile d'offrir l'option des sphères miroirs dans le menu, et nous recommandons fortement de n'utiliser que des cubes pour tester les miroirs.
 
 \smallskip
 
-Pour évidemment de complètement geler la fenêtre en permanence parce que chaque frame prend beaucoup de temps à se générer, les miroirs sont configurés en mode "manuel". Cela signifie que L'utilisateur doit spécifier au miroir qu'il veut le rafraichir, et que sinon, le miroir ne se met pas à jour en temps réel.
+Pour éviter de complètement geler la fenêtre en permanence parce que chaque frame prend beaucoup de temps à se générer, les miroirs sont configurés en mode "manuel". Cela signifie que L'utilisateur doit spécifier au miroir qu'il veut le rafraichir, et que sinon, le miroir ne se met pas à jour en temps réel.
 
 \begin{figure}[h]
 	\centering
@@ -1259,7 +1259,7 @@ De plus, les miroirs se mettent à jour une fois à leur première apparition, e
 
 \smallskip
 
-Pour le code: voir la section 5.8.3 Réfraction, car ces deux fonctionnalités ont beaucoup de code en commun, donc pour éviter de le copier deux fois le code sera recopié dans cette section.
+Pour le code: voir la section 5.8.3 Réfraction, car ces deux fonctionnalités ont beaucoup de code en commun, donc pour éviter de l'avoir deux fois, le code sera recopié dans cette section.
 
 \newpage
 
