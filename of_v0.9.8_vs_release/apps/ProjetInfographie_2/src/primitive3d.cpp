@@ -70,8 +70,8 @@ void primitive3d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& l
 
 		ofScale(transfoMatrix.getScale());
 
-		lightShader.useMaterial(&mat);
-		lightShader.begin();
+		/*lightShader.useMaterial(&mat);
+		lightShader.begin();*/
 		if (wireframe || selected.get())
 			prim->drawWireframe();
 		else
@@ -85,8 +85,8 @@ void primitive3d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& l
 			prim->drawFaces();
 		}
 	
-		lightShader.end();
-		lightShader.removeMaterial();
+		/*lightShader.end();
+		lightShader.removeMaterial();*/
 		ofPopMatrix();
 	}
 }
@@ -200,6 +200,8 @@ vector<ofRay> primitive3d::prepareGlass(const ofCamera cam, vector<primitive*> o
 
 						ofColor col = backgroundCol;
 
+						ofRay mathReflectedRay = ofRay();
+
 						if (isMirror) {
 							ofVec3f A = face->getVertex(0) * toWorldSpace;
 							ofVec3f B = face->getVertex(1) * toWorldSpace;
@@ -231,22 +233,55 @@ vector<ofRay> primitive3d::prepareGlass(const ofCamera cam, vector<primitive*> o
 
 							w = w.scale(1000);
 
-							ofRay mathReflectedRay = ofRay(OR, w, false);
+							mathReflectedRay = ofRay(OR, w, false);
+						}
+						else if (isGlass)
+						{
 
-							if (rand() % 800 == 0)
-							{
-								ray.color = ofColor(255, 0, 0);
-								mathReflectedRay.color = ofColor(0, 255, 0);
-								returnVec.push_back(ray);
-								returnVec.push_back(mathReflectedRay);
-							}
+							ofVec3f A = face->getVertex(0) * toWorldSpace;
+							ofVec3f B = face->getVertex(1) * toWorldSpace;
+							ofVec3f C = face->getVertex(2) * toWorldSpace;
 
-							for (auto& otherPrim3D : otherPrims)
+							A = A * transfoMatrix;
+							B = B * transfoMatrix;
+							C = C * transfoMatrix;
+
+							ofVec3f AB = B - A;
+							ofVec3f AC = C - A;
+
+							ofVec3f ABxAC = AB.getCrossed(AC);
+
+							ofVec3f n = (ABxAC) / (ABxAC.length());
+							ofVec3f invN = -n;
+							ofVec3f v = ray.getTransmissionVector();
+
+							ofVec3f w = ofVec3f((v.x + n.x) / 2, (v.y + n.y) / 2, (v.z + n.z) / 2);
+
+							ofVec3f S = ray.getStart();
+							ofVec3f SA = (A - S);
+
+							float t = (n.dot(SA)) / (n.dot(v));
+
+							ofVec3f OR = S + (t * v);
+
+							w = w.scale(1000);
+
+							mathReflectedRay = ofRay(OR, w, false);
+						}
+
+						if (rand() % 800 == 0)
+						{
+							ray.color = ofColor(255, 0, 0);
+							mathReflectedRay.color = ofColor(0, 255, 0);
+							returnVec.push_back(ray);
+							returnVec.push_back(mathReflectedRay);
+						}
+
+						for (auto& otherPrim3D : otherPrims)
+						{
+							if (otherPrim3D->getName() != getName())
 							{
-								if (otherPrim3D->getName() != getName())
-								{
-									otherPrim3D->getColorOfRay(mathReflectedRay, &col);
-								}
+								otherPrim3D->getColorOfRay(mathReflectedRay, &col);
 							}
 						}
 						ofColor lighter = getSlightlyLighterColor(col);
