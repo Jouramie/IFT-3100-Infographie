@@ -26,17 +26,7 @@ void renderer::setup()
 	rotate = false;
 	scale = false;
 
-	tempAmbientLight = ofColor::black;
-	ofSetGlobalAmbientColor(tempAmbientLight);
-
-	//TODO supprimer lorsque l'interface permettra la création de lumière
-	tempDirectionalLight = new ofLight();
-	tempDirectionalLight->setDiffuseColor(ofColor(31, 31, 255));
-	tempDirectionalLight->setSpecularColor(ofColor(191, 191, 191));
-	tempDirectionalLight->setOrientation(ofVec3f(0.0f, 0.0f, 0.0f));
-	tempDirectionalLight->setDirectional();
-	//tempDirectionalLight->enable();
-	lightShader.useLight(tempDirectionalLight);
+	ofSetGlobalAmbientColor(ofColor::black);
 
 	//default activeMaterial
 	activeMaterial.setAmbientColor(ofColor::gray);
@@ -679,7 +669,6 @@ ofParameter<bool> renderer::createDirectionalLight(int ax, int ay, int az, ofCol
 {
 	ofLight* ofl = new ofLight();
 	ofl->setDirectional();
-	//ofl->enable();
 	lightShader.useLight(ofl);
 	ofMatrix4x4 matrix = ofMatrix4x4();
 	ofQuaternion rotate{};
@@ -691,6 +680,7 @@ ofParameter<bool> renderer::createDirectionalLight(int ax, int ay, int az, ofCol
 	l->setDiffuseColor(difCol);
 	l->setSpecularColor(specCol);
 	l->setLightShader(&lightShader);
+	l->setTransfo(matrix);
 	scn->addElement(l);
 	return l->selected;
 }
@@ -702,15 +692,13 @@ ofParameter<bool> renderer::createPonctualLight(int x, int y, int z, ofColor dif
 	lightShader.useLight(ofl);
 	ofMatrix4x4 matrix = ofMatrix4x4();
 	matrix.setTranslation(x, y, z);
-	ofLog() << matrix;
-	ofLog() << difCol;
-	ofLog() << specCol;
 
 	light* l = new light{ ofl, matrix };
 	l->setName("Pontual " + to_string(scn->nbElements() + 1));
 	l->setDiffuseColor(difCol);
 	l->setSpecularColor(specCol);
 	l->setLightShader(&lightShader);
+	l->setTransfo(matrix);
 	scn->addElement(l);
 	return l->selected;
 }
@@ -731,6 +719,7 @@ ofParameter<bool> renderer::createSpotlight(ofVec3f pos, int ax, int ay, int az,
 	l->setDiffuseColor(difCol);
 	l->setSpecularColor(specCol);
 	l->setLightShader(&lightShader);
+	l->setTransfo(matrix);
 	scn->addElement(l);
 	return l->selected;
 }
@@ -853,5 +842,13 @@ void renderer::setIlluminationModel(illuminationModel model) {
 		lightShader.setLightingMethod(ofxShadersFX::Lighting::PHONG_LIGHTING);
 	} else {
 		lightShader.setLightingMethod(ofxShadersFX::Lighting::BLINN_PHONG_LIGHTING);
+	}
+}
+
+void renderer::setVertexShader(bool vertex) {
+	if (vertex) {
+		lightShader.setShadingMethod(ofxShadersFX::Lighting::VERTEX_SHADING);
+	} else {
+		lightShader.setShadingMethod(ofxShadersFX::Lighting::PIXEL_SHADING);
 	}
 }

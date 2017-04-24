@@ -967,9 +967,9 @@ void ofApp::btnDrawPrimitiveClicked()
 		spec = ofColor::fromHsb(specHue, specSaturation, specBrightess);
 
 		if (ambientLight.get()) {
-			
+			rend->setAmbiantLight(diff);
 		} else if (directionalLight.get()) {
-		selectionMenu.add(rend->createDirectionalLight(rotateXLight, rotateYLight, rotateZLight, diff, spec));
+			selectionMenu.add(rend->createDirectionalLight(rotateXLight, rotateYLight, rotateZLight, diff, spec));
 		}
 		else if (ponctualLight.get()) {
 			selectionMenu.add(rend->createPonctualLight(translateXLight, translateYLight, translateZLight, diff, spec));
@@ -1697,11 +1697,11 @@ void ofApp::vertexChanged(bool& value) {
 	fragment.disableEvents();
 
 	if (vertex){
-	
+		rend->setVertexShader(true);
 		fragment.set(false);
 	}
 	else{
-
+		rend->setVertexShader(false);
 		fragment.set(true);
 	}
 
@@ -1714,11 +1714,11 @@ void ofApp::fragmentChanged(bool& value) {
 	fragment.disableEvents();
 
 	if (fragment){
-		
+		rend->setVertexShader(false);
 		vertex.set(false);
 	}
 	else{
-
+		rend->setVertexShader(true);
 		vertex.set(true);
 	}
 
