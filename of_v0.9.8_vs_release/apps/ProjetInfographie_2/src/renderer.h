@@ -136,6 +136,8 @@ public:
 	void addPoint(ofPoint pt) { points.push_back(pt); };
 	void setupShader();
 
+	void setIsSkyboxUsed(bool val) { isSkyboxUsed = val; };
+
 private:
 
 	//ofEasyCam mainCam;

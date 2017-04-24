@@ -50,7 +50,7 @@ void renderer::setup()
 	setupShader();
 
 	cubeMap.loadImages("Skybox/thefog_ft.jpg", "Skybox/thefog_bk.jpg", "Skybox/thefog_up.jpg", "Skybox/thefog_dn.jpg", "Skybox/thefog_rt.jpg", "Skybox/thefog_lf.jpg");
-	isSkyboxUsed = true;
+	isSkyboxUsed = false;
 }
 
 void renderer::update()

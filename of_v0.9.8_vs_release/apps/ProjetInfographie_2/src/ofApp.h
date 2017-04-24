@@ -203,6 +203,7 @@ private:
 	ofParameter<bool> phong;
 	ofParameter<bool> blinnphong;
 
+	ofParameter<bool> skybox;
 
 	void initGroups();
 	void initButtonListener();
@@ -235,6 +236,8 @@ private:
 	void applyAllChanged(bool& value);
 	void btnImportClicked();
 	
+	void skyboxChanged(bool & val);
+
 	void primDim2DChanged(bool& value);
 	void primDim3DChanged(bool& value);
 	void primTopoChanged(bool& value);

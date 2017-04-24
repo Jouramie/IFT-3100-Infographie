@@ -402,6 +402,7 @@ void ofApp::initGroups()
 	groupSpec.add(specBrightess.set(specBrightess));
 
 	groupBackground.setName("Couleur de fond");
+	groupBackground.add(skybox);
 	groupBackground.add(bgHue.set(bgHue));
 	groupBackground.add(bgSaturation.set(bgSaturation));
 	groupBackground.add(bgBrightess.set(bgBrightess));
@@ -499,6 +500,10 @@ void ofApp::initButtonListener() {
 }
 
 void ofApp::initOfParameters() {
+
+	skybox.setName("Skybox");
+	skybox.set(false);
+	skybox.addListener(this, &ofApp::skyboxChanged);
 
 	primType2D.setName("2D");
 	primType2D.set(true);
@@ -1058,6 +1063,11 @@ void ofApp::applyAllChanged(bool& value) {
 		proportionZ.set(1);
 
 	}
+}
+
+
+void ofApp::skyboxChanged(bool& val) {
+	rend->setIsSkyboxUsed(val);
 }
 
 void ofApp::primDim2DChanged(bool& value) {
