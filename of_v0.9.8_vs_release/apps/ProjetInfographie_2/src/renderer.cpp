@@ -26,17 +26,7 @@ void renderer::setup()
 	rotate = false;
 	scale = false;
 
-	tempAmbientLight = ofColor::black;
-	ofSetGlobalAmbientColor(tempAmbientLight);
-
-	//TODO supprimer lorsque l'interface permettra la création de lumière
-	tempDirectionalLight = new ofLight();
-	tempDirectionalLight->setDiffuseColor(ofColor(31, 31, 255));
-	tempDirectionalLight->setSpecularColor(ofColor(191, 191, 191));
-	tempDirectionalLight->setOrientation(ofVec3f(0.0f, 0.0f, 0.0f));
-	tempDirectionalLight->setDirectional();
-	//tempDirectionalLight->enable();
-	lightShader.useLight(tempDirectionalLight);
+	ofSetGlobalAmbientColor(ofColor::black);
 
 	//default activeMaterial
 	activeMaterial.setAmbientColor(ofColor::gray);
@@ -262,7 +252,7 @@ ofParameter<bool> renderer::createSquare(float x, float y, float w, float h, ofM
 	//rect->setColor(fillColor);
 	//rect->setStrokeColor(strokeColor);
 	rect->setStrokeWidth(strokeThickness);
-	primitive2d prim = primitive2d{ rect, ofColor(), ofColor(), strokeThickness };
+	primitive2d prim = primitive2d{ rect, mat.getAmbientColor(), mat.getAmbientColor(), strokeThickness };
 	prim.setName("Carre " + to_string(scn->nbElements() + 1));
 	prim.setMaterial(mat);
 	scn->addElement(prim);
@@ -285,7 +275,7 @@ ofParameter<bool> renderer::createCircle(float x, float y, float r1, float r2, o
 	//circle->setColor(fillColor);
 	//circle->setStrokeColor(strokeColor);
 	circle->setStrokeWidth(strokeThickness);
-	primitive2d prim = primitive2d{ circle, ofColor(), ofColor(), strokeThickness };
+	primitive2d prim = primitive2d{ circle, mat.getAmbientColor(), mat.getAmbientColor(), strokeThickness };
 	prim.setName("Cercle " + to_string(scn->nbElements() + 1));
 	prim.setMaterial(mat);
 	scn->addElement(prim);
@@ -309,7 +299,7 @@ ofParameter<bool> renderer::createLine(float x, float y, float xDelta, float yDe
 	//line->setColor(fillColor);
 	line->setStrokeWidth(strokeThickness);
 
-	primitive2d prim = primitive2d{ line, ofColor(), strokeThickness };
+	primitive2d prim = primitive2d{ line, mat.getAmbientColor(), strokeThickness };
 	prim.setName("Ligne " + to_string(scn->nbElements() + 1));
 	prim.setMaterial(mat);
 	scn->addElement(prim);
@@ -333,7 +323,7 @@ ofParameter<bool> renderer::createTriangle(float x1, float y1, float x2, float y
 	//triangle->setStrokeColor(strokeColor);
 	triangle->setStrokeWidth(strokeThickness);
 
-	primitive2d prim = primitive2d{ triangle, ofColor(), ofColor(), strokeThickness };
+	primitive2d prim = primitive2d{ triangle, mat.getAmbientColor(), mat.getAmbientColor(), strokeThickness };
 	prim.setName("Triangle " + to_string(scn->nbElements() + 1));
 	prim.setMaterial(mat);
 	scn->addElement(prim);
@@ -357,7 +347,7 @@ ofParameter<bool> renderer::createPoint(float x, float y, float radius, ofMateri
 	//point->setStrokeColor(strokeColor);
 	point->setStrokeWidth(strokeThickness);
 
-	primitive2d prim = primitive2d{ point, ofColor(), ofColor(), strokeThickness };
+	primitive2d prim = primitive2d{ point, mat.getAmbientColor(), mat.getAmbientColor(), strokeThickness };
 	prim.setName("Point " + to_string(scn->nbElements() + 1));
 	prim.setMaterial(mat);
 	scn->addElement(prim);
@@ -418,7 +408,7 @@ ofParameter<bool> renderer::createBezier(float cx1, float cy1, float cz1, float 
 	//bezier->setStrokeColor(strokeColor);
 	bezier->setStrokeWidth(strokeThickness);
 
-	primitive2d prim = primitive2d{ bezier, ofColor(), ofColor(), strokeThickness };
+	primitive2d prim = primitive2d{ bezier, mat.getAmbientColor(), mat.getAmbientColor(), strokeThickness };
 	prim.setName("Bezier " + to_string(scn->nbElements() + 1));
 	prim.setMaterial(mat);
 	scn->addElement(prim);
@@ -468,7 +458,7 @@ ofParameter<bool> renderer::createHermite(float cx1, float cy1, float cz1, float
 		herm->curveTo(position);
 	}
 	
-	primitive2d prim = primitive2d{ herm, ofColor(), ofColor(), strokeThickness };
+	primitive2d prim = primitive2d{ herm, mat.getAmbientColor(), mat.getAmbientColor(), strokeThickness };
 	prim.setName("Hermite " + to_string(scn->nbElements() + 1));
 	prim.setMaterial(mat);
 	scn->addElement(prim);
@@ -491,7 +481,7 @@ ofParameter<bool> renderer::createCatmullRom(const ofPoint cp1, const ofPoint cp
 	//catmullRom->setColor(fillColor);
 	//catmullRom->setStrokeColor(strokeColor);
 	catmullRom->setStrokeWidth(strokeThickness);
-	primitive2d prim = primitive2d{ catmullRom, ofColor(), ofColor(), strokeThickness };
+	primitive2d prim = primitive2d{ catmullRom, mat.getAmbientColor(), mat.getAmbientColor(), strokeThickness };
 	prim.setName("Catmull Rom " + to_string(scn->nbElements() + 1));
 	prim.setMaterial(mat);
 	scn->addElement(prim);
@@ -511,7 +501,7 @@ ofParameter<bool> renderer::createSurface(int w, int h, int dim, int res, const 
 	pts.push_back(cp3);
 	pts.push_back(cp4);
 	surface->setControlPnts(pts);
-	primitiveTopo prim = primitiveTopo{ surface, ofColor(), ofColor(), strokeThickness };
+	primitiveTopo prim = primitiveTopo{ surface, mat.getAmbientColor(), mat.getAmbientColor(), strokeThickness };
 	prim.setName("Bezier Surface " + to_string(scn->nbElements() + 1));
 	prim.setMaterial(mat);
 	scn->addElement(prim);
@@ -599,7 +589,7 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 
 	ballMesh->enableColors();*/
 
-	primitive3d prim = primitive3d{ ball, ofColor(), matrix };
+	primitive3d prim = primitive3d{ ball, mat.getAmbientColor(), matrix };
 	prim.setName("Sphere " + to_string(scn->nbElements() + 1));
 	prim.setMirror(false);
 	prim.setGlass(false);
@@ -630,7 +620,7 @@ ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY
 	matrix.scale(newX, newY, newZ);
 	matrix.setTranslation(x, y, z);
 
-	primitive3d prim = primitive3d{ cone, ofColor(), matrix };
+	primitive3d prim = primitive3d{ cone, mat.getAmbientColor(), matrix };
 	prim.setName("Cone " + to_string(scn->nbElements() + 1));
 	prim.setMaterial(mat);
 	scn->addElement(prim);
@@ -666,7 +656,7 @@ ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int 
 	matrix.scale(newX, newY, newZ);
 	matrix.setTranslation(x, y, z);
 
-	forme3d forme{ ball, ofColor(), matrix };
+	forme3d forme{ ball, mat.getAmbientColor(), matrix };
 	forme.addPrimitive(cone);
 	forme.setName("IceCream " + to_string(scn->nbElements() + 1));
 	forme.setMaterial(mat);
@@ -679,7 +669,6 @@ ofParameter<bool> renderer::createDirectionalLight(int ax, int ay, int az, ofCol
 {
 	ofLight* ofl = new ofLight();
 	ofl->setDirectional();
-	//ofl->enable();
 	lightShader.useLight(ofl);
 	ofMatrix4x4 matrix = ofMatrix4x4();
 	ofQuaternion rotate{};
@@ -691,6 +680,7 @@ ofParameter<bool> renderer::createDirectionalLight(int ax, int ay, int az, ofCol
 	l->setDiffuseColor(difCol);
 	l->setSpecularColor(specCol);
 	l->setLightShader(&lightShader);
+	l->setTransfo(matrix);
 	scn->addElement(l);
 	return l->selected;
 }
@@ -702,15 +692,13 @@ ofParameter<bool> renderer::createPonctualLight(int x, int y, int z, ofColor dif
 	lightShader.useLight(ofl);
 	ofMatrix4x4 matrix = ofMatrix4x4();
 	matrix.setTranslation(x, y, z);
-	ofLog() << matrix;
-	ofLog() << difCol;
-	ofLog() << specCol;
 
 	light* l = new light{ ofl, matrix };
 	l->setName("Pontual " + to_string(scn->nbElements() + 1));
 	l->setDiffuseColor(difCol);
 	l->setSpecularColor(specCol);
 	l->setLightShader(&lightShader);
+	l->setTransfo(matrix);
 	scn->addElement(l);
 	return l->selected;
 }
@@ -731,6 +719,7 @@ ofParameter<bool> renderer::createSpotlight(ofVec3f pos, int ax, int ay, int az,
 	l->setDiffuseColor(difCol);
 	l->setSpecularColor(specCol);
 	l->setLightShader(&lightShader);
+	l->setTransfo(matrix);
 	scn->addElement(l);
 	return l->selected;
 }
@@ -853,5 +842,13 @@ void renderer::setIlluminationModel(illuminationModel model) {
 		lightShader.setLightingMethod(ofxShadersFX::Lighting::PHONG_LIGHTING);
 	} else {
 		lightShader.setLightingMethod(ofxShadersFX::Lighting::BLINN_PHONG_LIGHTING);
+	}
+}
+
+void renderer::setVertexShader(bool vertex) {
+	if (vertex) {
+		lightShader.setShadingMethod(ofxShadersFX::Lighting::VERTEX_SHADING);
+	} else {
+		lightShader.setShadingMethod(ofxShadersFX::Lighting::PIXEL_SHADING);
 	}
 }

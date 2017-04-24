@@ -17,6 +17,8 @@ public:
 	void setSpecularColor(ofColor col) { specularColor = col; li->setSpecularColor(col); };
 	void setLightShader(ofxShadersFX::Lighting::LightingShader* lightShader) { this->lightShader = lightShader; };
 
+	virtual void setTransfo(const ofMatrix4x4& matrix);
+
 private:
 	ofLight* li;
 	ofColor diffuseColor;

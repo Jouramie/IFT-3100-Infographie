@@ -39,7 +39,7 @@ public:
 	}
 
 	ofMatrix4x4 getTransfo() const { return transfoMatrix; }
-	void setTransfo(const ofMatrix4x4& matrix) { this->transfoMatrix = matrix; }
+	virtual void setTransfo(const ofMatrix4x4& matrix) { this->transfoMatrix = matrix; }
 	ofParameter<bool> selected;
 
 	bool intersectsMesh(ofRay ray, const ofMesh &mesh, const ofMatrix4x4 &toWorldSpace, vector<hit> *meshHit);

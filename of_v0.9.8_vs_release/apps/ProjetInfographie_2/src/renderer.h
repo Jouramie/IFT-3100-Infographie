@@ -92,7 +92,7 @@ public:
 	ofParameter<bool> createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ);
 	ofParameter<bool> createIcecream(int x, int y, int z, int sizeX, int sizeY, int sizeZ, ofMaterial mat);
 
-	ofParameter<bool> setAmbiantLight(ofColor col) { tempAmbientLight = col; };
+	void setAmbiantLight(ofColor col) { ofSetGlobalAmbientColor(col); };
 	ofParameter<bool> createDirectionalLight(int ax, int ay, int az, ofColor difCol, ofColor specCol);
 	ofParameter<bool> createPonctualLight(int x, int y, int z, ofColor difCol, ofColor specCol);
 	ofParameter<bool> createSpotlight(ofVec3f pos, int ax, int ay, int az, ofColor difCol, ofColor specCol);
@@ -129,6 +129,7 @@ public:
 	void removeDilate();
 
 	void setIlluminationModel(illuminationModel model);
+	void setVertexShader(bool vertex);
 	void setMustPrepares();
 
 	void drawLines();
@@ -178,7 +179,6 @@ private:
 
 	string hasRef;
 	int refPosition;
-
 
 	ofShader geometryShader;
 	bool isShaderUsed;
