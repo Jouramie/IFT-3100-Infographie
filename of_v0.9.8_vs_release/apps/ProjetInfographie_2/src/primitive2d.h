@@ -16,9 +16,9 @@ public:
 	ofColor getFillColor();
 	ofColor getStrokeColor();
 
-	void draw(bool wireframe) override;
+	void draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader) override;
 
-	bool intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) override;
+	vector<hit> intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) override;
 
 protected:
 	const ofVec3f getLocalPosition() const override { return ofVec3f(); } //Fix later

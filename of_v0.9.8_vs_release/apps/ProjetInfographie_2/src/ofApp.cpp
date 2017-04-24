@@ -27,6 +27,7 @@ void ofApp::setup()
 	setupMenu2D();
 	setupMenu3D();
 	setupMenuTopo();
+	setupMenuLight();
 	setupCameraMenu();
 	setupTransformationMenu();
 	setupOptionMenu();
@@ -113,7 +114,6 @@ void ofApp::keyPressed(int key) {
 		isKeyPressPageUp = true;
 		ofLog() << "<app::keyPressedPageUp>";
 	}
-	rend->setMustPrepares();
 }
 
 //--------------------------------------------------------------
@@ -153,6 +153,11 @@ void ofApp::keyReleased(int key) {
 	{
 		isKeyPressPageUp = false;
 		ofLog() << "<app::keyReleasePageUp>";
+	}
+	else if (key == 'l')
+	{
+		selectionMenu.add(rend->createPonctualLight(100, 100, 100, ofColor(255, 255, 255), ofColor(255, 255, 255)));
+		ofLog() << "<app::keyReleasel>";
 	}
 	/*else if (key == 'q')
 		rend->changeRotate();*/
@@ -294,6 +299,7 @@ void ofApp::initGroups()
 	groupPrimitiveType2D.add(primType2D);
 	groupPrimitiveType2D.add(primType3D);
 	groupPrimitiveType2D.add(primTypeTopo);
+	groupPrimitiveType2D.add(primTypeLight);
 	groupPrimitiveType2D.add(primTypeCube);
 	groupPrimitiveType2D.add(primTypeSphere);
 	groupPrimitiveType2D.add(primTypeTriangle);
@@ -304,7 +310,10 @@ void ofApp::initGroups()
 	groupPrimitiveType3D.add(primType2D);
 	groupPrimitiveType3D.add(primType3D);
 	groupPrimitiveType3D.add(primTypeTopo);
+	groupPrimitiveType3D.add(primTypeLight);
 	groupPrimitiveType3D.add(primTypeCube);
+	groupPrimitiveType3D.add(primTypeCubeReflect);
+	groupPrimitiveType3D.add(primTypeCubeRefract);
 	groupPrimitiveType3D.add(primTypeSphere);
 	groupPrimitiveType3D.add(primTypeTriangle);
 	groupPrimitiveType3D.add(primTypeLine);
@@ -313,10 +322,21 @@ void ofApp::initGroups()
 	groupPrimitiveTypeTopo.add(primType2D);
 	groupPrimitiveTypeTopo.add(primType3D);
 	groupPrimitiveTypeTopo.add(primTypeTopo);
+	groupPrimitiveTypeTopo.add(primTypeLight);
 	groupPrimitiveTypeTopo.add(primTypeBezier);
 	groupPrimitiveTypeTopo.add(primTypeHermite);
 	groupPrimitiveTypeTopo.add(primTypeCatmullRom);
 	groupPrimitiveTypeTopo.add(primTypeSurface);
+
+	groupPrimitiveTypeLight.setName("Type");
+	groupPrimitiveTypeLight.add(primType2D);
+	groupPrimitiveTypeLight.add(primType3D);
+	groupPrimitiveTypeLight.add(primTypeTopo);
+	groupPrimitiveTypeLight.add(primTypeLight);
+	groupPrimitiveTypeLight.add(ambientLight);
+	groupPrimitiveTypeLight.add(directionalLight);
+	groupPrimitiveTypeLight.add(ponctualLight);
+	groupPrimitiveTypeLight.add(spotLight);
 
 	groupPrimitivePosition2D.setName("Position");
 	groupPrimitivePosition2D.add(primPosX.set(primPosX));
@@ -361,27 +381,52 @@ void ofApp::initGroups()
 	groupThick.setName("Epaisseur des traits");
 	groupThick.add(strokeThickness.set(strokeThickness));
 
-	groupFill.setName("Couleur de remplissage");
-	groupFill.add(fillHue.set(fillHue));
-	groupFill.add(fillSaturation.set(fillSaturation));
-	groupFill.add(fillBrightess.set(fillBrightess));
-	groupFill.add(fillAlpha.set(fillAlpha));
+	groupAmbient.setName("Couleur ambiente");
+	groupAmbient.add(ambientHue.set(ambientHue));
+	groupAmbient.add(ambientSaturation.set(ambientSaturation));
+	groupAmbient.add(ambientBrightess.set(ambientBrightess));
 
-	groupStroke.setName("Couleur de bordure");
-	groupStroke.add(strokeHue.set(strokeHue));
-	groupStroke.add(strokeSaturation.set(strokeSaturation));
-	groupStroke.add(strokeBrightess.set(strokeBrightess));
-	groupStroke.add(strokeAlpha.set(strokeAlpha));
+	groupDiff.setName("Couleur de diffusion");
+	groupDiff.add(diffHue.set(diffHue));
+	groupDiff.add(diffSaturation.set(diffSaturation));
+	groupDiff.add(diffBrightess.set(diffBrightess));
+
+	groupEmis.setName("Couleur d'emission");
+	groupEmis.add(emisHue.set(emisHue));
+	groupEmis.add(emisSaturation.set(emisSaturation));
+	groupEmis.add(emisBrightess.set(emisBrightess));
+
+	groupSpec.setName("Couleur speculaire");
+	groupSpec.add(specHue.set(specHue));
+	groupSpec.add(specSaturation.set(specSaturation));
+	groupSpec.add(specBrightess.set(specBrightess));
 
 	groupBackground.setName("Couleur de fond");
 	groupBackground.add(bgHue.set(bgHue));
 	groupBackground.add(bgSaturation.set(bgSaturation));
 	groupBackground.add(bgBrightess.set(bgBrightess));
 
-	groupTexture.setName("Texture");
-	groupTexture.add(noTexture);
-	groupTexture.add(metalTexture);
-	groupTexture.add(waterTexture);
+
+	groupTranslateLight.setName("Position");
+	groupTranslateLight.add(translateX);
+	groupTranslateLight.add(translateY);
+	groupTranslateLight.add(translateZ);
+
+	groupRotateLight.setName("Angle");
+	groupRotateLight.add(rotateXLight);
+	groupRotateLight.add(rotateYLight);
+	groupRotateLight.add(rotateZLight);
+
+	/*
+	groupLight.setName("Lumiere");
+	groupLight.add(directionalLight);
+	groupLight.add(ponctualLight);
+	groupLight.add(spotLight);
+	groupLight.add(groupTranslateLight);
+	groupLight.add(groupRotateLight);
+	groupLight.add(groupDiffLight);
+	groupLight.add(groupSpecLight);
+	*/
 
 	groupWireFrame.setName("Représentation 3D");
 	groupWireFrame.add(wireFrame);
@@ -423,6 +468,21 @@ void ofApp::initGroups()
 	groupPoint.add(pointPosY);
 	groupPoint.add(pointPosZ);
 	groupPoint.add(shader);
+	
+	groupFilter.add(phong);
+	groupFilter.add(blinnphong);
+	groupFilter.add(vertex);
+	groupFilter.add(fragment);
+
+	groupCouleur.setName("Couleurs");
+	groupCouleur.add(groupAmbient);
+	groupCouleur.add(groupDiff);
+	groupCouleur.add(groupEmis);
+	groupCouleur.add(groupSpec);
+
+	groupCouleurLight.setName("Couleurs");
+	groupCouleurLight.add(groupDiff);
+	groupCouleurLight.add(groupSpec);
 
 }
 
@@ -452,9 +512,21 @@ void ofApp::initOfParameters() {
 	primTypeTopo.set(false);
 	primTypeTopo.addListener(this, &ofApp::primTopoChanged);
 
+	primTypeLight.setName("Lumiere");
+	primTypeLight.set(false);
+	primTypeLight.addListener(this, &ofApp::lightChanged);
+
 	primTypeCube.setName("Carre");
 	primTypeCube.set(true);
 	primTypeCube.addListener(this, &ofApp::primTypeCubeChanged);
+
+	primTypeCubeReflect.setName("Cube mirroir");
+	primTypeCubeReflect.set(false);
+	primTypeCubeReflect.addListener(this, &ofApp::primTypeCubeReflectChanged);
+
+	primTypeCubeRefract.setName("Cube de verre");
+	primTypeCubeRefract.set(false);
+	primTypeCubeRefract.addListener(this, &ofApp::primTypeCubeRefractChanged);
 
 	primTypeSphere.setName("Cercle");
 	primTypeSphere.set(false);
@@ -583,46 +655,66 @@ void ofApp::initOfParameters() {
 	strokeThickness.setMax(20);
 	strokeThickness.set(3);
 
-	fillHue.setName("Teinte");
-	fillHue.setMin(0);
-	fillHue.setMax(255);
-	fillHue.set(0);
+	specHue.setName("Teinte");
+	specHue.setMin(0);
+	specHue.setMax(255);
+	specHue.set(0);
 
-	fillSaturation.setName("Saturation");
-	fillSaturation.setMin(0);
-	fillSaturation.setMax(255);
-	fillSaturation.set(100);
+	specSaturation.setName("Saturation");
+	specSaturation.setMin(0);
+	specSaturation.setMax(255);
+	specSaturation.set(100);
 
-	fillBrightess.setName("Valeur");
-	fillBrightess.setMin(0);
-	fillBrightess.setMax(255);
-	fillBrightess.set(255);
+	specBrightess.setName("Valeur");
+	specBrightess.setMin(0);
+	specBrightess.setMax(255);
+	specBrightess.set(255);
 
-	fillAlpha.setName("Transparence");
-	fillAlpha.setMin(0);
-	fillAlpha.setMax(255);
-	fillAlpha.set(255);
+	emisHue.setName("Teinte");
+	emisHue.setMin(0);
+	emisHue.setMax(255);
+	emisHue.set(0);
+
+	emisSaturation.setName("Saturation");
+	emisSaturation.setMin(0);
+	emisSaturation.setMax(255);
+	emisSaturation.set(100);
+
+	emisBrightess.setName("Valeur");
+	emisBrightess.setMin(0);
+	emisBrightess.setMax(255);
+	emisBrightess.set(255);
+
+	diffHue.setName("Teinte");
+	diffHue.setMin(0);
+	diffHue.setMax(255);
+	diffHue.set(0);
+
+	diffSaturation.setName("Saturation");
+	diffSaturation.setMin(0);
+	diffSaturation.setMax(255);
+	diffSaturation.set(100);
+
+	diffBrightess.setName("Valeur");
+	diffBrightess.setMin(0);
+	diffBrightess.setMax(255);
+	diffBrightess.set(255);
 
 
-	strokeHue.setName("Teinte");
-	strokeHue.setMin(0);
-	strokeHue.setMax(255);
-	strokeHue.set(0);
+	ambientHue.setName("Teinte");
+	ambientHue.setMin(0);
+	ambientHue.setMax(255);
+	ambientHue.set(0);
 
-	strokeSaturation.setName("Saturation");
-	strokeSaturation.setMin(0);
-	strokeSaturation.setMax(255);
-	strokeSaturation.set(100);
+	ambientSaturation.setName("Saturation");
+	ambientSaturation.setMin(0);
+	ambientSaturation.setMax(255);
+	ambientSaturation.set(100);
 
-	strokeBrightess.setName("Valeur");
-	strokeBrightess.setMin(0);
-	strokeBrightess.setMax(255);
-	strokeBrightess.set(255);
-
-	strokeAlpha.setName("Transparence");
-	strokeAlpha.setMin(0);
-	strokeAlpha.setMax(255);
-	strokeAlpha.set(255);
+	ambientBrightess.setName("Valeur");
+	ambientBrightess.setMin(0);
+	ambientBrightess.setMax(255);
+	ambientBrightess.set(255);
 
 
 	bgHue.setName("Teinte");
@@ -645,18 +737,6 @@ void ofApp::initOfParameters() {
 	wireFrame.setName("Mode file de fer");
 	wireFrame.set(true);
 	wireFrame.addListener(this, &ofApp::wireFrameChanged);
-
-	noTexture.setName("Aucune");
-	noTexture.set(true);
-	noTexture.addListener(this, &ofApp::noTextureChanged);
-
-	metalTexture.setName("Metalique");
-	metalTexture.set(false);
-	metalTexture.addListener(this, &ofApp::metalTextureChanged);
-
-	waterTexture.setName("Aquatique");
-	waterTexture.set(false);
-	waterTexture.addListener(this, &ofApp::waterTextureChanged);
 
 
 	translateX.setName("X");
@@ -747,19 +827,75 @@ void ofApp::initOfParameters() {
 	shader.setName("Shader de geometrie");
 	shader.set(false);
 	shader.addListener(this, &ofApp::shaderChanged);
+	
+	vertex.setName("Vertex");
+	vertex.set(false);
+	vertex.addListener(this, &ofApp::vertexChanged);
+
+	fragment.setName("Fragment");
+	fragment.set(true);
+	fragment.addListener(this, &ofApp::fragmentChanged);
+
+	phong.setName("Phong");
+	phong.set(false);
+	phong.addListener(this, &ofApp::phongChanged);
+
+	blinnphong.setName("Blinn-Phong");
+	blinnphong.set(true);
+	blinnphong.addListener(this, &ofApp::blinnphongChanged);
+
+	ambientLight.setName("Ambiente");
+	ambientLight.set(true);
+	ambientLight.addListener(this, &ofApp::ambientLightChanged);
+
+	directionalLight.setName("Directionnelle");
+	directionalLight.set(false);
+	directionalLight.addListener(this, &ofApp::directionalLightChanged);
+
+	ponctualLight.setName("Ponctuelle");
+	ponctualLight.set(false);
+	ponctualLight.addListener(this, &ofApp::ponctualLightChanged);
+
+	spotLight.setName("Projecteur");
+	spotLight.set(false);
+	spotLight.addListener(this, &ofApp::spotLightChanged);
+
+	rotateXLight.setName("X");
+	rotateXLight.setMin(0);
+	rotateXLight.setMax(360);
+	rotateXLight.set(0);
+	rotateXLight.addListener(this, &ofApp::rotateChanged);
+
+	rotateYLight.setName("Y");
+	rotateYLight.setMin(0);
+	rotateYLight.setMax(360);
+	rotateYLight.set(0);
+	rotateYLight.addListener(this, &ofApp::rotateChanged);
+
+	rotateZLight.setName("Z");
+	rotateZLight.setMin(0);
+	rotateZLight.setMax(360);
+	rotateZLight.set(0);
+	rotateZLight.addListener(this, &ofApp::rotateChanged);
+
 }
 
 void ofApp::setColors()
 {
-	stroke = ofColor::fromHsb(strokeHue, strokeSaturation, strokeBrightess, strokeAlpha);
-	fill = ofColor::fromHsb(fillHue, fillSaturation, fillBrightess, fillAlpha);
+	ambient = ofColor::fromHsb(ambientHue, ambientSaturation, ambientBrightess);
+	diff = ofColor::fromHsb(diffHue, diffSaturation, diffBrightess);
+	emis = ofColor::fromHsb(emisHue, emisSaturation, emisBrightess);
+	spec = ofColor::fromHsb(specHue, specSaturation, specBrightess);
 	background = ofColor::fromHsb(bgHue, bgSaturation, bgBrightess);
 }
 
 void ofApp::setRendererParameter() {
 
-	rend->stroke = stroke;
-	rend->fill = fill;
+	rend->activeMaterial.setAmbientColor(ambient);
+	rend->activeMaterial.setDiffuseColor(diff);
+	rend->activeMaterial.setEmissiveColor(emis);
+	rend->activeMaterial.setSpecularColor(spec);
+
 	rend->background = background;
 
 	rend->strokeThickness = strokeThickness;
@@ -790,17 +926,23 @@ void ofApp::btnDrawPrimitiveClicked()
 		if (primTypeCube.get()) {
 			selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
+		else if (primTypeCubeReflect.get()) {
+			//selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+		}
+		else if (primTypeCubeRefract.get()) {
+			//selectionMenu.add(rend->createCube(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
+		}
 		else if (primTypeSphere.get()) {
 			selectionMenu.add(rend->createSphere(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
 		else if (primTypeTriangle.get()) {
 			selectionMenu.add(rend->createCone(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
-		else {
+		else if (primTypeLine.get()) {
 			selectionMenu.add(rend->createIcecream(primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
 	}
-	else {
+	else if (primTypeTopo.get()) {
 		if (primTypeBezier.get()) {
 			selectionMenu.add(rend->createBezier(primPosX2, primPosY2, primPosZ2, primPosX3, primPosY3, primPosZ3, primPosX, primPosY, primPosZ, primSizeWidth, primSizeHeight, primSizeDepth));
 		}
@@ -812,6 +954,23 @@ void ofApp::btnDrawPrimitiveClicked()
 		}
 		else {
 			selectionMenu.add(rend->createSurface(500, 500, 2, 20, ofPoint(primPosX2, primPosY2, primPosZ2), ofPoint(primPosX3, primPosY3, primPosZ3), ofPoint(primPosX4, primPosY4, primPosZ4), ofPoint(primPosX5, primPosY5, primPosZ5)));
+		}
+	}
+	else if (primTypeLight.get()) {
+
+		diff = ofColor::fromHsb(diffHue, diffSaturation, diffBrightess);
+		spec = ofColor::fromHsb(specHue, specSaturation, specBrightess);
+
+		if (ambientLight.get()) {
+			
+		} else if (directionalLight.get()) {
+		selectionMenu.add(rend->createDirectionalLight(rotateXLight, rotateYLight, rotateZLight, diff, spec));
+		}
+		else if (ponctualLight.get()) {
+			selectionMenu.add(rend->createPonctualLight(translateXLight, translateYLight, translateZLight, diff, spec));
+		}
+		else if (spotLight.get()) {
+			selectionMenu.add(rend->createSpotlight(ofVec3f(translateXLight, translateYLight, translateZLight), rotateXLight, rotateYLight, rotateZLight, diff, spec));
 		}
 	}
 
@@ -863,7 +1022,7 @@ void ofApp::btnApplySelectClicked() {
 void ofApp::applyAllChanged(bool& value) {
 	if (applyAll) {
 		btnApplySelect.removeListener(this, &ofApp::btnApplySelectClicked);
-		
+
 		float deltaX = rend->getDeltaX();
 		float deltaY = rend->getDeltaY();
 		float deltaZ = rend->getDeltaZ();
@@ -883,7 +1042,7 @@ void ofApp::applyAllChanged(bool& value) {
 		proportionX.set(scaleX);
 		proportionY.set(scaleY);
 		proportionZ.set(scaleZ);
-		
+
 	}
 	else {
 		btnApplySelect.addListener(this, &ofApp::btnApplySelectClicked);
@@ -902,87 +1061,111 @@ void ofApp::applyAllChanged(bool& value) {
 }
 
 void ofApp::primDim2DChanged(bool& value) {
+	primType2D.disableEvents();
+	primType3D.disableEvents();
+	primTypeTopo.disableEvents();
+	primTypeLight.disableEvents();
+
 	if (primType2D.get()) {
 		primType3D.set(false);
 		primTypeTopo.set(false);
+		primTypeLight.set(false);
+
 		primTypeCube.setName("Carre");
 		primTypeSphere.setName("Cercle");
 		primTypeTriangle.setName("Triangle");
 		primTypeLine.setName("Ligne");
 	}
-	else if (primType3D.get()) {
-		primType3D.set(true);
-		primTypeCube.setName("Cube");
-		primTypeSphere.setName("Sphere");
-		primTypeTriangle.setName("Cone");
-		primTypeLine.setName("IceCream");
-	}
 	else {
-		primTypeTopo.set(true);
-		primSizeWidth.setName("Xf");
-		primSizeHeight.setName("Yf");
-		primSizeDepth.setName("Zf");
+		primType2D.set(true);
 	}
+
+
+	primType2D.enableEvents();
+	primType3D.enableEvents();
+	primTypeTopo.enableEvents();
+	primTypeLight.enableEvents();
 
 }
 
 void ofApp::primDim3DChanged(bool& value) {
+
+	primType2D.disableEvents();
+	primType3D.disableEvents();
+	primTypeTopo.disableEvents();
+	primTypeLight.disableEvents();
+
 	if (primType3D.get()) {
 		primType2D.set(false);
 		primTypeTopo.set(false);
+		primTypeLight.set(false);
+
 		primTypeCube.setName("Cube");
 		primTypeSphere.setName("Sphere");
 		primTypeTriangle.setName("Cone");
 		primTypeLine.setName("IceCream");
 	}
 	else if (primType2D.get()) {
-		primType2D.set(true);
-		primTypeCube.setName("Carre");
-		primTypeSphere.setName("Cercle");
-		primTypeTriangle.setName("Triangle");
-		primTypeLine.setName("Ligne");
+		primType3D.set(true);
 	}
-	else {
-		primTypeTopo.set(true);
-		primSizeWidth.setName("Xf");
-		primSizeHeight.setName("Yf");
-		primSizeDepth.setName("Zf");
-	}
+
+	primType2D.enableEvents();
+	primType3D.enableEvents();
+	primTypeTopo.enableEvents();
+	primTypeLight.enableEvents();
 
 }
 
 void ofApp::primTopoChanged(bool& value) {
+
+	primType2D.disableEvents();
+	primType3D.disableEvents();
+	primTypeTopo.disableEvents();
+	primTypeLight.disableEvents();
+
 	if (primTypeTopo.get()) {
 		primType2D.set(false);
 		primType3D.set(false);
-	}
-	else if (primType2D.get()) {
-		primType2D.set(true);
-		primTypeCube.setName("Carre");
-		primTypeSphere.setName("Cercle");
-		primTypeTriangle.setName("Triangle");
-		primTypeLine.setName("Ligne");
-		primSizeWidth.setName("Hauteur");
-		primSizeHeight.setName("Largeur");
-		primSizeDepth.setName("Profondeur");
+		primTypeLight.set(false);
 	}
 	else {
-		primType3D.set(true);
-		primTypeCube.setName("Cube");
-		primTypeSphere.setName("Sphere");
-		primTypeTriangle.setName("Cone");
-		primTypeLine.setName("IceCream");
-		primSizeWidth.setName("Hauteur");
-		primSizeHeight.setName("Largeur");
-		primSizeDepth.setName("Profondeur");
+		primTypeTopo.set(true);
 	}
 
+	primType2D.enableEvents();
+	primType3D.enableEvents();
+	primTypeTopo.enableEvents();
+	primTypeLight.enableEvents();
+
+}
+
+void ofApp::lightChanged(bool& value) {
+	primType2D.disableEvents();
+	primType3D.disableEvents();
+	primTypeTopo.disableEvents();
+	primTypeLight.disableEvents();
+
+	if (primTypeLight.get()) {
+		primType2D.set(false);
+		primType3D.set(false);
+		primTypeTopo.set(false);
+	}
+	else {
+		primTypeLight.set(true);
+	}
+
+	primType2D.enableEvents();
+	primType3D.enableEvents();
+	primTypeTopo.enableEvents();
+	primTypeLight.enableEvents();
 }
 
 void ofApp::primTypeCubeChanged(bool& value) {
 
 	primTypeSphere.disableEvents();
 	primTypeCube.disableEvents();
+	primTypeCubeReflect.disableEvents();
+	primTypeCubeRefract.disableEvents();
 	primTypeTriangle.disableEvents();
 	primTypeLine.disableEvents();
 	primTypePoint.disableEvents();
@@ -990,6 +1173,8 @@ void ofApp::primTypeCubeChanged(bool& value) {
 	primTypeHermite.disableEvents();
 
 	if (primTypeCube.get()) {
+		primTypeCubeReflect.set(false);
+		primTypeCubeRefract.set(false);
 		primTypeSphere.set(false);
 		primTypeTriangle.set(false);
 		primTypeLine.set(false);
@@ -1003,6 +1188,82 @@ void ofApp::primTypeCubeChanged(bool& value) {
 
 	primTypeSphere.enableEvents();
 	primTypeCube.enableEvents();
+	primTypeCubeReflect.enableEvents();
+	primTypeCubeRefract.enableEvents();
+	primTypeTriangle.enableEvents();
+	primTypeLine.enableEvents();
+	primTypePoint.enableEvents();
+	primTypeBezier.enableEvents();
+	primTypeHermite.enableEvents();
+}
+
+void ofApp::primTypeCubeReflectChanged(bool& value) {
+
+	primTypeSphere.disableEvents();
+	primTypeCube.disableEvents();
+	primTypeCubeReflect.disableEvents();
+	primTypeCubeRefract.disableEvents();
+	primTypeTriangle.disableEvents();
+	primTypeLine.disableEvents();
+	primTypePoint.disableEvents();
+	primTypeBezier.disableEvents();
+	primTypeHermite.disableEvents();
+
+	if (primTypeCubeReflect.get()) {
+		primTypeCube.set(false);
+		primTypeCubeRefract.set(false);
+		primTypeSphere.set(false);
+		primTypeTriangle.set(false);
+		primTypeLine.set(false);
+		primTypePoint.set(false);
+		primTypeBezier.set(false);
+		primTypeHermite.set(false);
+	}
+	else
+		primTypeCubeReflect.set(true);
+
+
+	primTypeSphere.enableEvents();
+	primTypeCube.enableEvents();
+	primTypeCubeReflect.enableEvents();
+	primTypeCubeRefract.enableEvents();
+	primTypeTriangle.enableEvents();
+	primTypeLine.enableEvents();
+	primTypePoint.enableEvents();
+	primTypeBezier.enableEvents();
+	primTypeHermite.enableEvents();
+}
+
+void ofApp::primTypeCubeRefractChanged(bool& value) {
+
+	primTypeSphere.disableEvents();
+	primTypeCube.disableEvents();
+	primTypeCubeReflect.disableEvents();
+	primTypeCubeRefract.disableEvents();
+	primTypeTriangle.disableEvents();
+	primTypeLine.disableEvents();
+	primTypePoint.disableEvents();
+	primTypeBezier.disableEvents();
+	primTypeHermite.disableEvents();
+
+	if (primTypeCubeRefract.get()) {
+		primTypeCube.set(false);
+		primTypeCubeReflect.set(false);
+		primTypeSphere.set(false);
+		primTypeTriangle.set(false);
+		primTypeLine.set(false);
+		primTypePoint.set(false);
+		primTypeBezier.set(false);
+		primTypeHermite.set(false);
+	}
+	else
+		primTypeCubeRefract.set(true);
+
+
+	primTypeSphere.enableEvents();
+	primTypeCube.enableEvents();
+	primTypeCubeReflect.enableEvents();
+	primTypeCubeRefract.enableEvents();
 	primTypeTriangle.enableEvents();
 	primTypeLine.enableEvents();
 	primTypePoint.enableEvents();
@@ -1014,6 +1275,8 @@ void ofApp::primTypeSphereChanged(bool& value) {
 
 	primTypeSphere.disableEvents();
 	primTypeCube.disableEvents();
+	primTypeCubeReflect.disableEvents();
+	primTypeCubeRefract.disableEvents();
 	primTypeTriangle.disableEvents();
 	primTypeLine.disableEvents();
 	primTypePoint.disableEvents();
@@ -1022,6 +1285,8 @@ void ofApp::primTypeSphereChanged(bool& value) {
 
 	if (primTypeSphere.get()) {
 		primTypeCube.set(false);
+		primTypeCubeReflect.set(false);
+		primTypeCubeRefract.set(false);
 		primTypeTriangle.set(false);
 		primTypeLine.set(false);
 		primTypePoint.set(false);
@@ -1034,6 +1299,8 @@ void ofApp::primTypeSphereChanged(bool& value) {
 
 	primTypeSphere.enableEvents();
 	primTypeCube.enableEvents();
+	primTypeCubeReflect.enableEvents();
+	primTypeCubeRefract.enableEvents();
 	primTypeTriangle.enableEvents();
 	primTypeLine.enableEvents();
 	primTypePoint.enableEvents();
@@ -1045,6 +1312,8 @@ void ofApp::primTypeTriangleChanged(bool& value) {
 
 	primTypeSphere.disableEvents();
 	primTypeCube.disableEvents();
+	primTypeCubeReflect.disableEvents();
+	primTypeCubeRefract.disableEvents();
 	primTypeTriangle.disableEvents();
 	primTypeLine.disableEvents();
 	primTypePoint.disableEvents();
@@ -1054,6 +1323,8 @@ void ofApp::primTypeTriangleChanged(bool& value) {
 	if (primTypeTriangle.get())
 	{
 		primTypeCube.set(false);
+		primTypeCubeReflect.set(false);
+		primTypeCubeRefract.set(false);
 		primTypeSphere.set(false);
 		primTypeLine.set(false);
 		primTypePoint.set(false);
@@ -1066,6 +1337,8 @@ void ofApp::primTypeTriangleChanged(bool& value) {
 
 	primTypeSphere.enableEvents();
 	primTypeCube.enableEvents();
+	primTypeCubeReflect.enableEvents();
+	primTypeCubeRefract.enableEvents();
 	primTypeTriangle.enableEvents();
 	primTypeLine.enableEvents();
 	primTypePoint.enableEvents();
@@ -1077,6 +1350,8 @@ void ofApp::primTypeLineChanged(bool& value) {
 
 	primTypeSphere.disableEvents();
 	primTypeCube.disableEvents();
+	primTypeCubeReflect.disableEvents();
+	primTypeCubeRefract.disableEvents();
 	primTypeTriangle.disableEvents();
 	primTypeLine.disableEvents();
 	primTypePoint.disableEvents();
@@ -1086,6 +1361,8 @@ void ofApp::primTypeLineChanged(bool& value) {
 	if (primTypeLine.get())
 	{
 		primTypeCube.set(false);
+		primTypeCubeReflect.set(false);
+		primTypeCubeRefract.set(false);
 		primTypeSphere.set(false);
 		primTypeTriangle.set(false);
 		primTypePoint.set(false);
@@ -1098,6 +1375,8 @@ void ofApp::primTypeLineChanged(bool& value) {
 
 	primTypeSphere.enableEvents();
 	primTypeCube.enableEvents();
+	primTypeCubeReflect.enableEvents();
+	primTypeCubeRefract.enableEvents();
 	primTypeTriangle.enableEvents();
 	primTypeLine.enableEvents();
 	primTypePoint.enableEvents();
@@ -1109,6 +1388,8 @@ void ofApp::primTypePointChanged(bool& value) {
 
 	primTypeSphere.disableEvents();
 	primTypeCube.disableEvents();
+	primTypeCubeReflect.disableEvents();
+	primTypeCubeRefract.disableEvents();
 	primTypeTriangle.disableEvents();
 	primTypeLine.disableEvents();
 	primTypePoint.disableEvents();
@@ -1118,6 +1399,8 @@ void ofApp::primTypePointChanged(bool& value) {
 	if (primTypePoint.get())
 	{
 		primTypeCube.set(false);
+		primTypeCubeReflect.set(false);
+		primTypeCubeRefract.set(false);
 		primTypeSphere.set(false);
 		primTypeLine.set(false);
 		primTypeTriangle.set(false);
@@ -1130,6 +1413,8 @@ void ofApp::primTypePointChanged(bool& value) {
 
 	primTypeSphere.enableEvents();
 	primTypeCube.enableEvents();
+	primTypeCubeReflect.enableEvents();
+	primTypeCubeRefract.enableEvents();
 	primTypeTriangle.enableEvents();
 	primTypeLine.enableEvents();
 	primTypePoint.enableEvents();
@@ -1252,7 +1537,7 @@ void ofApp::primTypeSurfaceChanged(bool& value) {
 		primPosY5.setName("Y4");
 		primPosZ5.setName("Z4");
 	}
-	else 
+	else
 		primTypeSurface.set(true);
 
 	primTypeHermite.enableEvents();
@@ -1262,80 +1547,100 @@ void ofApp::primTypeSurfaceChanged(bool& value) {
 }
 
 void ofApp::wireFrameChanged(bool& value) {
-
 	ofLog() << "<app::wireFrameModeChanged>";
 	rend->setWireFrameMode(value);
 }
 
 void ofApp::shaderChanged(bool& value) {
-
 	ofLog() << "<app::shaderChanged>";
 	rend->setIsShaderUsed(value);
 }
 
-void ofApp::noTextureChanged(bool& value) {
+void ofApp::ambientLightChanged(bool& value) {
+	ambientLight.disableEvents();
+	directionalLight.disableEvents();
+	ponctualLight.disableEvents();
+	spotLight.disableEvents();
 
-	ofLog() << "<app::noTextureChanged>";
-
-	noTexture.disableEvents();
-	metalTexture.disableEvents();
-	waterTexture.disableEvents();
-
-	noTexture.set(true);
-	metalTexture.set(false);
-	waterTexture.set(false);
-
-
-
-	noTexture.enableEvents();
-	metalTexture.enableEvents();
-	waterTexture.enableEvents();
-}
-
-void ofApp::metalTextureChanged(bool& value) {
-
-	ofLog() << "<app::metalTextureChanged>";
-
-	noTexture.disableEvents();
-	metalTexture.disableEvents();
-	waterTexture.disableEvents();
-
-	waterTexture.set(false);
-
-	if (metalTexture) {
-		noTexture.set(false);
+	if (ambientLight.get()) {
+		directionalLight.set(false);
+		ponctualLight.set(false);
+		spotLight.set(false);
 	}
 	else {
-		noTexture.set(true);
+		ambientLight.set(true);
 	}
 
-
-
-	noTexture.enableEvents();
-	metalTexture.enableEvents();
-	waterTexture.enableEvents();
+	ambientLight.enableEvents();
+	directionalLight.enableEvents();
+	ponctualLight.enableEvents();
+	spotLight.enableEvents();
 }
 
-void ofApp::waterTextureChanged(bool& value) {
+void ofApp::directionalLightChanged(bool& value) {
 
-	ofLog() << "<app::waterTextureChanged>";
+	ambientLight.disableEvents();
+	directionalLight.disableEvents();
+	ponctualLight.disableEvents();
+	spotLight.disableEvents();
 
-	noTexture.disableEvents();
-	metalTexture.disableEvents();
-	waterTexture.disableEvents();
-
-	metalTexture.set(false);
-
-	if (waterTexture) {
-		noTexture.set(false);
+	if (directionalLight.get()) {
+		ambientLight.set(false);
+		ponctualLight.set(false);
+		spotLight.set(false);
 	}
 	else {
-		noTexture.set(true);
+		directionalLight.set(true);
 	}
 
-	noTexture.enableEvents();
-	metalTexture.enableEvents();
-	waterTexture.enableEvents();
+	ambientLight.enableEvents();
+	directionalLight.enableEvents();
+	ponctualLight.enableEvents();
+	spotLight.enableEvents();
+}
+
+void ofApp::ponctualLightChanged(bool& value) {
+
+	ambientLight.disableEvents();
+	directionalLight.disableEvents();
+	ponctualLight.disableEvents();
+	spotLight.disableEvents();
+
+	if (ponctualLight.get()) {
+		ambientLight.set(false);
+		directionalLight.set(false);
+		spotLight.set(false);
+	}
+	else {
+		ponctualLight.set(true);
+	}
+
+	ambientLight.enableEvents();
+	directionalLight.enableEvents();
+	ponctualLight.enableEvents();
+	spotLight.enableEvents();
+}
+
+void ofApp::spotLightChanged(bool& value) {
+
+	ambientLight.disableEvents();
+	directionalLight.disableEvents();
+	ponctualLight.disableEvents();
+	spotLight.disableEvents();
+
+	if (spotLight.get()) {
+		ambientLight.set(false);
+		ponctualLight.set(false);
+		directionalLight.set(false);
+	}
+	else {
+		spotLight.set(true);
+	}
+
+	ambientLight.enableEvents();
+	directionalLight.enableEvents();
+	ponctualLight.enableEvents();
+	spotLight.enableEvents();
 }
 
 void ofApp::translateChanged(float& value) {
@@ -1377,14 +1682,84 @@ void ofApp::dilateChanged(bool& value) {
 		rend->removeDilate();
 }
 
+void ofApp::vertexChanged(bool& value) {
+	vertex.disableEvents();
+	fragment.disableEvents();
+
+	if (vertex){
+	
+		fragment.set(false);
+	}
+	else{
+
+		fragment.set(true);
+	}
+
+	vertex.enableEvents();
+	fragment.enableEvents();
+}
+
+void ofApp::fragmentChanged(bool& value) {
+	vertex.disableEvents();
+	fragment.disableEvents();
+
+	if (fragment){
+		
+		vertex.set(false);
+	}
+	else{
+
+		vertex.set(true);
+	}
+
+	vertex.enableEvents();
+	fragment.enableEvents();
+}
+
+void ofApp::phongChanged(bool& value) {
+	phong.disableEvents();
+	blinnphong.disableEvents();
+
+	if (phong){
+		blinnphong.set(false);
+		rend->setIlluminationModel(renderer::PHONG);
+	}
+	else{
+		blinnphong.set(true);
+		rend->setIlluminationModel(renderer::BLINN_PHONG);
+	}
+
+	phong.enableEvents();
+	blinnphong.enableEvents();
+}
+
+void ofApp::blinnphongChanged(bool& value) {
+	phong.disableEvents();
+	blinnphong.disableEvents();
+
+	if (blinnphong){
+		rend->setIlluminationModel(renderer::BLINN_PHONG);
+		phong.set(false);
+	}
+	else{
+		rend->setIlluminationModel(renderer::PHONG);
+		phong.set(true);
+	}
+
+	phong.enableEvents();
+	blinnphong.enableEvents();
+}
+
 void ofApp::drawMenus() {
 
 	if (primType2D)
 		menu2D.draw();
 	else if (primType3D)
 		menu3D.draw();
-	else
+	else if (primTypeTopo)
 		menuTopo.draw();
+	else if (primTypeLight)
+		menuLight.draw();
 
 	cameraMenu.draw();
 	transformationMenu.draw();
@@ -1405,11 +1780,7 @@ void ofApp::setupMenu2D() {
 
 	menu2D.add(groupThick);
 
-	menu2D.add(groupFill);
-
-	menu2D.add(groupStroke);
-
-	menu2D.add(groupTexture);
+	menu2D.add(groupCouleur);
 
 	menu2D.minimizeAll();
 
@@ -1426,9 +1797,7 @@ void ofApp::setupMenu3D() {
 	menu3D.add(groupPrimitivePosition3D);
 	menu3D.add(groupPrimitiveSize3D);
 
-	menu3D.add(groupFill);
-
-	menu3D.add(groupTexture);
+	menu3D.add(groupCouleur);
 
 	menu3D.minimizeAll();
 
@@ -1445,13 +1814,28 @@ void ofApp::setupMenuTopo() {
 	menuTopo.add(groupPrimitivePositionTopo);
 	menuTopo.add(groupPrimitiveSizeTopo);
 
-	menuTopo.add(groupStroke);
-
-	menuTopo.add(groupTexture);
+	menuTopo.add(groupCouleur);
 
 	menuTopo.minimizeAll();
 
 	menuTopo.registerMouseEvents();
+}
+
+void ofApp::setupMenuLight() {
+
+	menuLight.setDefaultWidth(200);
+
+	menuLight.setup();
+
+	menuLight.add(groupPrimitiveTypeLight);
+	menuLight.add(groupTranslateLight);
+	menuLight.add(groupRotateLight);
+
+	menuLight.add(groupCouleurLight);
+
+	menuLight.minimizeAll();
+
+	menuLight.registerMouseEvents();
 }
 
 void ofApp::setupCameraMenu()
@@ -1551,6 +1935,7 @@ void ofApp::updatePositionMenu() {
 	menu2D.setPosition(10, 260);
 	menu3D.setPosition(10, 260);
 	menuTopo.setPosition(10, 260);
+	menuLight.setPosition(10, 260);
 
 	//cameraMenu.setPosition(ofGetWindowWidth() - 280, 10);
 	//transformationMenu.setPosition(ofGetWindowWidth() - 280, 260);

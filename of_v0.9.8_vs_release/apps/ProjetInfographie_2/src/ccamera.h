@@ -40,6 +40,7 @@ public:
 	bool isCameraMoveBackward = false;
 
 	const ofEasyCam& operator*() const { return *cam; }
+	ofCamera* getOfCamera() { return cam; };
 
 	ccamera& operator=(const ccamera&) = default;
 

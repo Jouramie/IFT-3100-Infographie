@@ -14,7 +14,7 @@ public:
 	extModel(ofxAssimpModelLoader* mod);
 	extModel(ofxAssimpModelLoader* mod, ofMatrix4x4 transfoMatrix);
 	ofxAssimpModelLoader* getModel();
-	void draw(bool wireframe = false) override;
+	void draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader) override;
 
 protected:
 	const ofVec3f getLocalPosition() const override { return model->getPosition(); }

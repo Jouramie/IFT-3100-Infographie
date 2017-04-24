@@ -25,7 +25,6 @@ public:
 	void keyPressed(int key);
 	void keyReleased(int key);
 	void mouseMoved(int x, int y);
-	void mouseMovedGui(int x, int y);
 	void mouseDragged(int x, int y, int button);
 	void mousePressed(int x, int y, int button);
 	void mouseReleased(int x, int y, int button);
@@ -46,6 +45,7 @@ private:
 	ofxPanel menu2D;
 	ofxPanel menu3D;
 	ofxPanel menuTopo;
+	ofxPanel menuLight;
 	ofxPanel cameraMenu;
 	ofxPanel transformationMenu;
 	ofxPanel filterMenu;
@@ -68,19 +68,31 @@ private:
 	ofParameterGroup groupThick;
 	ofParameter<float> strokeThickness;
 
-	ofParameterGroup groupStroke;
-	ofColor stroke;
-	ofParameter<float> strokeHue;
-	ofParameter<float> strokeSaturation;
-	ofParameter<float> strokeBrightess;
-	ofParameter<float> strokeAlpha;
+	ofParameterGroup groupCouleur;
+	ofParameterGroup groupCouleurLight;
+	ofParameterGroup groupAmbient;
+	ofColor ambient;
+	ofParameter<float> ambientHue;
+	ofParameter<float> ambientSaturation;
+	ofParameter<float> ambientBrightess;
 
-	ofParameterGroup groupFill;
-	ofColor fill;
-	ofParameter<float> fillHue;
-	ofParameter<float> fillSaturation;
-	ofParameter<float> fillBrightess;
-	ofParameter<float> fillAlpha;
+	ofParameterGroup groupDiff;
+	ofColor diff;
+	ofParameter<float> diffHue;
+	ofParameter<float> diffSaturation;
+	ofParameter<float> diffBrightess;
+
+	ofParameterGroup groupEmis;
+	ofColor emis;
+	ofParameter<float> emisHue;
+	ofParameter<float> emisSaturation;
+	ofParameter<float> emisBrightess;
+
+	ofParameterGroup groupSpec;
+	ofColor spec;
+	ofParameter<float> specHue;
+	ofParameter<float> specSaturation;
+	ofParameter<float> specBrightess;
 
 	ofParameterGroup groupBackground;
 	ofColor background;
@@ -93,11 +105,15 @@ private:
 	ofParameterGroup groupPrimitiveType2D;
 	ofParameterGroup groupPrimitiveType3D;
 	ofParameterGroup groupPrimitiveTypeTopo;
+	ofParameterGroup groupPrimitiveTypeLight;
 	ofParameter<bool> primType2D;
 	ofParameter<bool> primType3D;
 	ofParameter<bool> primTypeTopo;
+	ofParameter<bool> primTypeLight;
 	ofParameter<bool> primTypeSphere;
 	ofParameter<bool> primTypeCube;
+	ofParameter<bool> primTypeCubeReflect;
+	ofParameter<bool> primTypeCubeRefract;
 	ofParameter<bool> primTypeTriangle;
 	ofParameter<bool> primTypeLine;
 	ofParameter<bool> primTypePoint;
@@ -133,13 +149,25 @@ private:
 	ofParameter<float> primSizeDepth;
 
 #pragma endregion
-	ofParameterGroup groupTexture;
-	ofParameter<bool> noTexture;
-	ofParameter<bool> metalTexture;
-	ofParameter<bool> waterTexture;
+
+	ofParameter<bool> ambientLight;
+	ofParameter<bool> directionalLight;
+	ofParameter<bool> ponctualLight;
+	ofParameter<bool> spotLight;
+
+	ofParameter<float> translateXLight;
+	ofParameter<float> translateYLight;
+	ofParameter<float> translateZLight;
+
+	ofParameterGroup groupRotateLight;
+	ofParameter<float> rotateXLight;
+	ofParameter<float> rotateYLight;
+	ofParameter<float> rotateZLight;
+	
 
 	ofParameterGroup groupTranslate2D;
 	ofParameterGroup groupTranslate3D;
+	ofParameterGroup groupTranslateLight;
 	ofParameter<float> translateX;
 	ofParameter<float> translateY;
 	ofParameter<float> translateZ;
@@ -169,6 +197,12 @@ private:
 	ofParameter<float> pointPosY;
 	ofParameter<float> pointPosZ;
 	ofParameter<bool> shader;
+	
+	ofParameter<bool> vertex;
+	ofParameter<bool> fragment;
+	ofParameter<bool> phong;
+	ofParameter<bool> blinnphong;
+
 
 	void initGroups();
 	void initButtonListener();
@@ -181,6 +215,7 @@ private:
 	void setupMenu2D();
 	void setupMenu3D(); 
 	void setupMenuTopo();
+	void setupMenuLight();
 	void setupCameraMenu();
 	void setupTransformationMenu();
 	void setupFilterMenu();
@@ -203,7 +238,10 @@ private:
 	void primDim2DChanged(bool& value);
 	void primDim3DChanged(bool& value);
 	void primTopoChanged(bool& value);
+	void lightChanged(bool & value);
 	void primTypeCubeChanged(bool& value);
+	void primTypeCubeReflectChanged(bool & value);
+	void primTypeCubeRefractChanged(bool & value);
 	void primTypeSphereChanged(bool& value);
 	void primTypeTriangleChanged(bool & value);
 	void primTypeLineChanged(bool & value);
@@ -213,13 +251,13 @@ private:
 	void primTypeCatmullRomChanged(bool& value); 
 	void primTypeSurfaceChanged(bool& value);
 
-	void wireFrameChanged(bool& value);
+	void ambientLightChanged(bool & value);
+	void directionalLightChanged(bool & value);
+	void ponctualLightChanged(bool & value);
+	void spotLightChanged(bool & value);
 
 	void shaderChanged(bool & value);
-
-	void noTextureChanged(bool & value);
-	void metalTextureChanged(bool & value);
-	void waterTextureChanged(bool & value);
+	void wireFrameChanged(bool& value);
 
 	void translateChanged(float & value);
 	void rotateChanged(float & value);
@@ -228,6 +266,11 @@ private:
 	void blurChanged(bool & value);
 	void invertChanged(bool & value);
 	void dilateChanged(bool & value);
+
+	void vertexChanged(bool & value);
+	void fragmentChanged(bool & value);
+	void phongChanged(bool & value);
+	void blinnphongChanged(bool & value);
 
 	void drawMenus();
 

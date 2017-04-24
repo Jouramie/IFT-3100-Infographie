@@ -6,20 +6,19 @@
 
 class primitive3d : public primitive {
 public:
-	
+
 	primitive3d();
 	primitive3d(of3dPrimitive* primitive);
 	primitive3d(of3dPrimitive* primitive, ofColor fill);
 	primitive3d(of3dPrimitive* primitive, ofColor fill, ofMatrix4x4 matrix);
 	of3dPrimitive* getPrimitive();
 	ofColor getFillColor();
-
 	void setMirror(bool mirror);
 	void setGlass(bool glass);
 
 	vector<ofRay> prepareGlass(const ofCamera cam, vector<primitive*> otherPrims, ofColor backgroundCol) override;// , const scene* scn);
-	void draw(bool wireframe) override;
-	bool intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) override;
+	void draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader) override;
+	vector<hit> intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) override;
 	bool getColorOfRay(ofRay ray, ofColor * hit) override;
 
 	ofMesh getMesh() override { return prim->getMesh(); };
@@ -37,6 +36,7 @@ private:
 	ofColor fillCol;
 	bool isMirror;
 	bool isGlass;
+	ofImage toPaint;
 	//ofVec3f scale;
 
 };

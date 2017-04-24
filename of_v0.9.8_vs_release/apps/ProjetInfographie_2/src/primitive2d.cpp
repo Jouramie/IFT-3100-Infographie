@@ -43,12 +43,10 @@ ofColor primitive2d::getStrokeColor() {
 	return strokeCol;
 }
 
-void primitive2d::draw(bool wireframe)
+void primitive2d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& lightShader)
 {
 	ofSetLineWidth(1.0);
 	prim->setStrokeWidth(strokeThickness);
-
-	//ofSetColor(strokeCol);
 
 	ofPushMatrix();
 
@@ -62,20 +60,22 @@ void primitive2d::draw(bool wireframe)
 	ofRotate(rotationAmount, rotationAngle.x, rotationAngle.y, rotationAngle.z);
 
 	ofScale(transfoMatrix.getScale());
-
+	lightShader.useMaterial(&mat);
+	lightShader.begin();
 	if (wireframe || selected.get())
 		prim->setFilled(false);
 	else
 		prim->setFilled(true);
 	prim->draw();
-
+	lightShader.end();
+	lightShader.removeMaterial();
 	ofPopMatrix();
 }
 
-bool primitive2d::intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) {
+vector<hit> primitive2d::intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) {
 
 	//ofMatrix4x4 toWorldSpace = transfoMatrix;
 	//ofMesh mesh = prim->();
 
-	return false;// primitive::intersectsMesh(screenCoordinates, mesh, cam, toWorldSpace);
+	return vector<hit>();// primitive::intersectsMesh(screenCoordinates, mesh, cam, toWorldSpace);
 }
