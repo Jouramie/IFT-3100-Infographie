@@ -1017,7 +1017,39 @@ Non-implémenté
 \pagebreak
 \section{Illumination}
 \subsection{Types de lumière}
-Les quatres types de lumières peuvent être ajouté à l'application. Ils sont ajouté à la structure de scène. 
+Les quatres types de lumières peuvent être ajouté à l'application. Ils sont ajouté à la structure de scène. Une classe light a été crée pour wrapper ofLight et permettre l'ajout à la structure de scène. Voici un exemple de code pour la lumière ambiante et le spotlight.
+
+\begin{lstlisting}
+void setAmbiantLight(ofColor col) { ofSetGlobalAmbientColor(col); };
+
+ofParameter<bool> renderer::createSpotlight(ofVec3f pos, int ax, int ay, int az, ofColor difCol, ofColor specCol) {
+	ofLight* ofl = new ofLight();
+	ofl->setSpotlight();
+	lightShader.useLight(ofl);
+	ofMatrix4x4 matrix = ofMatrix4x4();
+	matrix.setTranslation(pos);
+	ofQuaternion rotate{};
+	rotate.makeRotate(ax, ofVec3f(1, 0, 0), ay, ofVec3f(0, 1, 0), az, ofVec3f(0, 0, 1));
+	matrix.setRotate(rotate);
+	
+	light* l = new light{ ofl, matrix };
+	l->setName("Spotlight " + to_string(scn->nbElements() + 1));
+	l->setDiffuseColor(difCol);
+	l->setSpecularColor(specCol);
+	l->setLightShader(&lightShader);
+	l->setTransfo(matrix);
+	scn->addElement(l);
+	return l->selected;
+}
+\end{lstlisting}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=8cm]{fig/lumiere.png}
+	\caption{Exemple de lumière sur une sphère}
+	\label{fig:lumiere}
+\end{figure}
+
 
 \subsection{Lumières multiples}
 Les lumières se comportent presque entièrement comme des primitives, elles peuvent être ajouté à la scène et transformé comme les primitives. Par contre, l'addons ofxShadersFX impose un maximum de 8 lumières. Notez qu'il n'est possible que d'avoir une seule lumière ambiante, qui est présente en permanence dans l'application (couleur noir par défaut).
