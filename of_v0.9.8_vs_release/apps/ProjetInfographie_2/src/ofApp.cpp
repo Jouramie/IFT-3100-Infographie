@@ -409,9 +409,9 @@ void ofApp::initGroups()
 
 
 	groupTranslateLight.setName("Position");
-	groupTranslateLight.add(translateX);
-	groupTranslateLight.add(translateY);
-	groupTranslateLight.add(translateZ);
+	groupTranslateLight.add(primPosX);
+	groupTranslateLight.add(primPosY);
+	groupTranslateLight.add(primPosZ);
 
 	groupRotateLight.setName("Angle");
 	groupRotateLight.add(rotateXLight);
