@@ -985,3 +985,303 @@ Non-implémenté
 
 \subsection{Caméra animée}
 Non-implémenté
+
+
+\pagebreak
+\section{Pipeline de rendu}
+\subsection{Portabilité}
+Non-implémenté
+
+\subsection{Shader de géométrie}
+Non-implémenté
+
+\subsection{Rétroaction de transformation}
+Non-implémenté
+
+\subsection{Passes de rendu}
+Non-implémenté
+
+\subsection{Techniques d'occlusion}
+Non-implémenté
+
+
+\pagebreak
+\section{Illumination}
+\subsection{Types de lumière}
+Non-implémenté
+
+\subsection{Lumières multiples}
+Non-implémenté
+
+\subsection{Matériaux}
+Non-implémenté
+
+\subsection{Modèle d'illumination}
+Non-implémenté
+
+\subsection{Volume de lumière}
+Non-implémenté
+
+
+\pagebreak
+\section{Lancer de rayon}
+\subsection{Intersection}
+Dans l'application, il y a des fonctionnalités de lancer de rayon. Celles-ci sont utilisées pour faciliter la sélection d'entités dans la scène. Cette fonctionnalité n'est implementé que pour 2 types de primitives géométriques, soit les cubes et les sphères.
+
+Le fonctionnement est très simple. Comme dans la section 5.3.3 (Sélection multiple), on pouvait ajouter ou retirer des objets de la sélection. Avec le lancer de rayon, tout clic dans la fenêtre lancera un rayon, et si celui-ci intersecte avec une primitive de type cube ou sphère (les seuls supportés), ce agira comme si on avait cliqué sur sa case a coché. Cela l'ajoutera ou le retirera de la sélection courante, selon si cet objet était déjà sélectionné ou pas.
+
+Le rayon n'intersecte pas les objets qui sont derrière la caméras (qui sont pourtant touchés par le rayon qui est infini dans les deux sens) car on ne conserve que les intersections à distance positive vers l'avant. De plus, si plusieurs primitives valides sont en intersection avec le rayon, la selection n'affectera que celle qui est la plus proche de la caméra, puisque logiquement c'est sur celle-ci que l'utilisateur a cliqué, car la partie sous le clic de la seconde primitive est forcément cachée par la première du point de vue de la caméra.
+
+\begin{lstlisting}
+struct hit {
+	int faceIndex;
+	float distance;
+};
+
+struct by_distance {
+	bool operator()(hit const &a, hit const &b) {
+		return a.distance < b.distance;
+	}
+};
+\end{lstlisting}
+
+\begin{lstlisting}
+bool primitive::intersectsMesh(ofRay ray, const ofMesh &mesh, const ofMatrix4x4 &toWorldSpace, vector<hit> *meshHit) {
+	const vector<ofMeshFace>& faces = mesh.getUniqueFaces();
+	bool intersection = false;
+	bool intersectedOnce = false;
+	vector<hit> distances = vector<hit>();
+	for (int i = 0; i < faces.size(); i++) {
+		const ofMeshFace &face = faces[i];
+		// intersections are done worldSpace
+		ofVec3f one = face.getVertex(0) * toWorldSpace;
+		ofVec3f two = face.getVertex(1) * toWorldSpace;
+		ofVec3f three = face.getVertex(2) * toWorldSpace;
+		one = one * transfoMatrix;
+		two = two * transfoMatrix;
+		three = three * transfoMatrix;
+		
+		float t;
+		intersection = calcTriangleIntersection(one, two, three, ray, &t);
+		
+		if (intersection && t > 0) {
+			hit newHit = hit();
+			newHit.distance = t;
+			newHit.faceIndex = i;
+			distances.push_back(newHit);
+			intersectedOnce = true;
+			//break;
+		}
+	}
+	
+	if (intersectedOnce)
+	{
+		std::sort(distances.begin(), distances.end(), by_distance());
+		for (int i = 0; i < distances.size(); i++)
+		{
+			meshHit->push_back(distances[i]);
+		}
+	}
+	
+	return intersectedOnce;
+}
+
+bool primitive::calcTriangleIntersection(const ofVec3f &vert0, const ofVec3f &vert1, const ofVec3f &vert2, ofRay ray, float *result) const
+{
+
+	ofVec3f edge1, edge2, tvec, pvec, qvec;
+	float det;
+	float u, v;
+	const float EPSILON = 0.000001f;
+	
+	edge1 = vert1 - vert0;
+	edge2 = vert2 - vert0;
+	
+	pvec = ray.getTransmissionVector().getNormalized().getCrossed(edge2);
+	det = edge1.dot(pvec);
+	
+	#if 0 // we don't want to backface cull
+		if (det < EPSILON)
+			return false;
+		tvec = getOrigin() - vert0;
+		
+		u = tvec.dot(pvec);
+		if ((u < 0.0f) || (u > det))
+			return false;
+		
+		qvec = tvec.getCrossed(edge1);
+		v = getDirection().dot(qvec);
+		if (v < 0.0f || u + v > det)
+			return false;
+		
+		*result = edge2.dot(qvec) / det;
+		return true;
+	#else
+		if (det > -EPSILON && det < EPSILON)
+			return false;
+		
+		float inv_det = 1.0f / det;
+		tvec = ray.getStart() - vert0;
+		u = tvec.dot(pvec) * inv_det;
+		if (u < 0.0f || u > 1.0f)
+			return false;
+		
+		qvec = tvec.getCrossed(edge1);
+		
+		v = ray.getTransmissionVector().getNormalized().dot(qvec) * inv_det;
+		if (v < 0.0f || u + v > 1.0f)
+			return 0;
+		
+		*result = edge2.dot(qvec) * inv_det;
+		return true;
+	#endif
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+vector<hit> primitive3d::intersectsMeshInstance(const ofVec2f &screenCoordinates, const ofCamera &cam) {
+
+	ofMatrix4x4 toWorldSpace = prim->getGlobalTransformMatrix();
+	ofMesh mesh = prim->getMesh();
+	
+	vector<hit>* hits = new vector<hit>();
+	
+	ofVec3f screenToWorld = cam.screenToWorld(ofVec3f(screenCoordinates.x, screenCoordinates.y, 0.0));
+	ofRay ray(cam.getPosition(), screenToWorld - cam.getPosition());
+	
+	intersectsMesh(ray, mesh, toWorldSpace, hits);
+	
+	return *hits;
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+void renderer::selectPrimitive(int x, int y, bool shiftHeld)
+{
+	primitive* toSelect;
+	float distance = -1;
+	for (primitive& p : *scn)
+	{
+		vector<hit> hits = p.intersectsMeshInstance(ofVec2f(x, y), (**cam));
+		if (hits.size() > 0 && (distance == -1 || hits[0].distance < distance))
+		{
+			distance = hits[0].distance;
+			toSelect = &p;
+		}
+	}
+	
+	if (distance > -0.9)
+	{
+		toSelect->changeSelected();
+	}
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+void ofApp::mouseReleased(int x, int y, int button) {
+	rend->selectPrimitive(x, y, GetKeyState(VK_SHIFT));
+}
+\end{lstlisting}
+
+\subsection{Réflexion}
+Dans notre application, il est possible de créer des cubes de type "miroir".
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=8cm]{fig/CubeReflection1.png}
+	\caption{Cube de type miroir}
+	\label{fig:propriete}
+\end{figure}
+
+Chacune des faces d'un tel cube réflète son entourage. À cause des limitations de temps (et de vitesse de calcul), seuls les sphères et les autres cubes s'affichent dans les miroirs, car, de par le point précédent, ce sont les seuls objets qui incorporent le lancer de rayon.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=8cm]{fig/CubeReflection2.png}
+	\caption{Les miroirs prennent la caméra en compte}
+	\label{fig:propriete}
+\end{figure}
+
+Tout ce qui est reflété dans un miroir, même le fond de la scène, est rendu un peu plus pâle (à l'exception des pixels déjà blancs, évidemment). Cela est fait pour que les délimitations de la surface miroir soient facile à voir, car sinon elles seraient identiques au fond derrière, et donc partiellement invisible.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=8cm]{fig/CubeReflection3.png}
+	\caption{On voit que le fond et chaque cube sont plus pâles que les vrais}
+	\label{fig:propriete}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=8cm]{fig/CubeReflectionBackground.png}
+	\caption{Évidemment, la couleur de fond choisie par l'utilisateur est parfaitement compatible avec les miroirs}
+	\label{fig:propriete}
+\end{figure}
+
+Il est techniquement aussi possible de créer des sphères miroir, mais nous n'avons pas mis d'option pour le faire dans l'interface.
+
+En effet, la charge de calcul pour les cubes est déjà terriblement élevée, et celle-ci ne fait que grandir très rapidement avec le nombre de triangles du miroir et des entités refletées. Cela fait que, pour un cube ne reflétant que d'autres cubes, cela peut prendre jusqu'à 1 minute pour générer une seule frame. Si le cube doit refléter des sphères, ce temps augmente à plusieurs minutes, et si le miroir est lui-même une sphère, on peut avoir jusqu'à des heures d'attente si le miroir occupe une assez grande partie de l'écran (on envoie un rayon par pixel qui est au dessus d'un miroir après tout). C'est la raison pourquoi nous avons jugé inutile d'offrir l'option des sphères miroirs dans le menu, et nous recommandont fortement de n'utiliser que des cubes pour tester les miroirs.
+
+Pour évidemment de complètement geler la fenêtre en permanence parce que chaque frame prend beaucoup de temps à se générer, les miroirs sont configurés en mode "manuel". Cela signifie que L'utilisateur doit spécifier au miroir qu'il veut le rafraichir, et que sinon, le miroir ne se met pas à jour en temps réel.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=8cm]{fig/CubeReflectionRefreshManuel.png}
+	\caption{Après un mouvement de caméra, le miroir ne s'est pas mis à jour à chaque frame, pour éviter des délais de plusieurs minutes}
+	\label{fig:propriete}
+\end{figure}
+
+Nous avons simplement, pour les besoins du travail, configuré l'événement qui met à jour les miroirs sur le relâchement d'une touche du clavier. L'utilisateur se positionne donc de façon fluide comme il veut, et ensuite il peut appuyer sur la touche de son choix pour démarrer l'attente de 30-60sec pour rendre le miroir avec le nouvel angle.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=8cm]{fig/CubeReflectionApresRefresh.png}
+	\caption{L'utilisateur appuis sur une touche, attend la génération de la frame, et le miroir est maintenant à jour!}
+	\label{fig:propriete}
+\end{figure}
+
+\subsection{Réfraction}
+Non-implémenté
+
+\subsection{Ombrage}
+Non-implémenté
+
+\subsection{Rendu graphique}
+Non-implémenté
+
+
+\pagebreak
+\section{Topologie}
+\subsection{Courbe cubique}
+Non-implémenté
+
+\subsection{Courbe paramétrique}
+Non-implémenté
+
+\subsection{Surface paramétrique}
+Non-implémenté
+
+\subsection{Shader de tesselation}
+Non-implémenté
+
+\subsection{Triangulation}
+Non-implémenté
+
+
+\pagebreak
+\section{Techniques de rendu}
+\subsection{Effet de relief}
+Non-implémenté
+
+\subsection{Cube de réflexion}
+Non-implémenté
+
+\subsection{BRDF}
+Non-implémenté
+
+\subsection{Effet en pleine fenêtre}
+Non-implémenté
+
+\subsection{Style libre}
+Non-implémenté
+
