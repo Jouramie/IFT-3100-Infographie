@@ -480,7 +480,6 @@ void ofApp::initGroups()
 
 void ofApp::initButtonListener() {
 	btnDrawPrimitive.addListener(this, &ofApp::btnDrawPrimitiveClicked);
-	btnAddLight.addListener(this, &ofApp::btnAddLightClicked);
 	btnClear.addListener(this, &ofApp::btnClearClicked);
 	btnExit.addListener(this, &ofApp::btnExitClicked);
 
@@ -513,11 +512,11 @@ void ofApp::initOfParameters() {
 	primTypeCube.addListener(this, &ofApp::primTypeCubeChanged);
 
 	primTypeCubeReflect.setName("Cube mirroir");
-	primTypeCubeReflect.set(true);
+	primTypeCubeReflect.set(false);
 	primTypeCubeReflect.addListener(this, &ofApp::primTypeCubeReflectChanged);
 
 	primTypeCubeRefract.setName("Cube de verre");
-	primTypeCubeRefract.set(true);
+	primTypeCubeRefract.set(false);
 	primTypeCubeRefract.addListener(this, &ofApp::primTypeCubeRefractChanged);
 
 	primTypeSphere.setName("Cercle");
@@ -936,22 +935,16 @@ void ofApp::btnDrawPrimitiveClicked()
 
 		if (ambientLight.get()) {
 			
-		}
-		if (directionalLight.get()) {
-			rend->createDirectionalLight(rotateXLight, rotateYLight, rotateZLight, diff, spec);
+		} else if (directionalLight.get()) {
+		selectionMenu.add(rend->createDirectionalLight(rotateXLight, rotateYLight, rotateZLight, diff, spec));
 		}
 		else if (ponctualLight.get()) {
-			rend->createPonctualLight(translateXLight, translateYLight, translateZLight, diff, spec);
+			selectionMenu.add(rend->createPonctualLight(translateXLight, translateYLight, translateZLight, diff, spec));
 		}
 		else if (spotLight.get()) {
-			rend->createSpotlight(ofVec3f(translateXLight, translateYLight, translateZLight), rotateXLight, rotateYLight, rotateZLight, diff, spec);
+			selectionMenu.add(rend->createSpotlight(ofVec3f(translateXLight, translateYLight, translateZLight), rotateXLight, rotateYLight, rotateZLight, diff, spec));
 		}
-
 	}
-
-}
-
-void ofApp::btnAddLightClicked() {
 
 }
 
@@ -1691,12 +1684,12 @@ void ofApp::phongChanged(bool& value) {
 	blinnphong.disableEvents();
 
 	if (phong){
-	
 		blinnphong.set(false);
+		rend->setIlluminationModel(renderer::PHONG);
 	}
 	else{
-
 		blinnphong.set(true);
+		rend->setIlluminationModel(renderer::BLINN_PHONG);
 	}
 
 	phong.enableEvents();
@@ -1708,11 +1701,11 @@ void ofApp::blinnphongChanged(bool& value) {
 	blinnphong.disableEvents();
 
 	if (blinnphong){
-	
+		rend->setIlluminationModel(renderer::BLINN_PHONG);
 		phong.set(false);
 	}
 	else{
-	
+		rend->setIlluminationModel(renderer::PHONG);
 		phong.set(true);
 	}
 
@@ -1869,7 +1862,6 @@ void ofApp::setupOptionMenu() {
 	optionMenu.setup();
 
 	optionMenu.add(btnDrawPrimitive.setup("Ajouter une primitive"));
-	optionMenu.add(btnAddLight.setup("Ajouter une lumiere"));
 	optionMenu.add(btnClear.setup("Supprimer la scene"));
 
 	optionMenu.add(groupBackground);
