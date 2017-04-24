@@ -48,8 +48,6 @@ void primitive2d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& l
 	ofSetLineWidth(1.0);
 	prim->setStrokeWidth(strokeThickness);
 
-	//ofSetColor(strokeCol);
-
 	ofPushMatrix();
 
 	ofTranslate(transfoMatrix.getTranslation());
@@ -62,7 +60,6 @@ void primitive2d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& l
 	ofRotate(rotationAmount, rotationAngle.x, rotationAngle.y, rotationAngle.z);
 
 	ofScale(transfoMatrix.getScale());
-	//mat.begin();
 	lightShader.useMaterial(&mat);
 	lightShader.begin();
 	if (wireframe || selected.get())
@@ -70,7 +67,6 @@ void primitive2d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& l
 	else
 		prim->setFilled(true);
 	prim->draw();
-	//mat.end();
 	lightShader.end();
 	lightShader.removeMaterial();
 	ofPopMatrix();

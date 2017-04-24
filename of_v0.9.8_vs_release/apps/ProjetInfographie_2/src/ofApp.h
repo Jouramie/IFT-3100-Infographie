@@ -54,7 +54,6 @@ private:
 	ofxPanel selectionMenu;
 
 	ofxButton btnDrawPrimitive;
-	ofxButton btnAddLight;
 	ofxButton btnClear;
 	ofxButton btnExit;
 
@@ -219,7 +218,6 @@ private:
 	void updatePositionMenu();
 
 	void btnDrawPrimitiveClicked();
-	void btnAddLightClicked();
 	void btnClearClicked();
 	void btnExitClicked();
 	void btnExportClicked();
