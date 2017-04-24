@@ -204,6 +204,7 @@ private:
 	ofParameter<bool> blinnphong;
 
 	ofParameter<bool> skybox;
+	ofParameter<bool> contrast;
 
 	void initGroups();
 	void initButtonListener();
@@ -237,6 +238,8 @@ private:
 	void btnImportClicked();
 	
 	void skyboxChanged(bool & val);
+
+	void contrastChanged(bool & val);
 
 	void primDim2DChanged(bool& value);
 	void primDim3DChanged(bool& value);

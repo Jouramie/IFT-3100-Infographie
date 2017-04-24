@@ -22,6 +22,7 @@ void renderer::setup()
 	blur = false;
 	invert = false;
 	dilate = false;
+	contrast = false;
 	translate = false;
 	rotate = false;
 	scale = false;
@@ -41,6 +42,7 @@ void renderer::setup()
 
 	cubeMap.loadImages("Skybox/thefog_ft.jpg", "Skybox/thefog_bk.jpg", "Skybox/thefog_up.jpg", "Skybox/thefog_dn.jpg", "Skybox/thefog_rt.jpg", "Skybox/thefog_lf.jpg");
 	isSkyboxUsed = false;
+
 }
 
 void renderer::update()
@@ -156,6 +158,21 @@ void renderer::draw()
 	if (isFiltered) {
 		checkFilters();
 	}
+	if (contrast) {
+		applyContrast();
+	}
+}
+
+void renderer::applyContrast() {
+	ofImage imageTemp;
+	imageTemp.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+
+	ofxCvShortImage image;
+	image.setFromPixels(imageTemp.getPixels().getData(), ofGetWindowWidth(), ofGetWindowHeight());
+
+	image.contrastStretch();
+
+	image.draw(0,0);
 }
 
 void renderer::imageExport(const string name, const string extension)

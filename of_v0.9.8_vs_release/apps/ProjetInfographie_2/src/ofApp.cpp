@@ -463,6 +463,7 @@ void ofApp::initGroups()
 	groupFilter.add(blur);
 	groupFilter.add(invert);
 	groupFilter.add(dilate);
+	groupFilter.add(contrast);
 
 	groupPoint.setName("Ensemble de lignes");
 	groupPoint.add(pointPosX);
@@ -504,6 +505,10 @@ void ofApp::initOfParameters() {
 	skybox.setName("Skybox");
 	skybox.set(false);
 	skybox.addListener(this, &ofApp::skyboxChanged);
+	
+	contrast.setName("Effet visuel!");
+	contrast.set(false);
+	contrast.addListener(this, &ofApp::contrastChanged);
 
 	primType2D.setName("2D");
 	primType2D.set(true);
@@ -1068,6 +1073,10 @@ void ofApp::applyAllChanged(bool& value) {
 
 void ofApp::skyboxChanged(bool& val) {
 	rend->setIsSkyboxUsed(val);
+}
+
+void ofApp::contrastChanged(bool& val) {
+	rend->setContrast(val);
 }
 
 void ofApp::primDim2DChanged(bool& value) {

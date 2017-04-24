@@ -53,6 +53,7 @@ public:
 	void update();
 	void drawGlass(char axis);
 	void draw();
+	void applyContrast();
 	void imageExport(const string name, const string extension);
 	void checkFilters();
 	void sceneTranslate(float x, float y, float z);
@@ -139,6 +140,8 @@ public:
 
 	void setIsSkyboxUsed(bool val) { isSkyboxUsed = val; };
 
+	void setContrast(bool val) { contrast = val; };
+
 private:
 
 	//ofEasyCam mainCam;
@@ -186,6 +189,8 @@ private:
 
 	bool isSkyboxUsed;
 	ofxCubeMap cubeMap;
+
+	bool contrast;
 	
 	ofColor tempAmbientLight;
 	ofLight* tempDirectionalLight;
