@@ -1183,6 +1183,8 @@ void ofApp::mouseReleased(int x, int y, int button) {
 }
 \end{lstlisting}
 
+\newpage
+
 \subsection{Réflexion}
 Dans notre application, il est possible de créer des cubes de type "miroir".
 
@@ -1193,6 +1195,8 @@ Dans notre application, il est possible de créer des cubes de type "miroir".
 	\label{fig:propriete}
 \end{figure}
 
+\smallskip
+
 Chacune des faces d'un tel cube réflète son entourage. À cause des limitations de temps (et de vitesse de calcul), seuls les sphères et les autres cubes s'affichent dans les miroirs, car, de par le point précédent, ce sont les seuls objets qui incorporent le lancer de rayon.
 
 \begin{figure}[h]
@@ -1201,6 +1205,8 @@ Chacune des faces d'un tel cube réflète son entourage. À cause des limitation
 	\caption{Les miroirs prennent la caméra en compte}
 	\label{fig:propriete}
 \end{figure}
+
+\smallskip
 
 Tout ce qui est reflété dans un miroir, même le fond de la scène, est rendu un peu plus pâle (à l'exception des pixels déjà blancs, évidemment). Cela est fait pour que les délimitations de la surface miroir soient facile à voir, car sinon elles seraient identiques au fond derrière, et donc partiellement invisible.
 
@@ -1218,9 +1224,15 @@ Tout ce qui est reflété dans un miroir, même le fond de la scène, est rendu 
 	\label{fig:propriete}
 \end{figure}
 
+\smallskip
+
 Il est techniquement aussi possible de créer des sphères miroir, mais nous n'avons pas mis d'option pour le faire dans l'interface.
 
+\smallskip
+
 En effet, la charge de calcul pour les cubes est déjà terriblement élevée, et celle-ci ne fait que grandir très rapidement avec le nombre de triangles du miroir et des entités refletées. Cela fait que, pour un cube ne reflétant que d'autres cubes, cela peut prendre jusqu'à 1 minute pour générer une seule frame. Si le cube doit refléter des sphères, ce temps augmente à plusieurs minutes, et si le miroir est lui-même une sphère, on peut avoir jusqu'à des heures d'attente si le miroir occupe une assez grande partie de l'écran (on envoie un rayon par pixel qui est au dessus d'un miroir après tout). C'est la raison pourquoi nous avons jugé inutile d'offrir l'option des sphères miroirs dans le menu, et nous recommandont fortement de n'utiliser que des cubes pour tester les miroirs.
+
+\smallskip
 
 Pour évidemment de complètement geler la fenêtre en permanence parce que chaque frame prend beaucoup de temps à se générer, les miroirs sont configurés en mode "manuel". Cela signifie que L'utilisateur doit spécifier au miroir qu'il veut le rafraichir, et que sinon, le miroir ne se met pas à jour en temps réel.
 
@@ -1231,6 +1243,8 @@ Pour évidemment de complètement geler la fenêtre en permanence parce que chaq
 	\label{fig:propriete}
 \end{figure}
 
+\smallskip
+
 Nous avons simplement, pour les besoins du travail, configuré l'événement qui met à jour les miroirs sur le relâchement d'une touche du clavier. L'utilisateur se positionne donc de façon fluide comme il veut, et ensuite il peut appuyer sur la touche de son choix pour démarrer l'attente de 30-60sec pour rendre le miroir avec le nouvel angle.
 
 \begin{figure}[h]
@@ -1240,15 +1254,390 @@ Nous avons simplement, pour les besoins du travail, configuré l'événement qui
 	\label{fig:propriete}
 \end{figure}
 
+\bigskip
+De plus, les miroirs se mettent à jour une fois à leur première apparition, et automatiquement quand la composition de la scène change (ajout de primitive).
+
+\smallskip
+
+Pour le code: voir la section 5.8.3 Réfraction, car ces deux fonctionnalités ont beaucoup de code en commun, donc pour éviter de le copier deux fois le code sera recopié dans cette section.
+
+\newpage
+
 \subsection{Réfraction}
-Non-implémenté
+Comme pour la réflection, notre application permet la réfraction sur les primitives de type cube, et on ne voit dans les objets avec réfraction que les cubes et les sphères. Les délais de calculs sont aussi très longs, donc les mêmes limitations s'appliquent, incluant la mise à jour manuelle des surfaces avec réfraction.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=8cm]{fig/CubeRefraction.png}
+	\caption{Un cube de vitre distortionne un peu la lumière, et donc les objets derrière sont un peu changés selon au travers de quelle face du cube on les regarde}
+	\label{fig:propriete}
+\end{figure}
+
+\smallskip
+
+Comme cette fonctionnalité est littéralement une réflexion dont le rayon incident est calculé d'une autre façon, on a exactement le meme comportement dans toutes situations, incluant rendre les objets visibles à l'intérieur plus pâles, et un support de la couleur de fond de la scène. Encore une fois, les primitives et objets autre que "Cube" et "Sphère" seront invisible par réfraction, et les sphères ralentissent considérablement le temps (déjà long) de génération d'une image.
+
+Code (incluant le code de réflexion):
+
+\begin{lstlisting}
+void renderer::draw()
+{
+	vector<primitive*> GlassyPrims;
+	vector<primitive*> other3D;
+	
+	for (auto& p : *scn)
+	{
+		if (p.isCubeOrSphere()) // Inutile d'essayer de "voir" les autres types, puisqu'ils ne sont pas implementes.
+		{
+			other3D.push_back(&p);
+			if (p.isGlassy()) // Une primitive "glassy" est soit un miroir, soit une vitre avec refraction
+			{
+				GlassyPrims.push_back(&p);
+			}
+		}
+	}
+	
+	ofClear(background);
+	
+	cam->begin();
+	ofPushMatrix();
+	
+	ofEnableDepthTest();
+	//ofEnableLighting();
+	
+	ofSetLineWidth(1.0);
+	
+	if (translate) {
+		ofTranslate(deltaX, deltaY, deltaZ);
+	}
+	if (rotate) {
+		ofRotate(centerX, 1, 0, 0);
+		ofRotate(centerY, 0, 1, 0);
+		ofRotate(centerZ, 0, 0, 1);
+	}
+	if (scale) {
+		ofScale(scaleX, scaleY, scaleZ);
+	}
+	
+	for (auto& p : *scn)
+	{
+		p.draw(wireFrame, lightShader);
+	}
+	
+	std::list<ofRay>::iterator iterator2;
+	bool origRay = true;
+	for (iterator2 = rays.begin(); iterator2 != rays.end(); ++iterator2)
+	{
+		if (origRay)
+			ofSetColor(255, 0, 0);
+		else
+			ofSetColor(0, 255, 0);
+		iterator2->draw();
+		origRay = !origRay;
+	}
+	
+	//ofDisableLighting();
+	ofDisableDepthTest();
+	
+	ofPopMatrix();
+	
+	cam->end();
+	
+	for (auto& glassy : GlassyPrims) // Toutes les primitives "glassy"
+	{
+		vector<ofRay> newRays = glassy->prepareGlass((**cam), other3D, background); // On les prepare
+		for (auto r : newRays)
+		{
+			//rays.push_back(r); // A des fins de debogage, on peut faire afficher une partie des rayons de lumiere, pour voir leur comportement
+		}
+	}
+	
+	if (isFiltered) {
+		checkFilters();
+	}
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+// Permet d'obtenir la couleur de la primitive Si et seulement si elle est touchee par un rayon
+bool primitive3d::getColorOfRay(ofRay ray, ofColor * colHit) {
+	ofMatrix4x4 toWorldSpace = prim->getGlobalTransformMatrix();
+	ofMesh mesh = prim->getMesh();
+	
+	vector<hit>* hits = new vector<hit>();
+	
+	vector<ofMeshFace> allFaces = mesh.getUniqueFaces();
+	
+	bool hasHit = intersectsMesh(ray, mesh, toWorldSpace, hits);
+	
+	if (hasHit)
+	{
+		//*hit = allFaces[(*hits)[0]].getColor(0);
+		*colHit = fillCol;
+	}
+	return hasHit;
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+// Rend une couleur plus pale, pour eviter les miroirs invisibles
+ofColor getSlightlyLighterColor(ofColor original, float ratio = 1.5) {
+	int red = original.r;
+	int green = original.g;
+	int blue = original.b;
+	
+	red = red * ratio;
+	green = green * ratio;
+	blue = blue * ratio;
+	
+	int maxColorValue = ofColor::limit();
+	
+	// Evidemment, si une des composantes depasse la limite, on la ramene au maximum.
+	// On est pas Tide(tm), on ne veut pas que les choses soient plus blanc que blanc!
+	if (red > maxColorValue)
+		red = maxColorValue;
+	if (green > maxColorValue)
+		green = maxColorValue;
+	if (blue > maxColorValue)
+		blue = maxColorValue;
+	
+	return ofColor(red, green, blue);
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+// Preparation de la vitre/miroir, seulement si necessaire
+vector<ofRay> primitive3d::prepareGlass(const ofCamera cam, vector<primitive*> otherPrims, ofColor backgroundCol) {//, const scene * scn) {
+	vector<ofRay> returnVec = vector<ofRay>();
+	int wid = ofGetWidth();
+	int hei = ofGetHeight();
+	
+	// Si la primitive n'est ni un miroir ni une vitre, on n'a pas notre place ici!
+	if (isMirror || isGlass)
+	{	
+		// Un miroir n'a pas besoin de couleur!
+		fillCol = ofColor(255, 255, 255, 0);
+		
+		// Si un rafraichissement manuel a ete demande depuis la derniere fois.
+		if (mustPrepare) {
+		
+			// matrice de transformation globale
+			ofMatrix4x4 toWorldSpace = prim->getGlobalTransformMatrix();
+			
+			// Le mesh de la primitive
+			ofMesh * mesh = prim->getMeshPtr();
+			
+			// Et ses faces
+			vector<ofMeshFace> allFaces = mesh->getUniqueFaces();
+			
+			int firstX = wid;
+			int lastX = 0;
+			int firstY = hei;
+			int lastY = 0;
+			
+			// Ca ne sert a rien d'envoyer des rayons sur des pixels qui n'ont aucune chance de toucher la primitive.
+			// A des fins d'optimisation, on detecte les limites (en x et y) du rectangle qui contient la primitive, pour ne tester que ces rayons.
+			for (int i = 0; i < allFaces.size(); i++) {
+				for (int j = 0; j < 3; j++)
+				{
+					ofVec3f screen = cam.worldToScreen(allFaces[i].getVertex(j) * toWorldSpace * transfoMatrix);
+					if (firstX > screen.x)
+						firstX = screen.x;
+					if (firstY > screen.y)
+						firstY = screen.y;
+					if (lastX < screen.x)
+						lastX = screen.x;
+					if (lastY < screen.y)
+						lastY = screen.y;
+				}
+			}
+			
+			// On ne lance pas de rayon en dehors de l'ecran, voyons. tss tss.
+			if (firstX < 0)
+				firstX = 0;
+			if (firstY < 0)
+				firstY = 0;
+			if (lastX >= wid)
+				lastX = wid - 1;
+			if (lastY >= hei - 1)
+				lastY = hei;
+			
+			toPaint = ofImage();
+			toPaint.allocate(wid, hei, OF_IMAGE_COLOR_ALPHA);
+			
+			for (int i = 0; i < wid; i++)
+			{
+				for (int j = 0; j < hei; j++)
+				{
+					toPaint.getPixels().setColor(i, j, ofColor(255, 255, 255, 0));
+				}
+			}
+			
+			allFaces = mesh->getUniqueFaces();
+			
+			// Dans notre rectangle, feu a volonte!
+			for (int x = firstX; x <= lastX; x++)
+			{
+				for (int y = firstY; y <= lastY; y++)
+				{
+				
+					ofVec3f screenToWorld = cam.screenToWorld(ofVec3f(x, y, 0.0));
+					ofRay ray(cam.getPosition(), screenToWorld - cam.getPosition());
+					
+					ofVec2f coords = ofVec2f(x, y);
+					
+					primitive* toSelect;
+					float distance = -1;
+					vector<hit> hits;
+					vector<hit> realHits;
+					
+					// On lance un rayon sur chaque pixel en cherchant si il intersecte notre miroir.
+					for (auto& otherPrim3D : otherPrims)
+					{
+						hits = (otherPrim3D->intersectsMeshInstance(coords, cam));;
+						if (hits.size() > 0 && (distance == -1 || (hits)[0].distance < distance))
+						{
+							distance = (hits)[0].distance;
+							toSelect = otherPrim3D;
+							realHits = hits;
+						}
+					}
+					
+					// Si on a intersecte notre miroir/vitre, ET qu'on a rien intersecte de plus proche avec le meme rayon, on peut travailler.
+					if (distance > -0.9 && toSelect->getName() == getName()) {
+						// La face touchee
+						const ofMeshFace * face = &allFaces[(realHits)[0].faceIndex];
+						
+						ofColor col = backgroundCol;
+						
+						ofRay mathReflectedRay = ofRay();
+						
+						if (isMirror) {
+							// Les sommets du triangle touche
+							ofVec3f A = face->getVertex(0) * toWorldSpace;
+							ofVec3f B = face->getVertex(1) * toWorldSpace;
+							ofVec3f C = face->getVertex(2) * toWorldSpace;
+							
+							A = A * transfoMatrix;
+							B = B * transfoMatrix;
+							C = C * transfoMatrix;
+							
+							// Des maths. Sont assez self-explanatory pour ceux qui connaissent ca, et prendraient des dizaines de lignes de commentaires a expliquer sinon.
+							// Good luck!
+							ofVec3f AB = B - A;
+							ofVec3f AC = C - A;
+							
+							ofVec3f ABxAC = AB.getCrossed(AC);
+							
+							ofVec3f n = (ABxAC) / (ABxAC.length());
+							ofVec3f v = ray.getTransmissionVector();
+							
+							ofVec3f OK = (v.dot(n)) * n;
+							ofVec3f OL = 2 * OK;
+							
+							ofVec3f w = v - OL;
+							
+							ofVec3f S = ray.getStart();
+							ofVec3f SA = (A - S);
+							
+							float t = (n.dot(SA)) / (n.dot(v));
+							
+							ofVec3f OR = S + (t * v);
+							
+							// Juste pour que le rayon soit visible (mais pas infini) quand on l'affiche pour deboguer
+							w = w.scale(1000);
+							
+							// Long story short, on a trouve l'origine et la direction du rayon reflete, donc c'est cool
+							mathReflectedRay = ofRay(OR, w, false);
+						}
+						else if (isGlass)
+						{
+						
+							// Si on est une vitre, on fait sensiblement la meme chose
+							ofVec3f A = face->getVertex(0) * toWorldSpace;
+							ofVec3f B = face->getVertex(1) * toWorldSpace;
+							ofVec3f C = face->getVertex(2) * toWorldSpace;
+							
+							A = A * transfoMatrix;
+							B = B * transfoMatrix;
+							C = C * transfoMatrix;
+							
+							ofVec3f AB = B - A;
+							ofVec3f AC = C - A;
+							
+							ofVec3f ABxAC = AB.getCrossed(AC);
+							
+							ofVec3f n = (ABxAC) / (ABxAC.length());
+							ofVec3f invN = -n;
+							ofVec3f v = ray.getTransmissionVector();
+							
+							// Sauf ici.
+							ofVec3f w = ofVec3f((v.x + n.x) / 2, (v.y + n.y) / 2, (v.z + n.z) / 2);
+							
+							ofVec3f S = ray.getStart();
+							ofVec3f SA = (A - S);
+							
+							float t = (n.dot(SA)) / (n.dot(v));
+							
+							ofVec3f OR = S + (t * v);
+							
+							w = w.scale(1000);
+							
+							// Basically, on part vers l'interieur plutot que vers l'exterieur, et on genere encore le beau rayon tout neuf.
+							mathReflectedRay = ofRay(OR, w, false);
+						}
+						
+						// Si on veut deboguer les rayons, tous les afficher serait un mechant desordre. On en affiche donc seulement 1/800, choisis au hasard, ca nous en laisse assez pour voir les problemes, mais pas trop pour comprendre leur comportement.
+						if (rand() % 800 == 0)
+						{
+							ray.color = ofColor(255, 0, 0);
+							mathReflectedRay.color = ofColor(0, 255, 0);
+							returnVec.push_back(ray);
+							returnVec.push_back(mathReflectedRay);
+						}
+						
+						// Avec notre nouveau rayon, on va chercher la premiere couleur qu'il touche!
+						// Si personne le touche, on se retrouve avec la couleur de fond, car on avait initialise col a ca.
+						for (auto& otherPrim3D : otherPrims)
+						{
+							if (otherPrim3D->getName() != getName())
+							{
+								otherPrim3D->getColorOfRay(mathReflectedRay, &col);
+							}
+						}
+						
+						// Un peu plus pale, les miroirs invisibles c'est villain. On fonce dedans comme un moineau dans une porte patio,
+						ofColor lighter = getSlightlyLighterColor(col);
+						
+						toPaint.getPixels().setColor(x, y, lighter);
+					}
+				}
+			}
+			
+			// Pas besoin de rafraichir avant de se le faire redemander!
+			mustPrepare = false;
+		}
+	}
+	
+	// On dessine par dessus le cube notre belle reflexion pas du tout pixelisee. Toute qu'une oeuvre d'art!
+	toPaint.update();
+	ofSetColor(255);
+	toPaint.draw(0, 0, wid, hei);
+	
+	// Ah et on retourne un rayon sur 800, si jamais le renderer voulait les avoir pour deboguer.
+	return returnVec;
+}
+\end{lstlisting}
+
+\newpage
 
 \subsection{Ombrage}
 Non-implémenté
 
+\newpage
+
 \subsection{Rendu graphique}
 Non-implémenté
-
 
 \pagebreak
 \section{Topologie}

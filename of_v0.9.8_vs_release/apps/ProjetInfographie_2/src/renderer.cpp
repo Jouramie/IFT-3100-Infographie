@@ -82,10 +82,10 @@ void renderer::draw()
 
 	for (auto& p : *scn)
 	{
-		if (p.isCubeOrSphere())
+		if (p.isCubeOrSphere()) // Inutile d'essayer de "voir" les autres types, puisqu'ils ne sont pas implementés.
 		{
 			other3D.push_back(&p);
-			if (p.isGlassy())
+			if (p.isGlassy()) // Une primitive "glassy" est soit un miroir, soit une vitre avec réfraction
 			{
 				GlassyPrims.push_back(&p);
 			}
@@ -138,12 +138,12 @@ void renderer::draw()
 
 	cam->end();
 
-	for (auto& glassy : GlassyPrims)
+	for (auto& glassy : GlassyPrims) // Toutes les primitives "glassy"
 	{
-		vector<ofRay> newRays = glassy->prepareGlass((**cam), other3D, background);
+		vector<ofRay> newRays = glassy->prepareGlass((**cam), other3D, background); // On les prépare
 		for (auto r : newRays)
 		{
-			//rays.push_back(r);
+			//rays.push_back(r); // À des fins de débogage, on peut faire afficher une partie des rayons de lumière, pour voir leur comportement
 		}
 	}
 
