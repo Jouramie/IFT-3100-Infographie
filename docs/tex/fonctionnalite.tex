@@ -1017,16 +1017,73 @@ Non-implémenté
 \pagebreak
 \section{Illumination}
 \subsection{Types de lumière}
-Non-implémenté
+Les quatres types de lumières peuvent être ajouté à l'application. Ils sont ajouté à la structure de scène. 
 
 \subsection{Lumières multiples}
-Non-implémenté
+Les lumières se comportent presque entièrement comme des primitives, elles peuvent être ajouté à la scène et transformé comme les primitives. Par contre, l'addons ofxShadersFX impose un maximum de 8 lumières. Notez qu'il n'est possible que d'avoir une seule lumière ambiante, qui est présente en permanence dans l'application (couleur noir par défaut).
 
 \subsection{Matériaux}
-Non-implémenté
+Les matériaux peuvent être totalement configuré à partir de l'interface graphique à partir des menus couleurs de chaque type de primitive. À chaque update de l'application, les couleurs mettent à jour le matériel actif dans le renderer, qui est ensuite utilisé dans la création de primitive.
+
+\begin{lstlisting}
+rend->activeMaterial.setAmbientColor(ambient);
+rend->activeMaterial.setDiffuseColor(diff);
+rend->activeMaterial.setEmissiveColor(emis);
+rend->activeMaterial.setSpecularColor(spec);
+\end{lstlisting}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=8cm]{fig/materiaux.png}
+	\caption{On peux modifier toutes les couleurs de réflexion en HSB.}
+	\label{fig:materiaux}
+\end{figure}
+
+\begin{lstlisting}
+\end{lstlisting}
+
 
 \subsection{Modèle d'illumination}
-Non-implémenté
+La fonctionnalité a été implémenté majoritairement grâce à l'addons ofxShadersFX (\url{https://github.com/Scylardor/ofxShadersFX}). Il offre un ensemble de shader de fragments et de sommets pour effectuer le rendu de la lumière. L'application permet de choisir entre le model de Phong, ou Blinn-Phong, et de choisir entre une méthode de rendu sur les fragments ou sur les sommets. En combinant le rendu sur les sommets et le model de Phong on obtient un model de Gouraud, et en combiant le rendu sur les sommets avec Blinn-Phong on obtient un model complètement innédit, le model Blinn-Gouraud!
+
+Le principal du code se trouve dans les méthodes $draw()$ des primitives, où on appel le shader.
+\begin{lstlisting}
+lightShader.useMaterial(&mat);
+lightShader.begin();
+if (wireframe || selected.get())
+	prim->drawWireframe();
+else
+	prim->drawFaces();
+lightShader.end();
+lightShader.removeMaterial();
+\end{lstlisting}
+Il faut aussi ajouter les lumières et les caméras individuellement dans l'objet lightShader.
+\begin{lstlisting}
+cam->setCamera(new ofEasyCam{});
+cam->setup();
+lightShader.useCamera(cam->getOfCamera());
+
+ofLight* ofl = new ofLight();
+lightShader.useLight(ofl);
+\end{lstlisting}
+Deux méthodes permettent de changer de model d'illumination.
+\begin{lstlisting}
+void renderer::setIlluminationModel(illuminationModel model) {
+	if (model == PHONG) {
+		lightShader.setLightingMethod(ofxShadersFX::Lighting::PHONG_LIGHTING);
+	} else {
+		lightShader.setLightingMethod(ofxShadersFX::Lighting::BLINN_PHONG_LIGHTING);
+	}
+}
+
+void renderer::setVertexShader(bool vertex) {
+	if (vertex) {
+		lightShader.setShadingMethod(ofxShadersFX::Lighting::VERTEX_SHADING);
+	} else {
+		lightShader.setShadingMethod(ofxShadersFX::Lighting::PIXEL_SHADING);
+	}
+}
+\end{lstlisting}
 
 \subsection{Volume de lumière}
 Non-implémenté

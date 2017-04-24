@@ -76,12 +76,6 @@ void primitive3d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& l
 			prim->drawWireframe();
 		else
 		{
-			/*for (auto face : prim->getMesh().getUniqueFaces())
-			{
-				ofSetColor(face.getColor(0));
-
-				prim->getMesh().dr;
-			}*/
 			prim->drawFaces();
 		}
 	
