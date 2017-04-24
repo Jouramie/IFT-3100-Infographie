@@ -1,5 +1,6 @@
 ofxAssimpModelLoader
 ofxBezierSurface
+ofxCubeMap
 ofxGui
 ofxOpenCv
 ofxRay

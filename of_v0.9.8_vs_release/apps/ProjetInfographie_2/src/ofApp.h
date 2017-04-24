@@ -25,7 +25,6 @@ public:
 	void keyPressed(int key);
 	void keyReleased(int key);
 	void mouseMoved(int x, int y);
-	void mouseMovedGui(int x, int y);
 	void mouseDragged(int x, int y, int button);
 	void mousePressed(int x, int y, int button);
 	void mouseReleased(int x, int y, int button);
@@ -51,9 +50,11 @@ private:
 	ofxPanel transformationMenu;
 	ofxPanel filterMenu;
 	ofxPanel optionMenu;
+	ofxPanel pointMenu;
 	ofxPanel selectionMenu;
 
 	ofxButton btnDrawPrimitive;
+	ofxButton btnAddPoint;
 	ofxButton btnClear;
 	ofxButton btnExit;
 
@@ -191,11 +192,18 @@ private:
 	ofParameterGroup groupWireFrame;
 	ofParameter<bool> wireFrame;
 
+	ofParameterGroup groupPoint;
+	ofParameter<float> pointPosX;
+	ofParameter<float> pointPosY;
+	ofParameter<float> pointPosZ;
+	ofParameter<bool> shader;
+	
 	ofParameter<bool> vertex;
 	ofParameter<bool> fragment;
 	ofParameter<bool> phong;
 	ofParameter<bool> blinnphong;
 
+	ofParameter<bool> skybox;
 
 	void initGroups();
 	void initButtonListener();
@@ -215,9 +223,12 @@ private:
 	void setupSelectionMenu();
 	void setupOptionMenu();
 
+	void setupPointMenu();
+
 	void updatePositionMenu();
 
 	void btnDrawPrimitiveClicked();
+	void btnAddPointClicked();
 	void btnClearClicked();
 	void btnExitClicked();
 	void btnExportClicked();
@@ -225,6 +236,8 @@ private:
 	void applyAllChanged(bool& value);
 	void btnImportClicked();
 	
+	void skyboxChanged(bool & val);
+
 	void primDim2DChanged(bool& value);
 	void primDim3DChanged(bool& value);
 	void primTopoChanged(bool& value);
@@ -246,6 +259,7 @@ private:
 	void ponctualLightChanged(bool & value);
 	void spotLightChanged(bool & value);
 
+	void shaderChanged(bool & value);
 	void wireFrameChanged(bool& value);
 
 	void translateChanged(float & value);

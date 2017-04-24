@@ -3,6 +3,7 @@
 #include "ofxRay.h"
 #include "ofxOpenCv.h"
 #include "ofxBezierSurface.h"
+#include "ofxCubeMap.h"
 #include "primitive3d.h"
 #include <limits>
 #include "scene.h"
@@ -130,6 +131,12 @@ public:
 	void setIlluminationModel(illuminationModel model);
 	void setMustPrepares();
 
+	void drawLines();
+	void setIsShaderUsed(bool val) { isShaderUsed = val; };
+	void addPoint(ofPoint pt) { points.push_back(pt); };
+	void setupShader();
+
+	void setIsSkyboxUsed(bool val) { isSkyboxUsed = val; };
 
 private:
 
@@ -172,6 +179,14 @@ private:
 	string hasRef;
 	int refPosition;
 
+
+	ofShader geometryShader;
+	bool isShaderUsed;
+	vector<ofPoint> points;
+
+	bool isSkyboxUsed;
+	ofxCubeMap cubeMap;
+	
 	ofColor tempAmbientLight;
 	ofLight* tempDirectionalLight;
 

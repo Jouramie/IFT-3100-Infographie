@@ -58,6 +58,9 @@
 		<ClCompile Include="..\..\addons\ofxBezierSurface\src\ofxBezierSurface.cpp">
 			<Filter>addons\ofxBezierSurface\src</Filter>
 		</ClCompile>
+		<ClCompile Include="..\..\addons\ofxCubeMap\src\ofxCubeMap.cpp">
+			<Filter>addons\ofxCubeMap\src</Filter>
+		</ClCompile>
 		<ClCompile Include="..\..\addons\ofxGui\src\ofxBaseGui.cpp">
 			<Filter>addons\ofxGui\src</Filter>
 		</ClCompile>
@@ -179,6 +182,12 @@
 		</Filter>
 		<Filter Include="addons\ofxBezierSurface\src">
 			<UniqueIdentifier>{09D0E532-7E2A-FD37-B415-212B}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxCubeMap">
+			<UniqueIdentifier>{B9D17F6C-2369-3D35-A736-1A4B}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxCubeMap\src">
+			<UniqueIdentifier>{1C1CC97B-FE16-22FF-3F9F-B9FD}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxGui">
 			<UniqueIdentifier>{4F2A59AF-5F4E-704B-D067-EC13}</UniqueIdentifier>
@@ -448,6 +457,9 @@
 		</ClInclude>
 		<ClInclude Include="..\..\addons\ofxBezierSurface\src\ofxBezierSurface.h">
 			<Filter>addons\ofxBezierSurface\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\addons\ofxCubeMap\src\ofxCubeMap.h">
+			<Filter>addons\ofxCubeMap\src</Filter>
 		</ClInclude>
 		<ClInclude Include="..\..\addons\ofxGui\src\ofxBaseGui.h">
 			<Filter>addons\ofxGui\src</Filter>
