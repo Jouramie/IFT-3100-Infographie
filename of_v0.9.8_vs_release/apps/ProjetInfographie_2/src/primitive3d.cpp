@@ -70,8 +70,8 @@ void primitive3d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& l
 
 		ofScale(transfoMatrix.getScale());
 
-		/*lightShader.useMaterial(&mat);
-		lightShader.begin();*/
+		lightShader.useMaterial(&mat);
+		lightShader.begin();
 		if (wireframe || selected.get())
 			prim->drawWireframe();
 		else
@@ -85,8 +85,8 @@ void primitive3d::draw(bool wireframe, ofxShadersFX::Lighting::LightingShader& l
 			prim->drawFaces();
 		}
 	
-		/*lightShader.end();
-		lightShader.removeMaterial();*/
+		lightShader.end();
+		lightShader.removeMaterial();
 		ofPopMatrix();
 	}
 }

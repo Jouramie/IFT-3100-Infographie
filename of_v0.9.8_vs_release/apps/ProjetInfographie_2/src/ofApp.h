@@ -46,6 +46,7 @@ private:
 	ofxPanel menu2D;
 	ofxPanel menu3D;
 	ofxPanel menuTopo;
+	ofxPanel menuLight;
 	ofxPanel cameraMenu;
 	ofxPanel transformationMenu;
 	ofxPanel filterMenu;
@@ -53,7 +54,6 @@ private:
 	ofxPanel selectionMenu;
 
 	ofxButton btnDrawPrimitive;
-	ofxButton btnAddLight;
 	ofxButton btnClear;
 	ofxButton btnExit;
 
@@ -68,6 +68,7 @@ private:
 	ofParameter<float> strokeThickness;
 
 	ofParameterGroup groupCouleur;
+	ofParameterGroup groupCouleurLight;
 	ofParameterGroup groupAmbient;
 	ofColor ambient;
 	ofParameter<float> ambientHue;
@@ -103,11 +104,15 @@ private:
 	ofParameterGroup groupPrimitiveType2D;
 	ofParameterGroup groupPrimitiveType3D;
 	ofParameterGroup groupPrimitiveTypeTopo;
+	ofParameterGroup groupPrimitiveTypeLight;
 	ofParameter<bool> primType2D;
 	ofParameter<bool> primType3D;
 	ofParameter<bool> primTypeTopo;
+	ofParameter<bool> primTypeLight;
 	ofParameter<bool> primTypeSphere;
 	ofParameter<bool> primTypeCube;
+	ofParameter<bool> primTypeCubeReflect;
+	ofParameter<bool> primTypeCubeRefract;
 	ofParameter<bool> primTypeTriangle;
 	ofParameter<bool> primTypeLine;
 	ofParameter<bool> primTypePoint;
@@ -144,12 +149,11 @@ private:
 
 #pragma endregion
 
-	ofParameterGroup groupLight;
+	ofParameter<bool> ambientLight;
 	ofParameter<bool> directionalLight;
 	ofParameter<bool> ponctualLight;
 	ofParameter<bool> spotLight;
 
-	ofParameterGroup groupTranslateLight;
 	ofParameter<float> translateXLight;
 	ofParameter<float> translateYLight;
 	ofParameter<float> translateZLight;
@@ -158,22 +162,11 @@ private:
 	ofParameter<float> rotateXLight;
 	ofParameter<float> rotateYLight;
 	ofParameter<float> rotateZLight;
-
-	ofParameterGroup groupDiffLight;
-	ofColor diffLight;
-	ofParameter<float> diffLightHue;
-	ofParameter<float> diffLightSaturation;
-	ofParameter<float> diffLightBrightess;
-
-	ofParameterGroup groupSpecLight;
-	ofColor specLight;
-	ofParameter<float> specLightHue;
-	ofParameter<float> specLightSaturation;
-	ofParameter<float> specLightBrightess;
-
+	
 
 	ofParameterGroup groupTranslate2D;
 	ofParameterGroup groupTranslate3D;
+	ofParameterGroup groupTranslateLight;
 	ofParameter<float> translateX;
 	ofParameter<float> translateY;
 	ofParameter<float> translateZ;
@@ -198,6 +191,12 @@ private:
 	ofParameterGroup groupWireFrame;
 	ofParameter<bool> wireFrame;
 
+	ofParameter<bool> vertex;
+	ofParameter<bool> fragment;
+	ofParameter<bool> phong;
+	ofParameter<bool> blinnphong;
+
+
 	void initGroups();
 	void initButtonListener();
 	void initOfParameters();
@@ -209,6 +208,7 @@ private:
 	void setupMenu2D();
 	void setupMenu3D(); 
 	void setupMenuTopo();
+	void setupMenuLight();
 	void setupCameraMenu();
 	void setupTransformationMenu();
 	void setupFilterMenu();
@@ -218,7 +218,6 @@ private:
 	void updatePositionMenu();
 
 	void btnDrawPrimitiveClicked();
-	void btnAddLightClicked();
 	void btnClearClicked();
 	void btnExitClicked();
 	void btnExportClicked();
@@ -229,7 +228,10 @@ private:
 	void primDim2DChanged(bool& value);
 	void primDim3DChanged(bool& value);
 	void primTopoChanged(bool& value);
+	void lightChanged(bool & value);
 	void primTypeCubeChanged(bool& value);
+	void primTypeCubeReflectChanged(bool & value);
+	void primTypeCubeRefractChanged(bool & value);
 	void primTypeSphereChanged(bool& value);
 	void primTypeTriangleChanged(bool & value);
 	void primTypeLineChanged(bool & value);
@@ -239,10 +241,9 @@ private:
 	void primTypeCatmullRomChanged(bool& value); 
 	void primTypeSurfaceChanged(bool& value);
 
+	void ambientLightChanged(bool & value);
 	void directionalLightChanged(bool & value);
-
 	void ponctualLightChanged(bool & value);
-
 	void spotLightChanged(bool & value);
 
 	void wireFrameChanged(bool& value);
@@ -254,6 +255,11 @@ private:
 	void blurChanged(bool & value);
 	void invertChanged(bool & value);
 	void dilateChanged(bool & value);
+
+	void vertexChanged(bool & value);
+	void fragmentChanged(bool & value);
+	void phongChanged(bool & value);
+	void blinnphongChanged(bool & value);
 
 	void drawMenus();
 

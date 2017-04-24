@@ -517,6 +517,7 @@ ofParameter<bool> renderer::createCube(int x, int y, int z, int w, int h, int d,
 	prim.setName("Cube " + to_string(scn->nbElements() + 1));
 	prim.setMirror(false);
 	prim.setGlass(false);
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 
@@ -564,6 +565,7 @@ ofParameter<bool> renderer::createSphere(int x, int y, int z, int sizeX, int siz
 	prim.setName("Sphere " + to_string(scn->nbElements() + 1));
 	prim.setMirror(false);
 	prim.setGlass(false);
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 }
@@ -592,6 +594,7 @@ ofParameter<bool> renderer::createCone(int x, int y, int z, int sizeX, int sizeY
 
 	primitive3d prim = primitive3d{ cone, ofColor(), matrix };
 	prim.setName("Cone " + to_string(scn->nbElements() + 1));
+	prim.setMaterial(mat);
 	scn->addElement(prim);
 	return prim.selected;
 
@@ -628,6 +631,7 @@ ofParameter<bool>  renderer::createIcecream(int x, int y, int z, int sizeX, int 
 	forme3d forme{ ball, ofColor(), matrix };
 	forme.addPrimitive(cone);
 	forme.setName("IceCream " + to_string(scn->nbElements() + 1));
+	forme.setMaterial(mat);
 	scn->addElement(forme);
 	return forme.selected;
 }
@@ -657,10 +661,12 @@ ofParameter<bool> renderer::createPonctualLight(int x, int y, int z, ofColor dif
 {
 	ofLight* ofl = new ofLight();
 	ofl->setPointLight();
-	//ofl->enable();
 	lightShader.useLight(ofl);
 	ofMatrix4x4 matrix = ofMatrix4x4();
 	matrix.setTranslation(x, y, z);
+	ofLog() << matrix;
+	ofLog() << difCol;
+	ofLog() << specCol;
 
 	light* l = new light{ ofl, matrix };
 	l->setName("Pontual " + to_string(scn->nbElements() + 1));
@@ -675,7 +681,6 @@ ofParameter<bool> renderer::createSpotlight(ofVec3f pos, int ax, int ay, int az,
 {
 	ofLight* ofl = new ofLight();
 	ofl->setSpotlight();
-	//ofl->enable();
 	lightShader.useLight(ofl);
 	ofMatrix4x4 matrix = ofMatrix4x4();
 	matrix.setTranslation(pos);
